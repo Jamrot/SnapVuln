@@ -121,16 +121,16 @@ def split_d2a(output_folder):
 	save_jsonl_gz(os.path.join(output_folder,'my_np_test_dataset.jsonl.gz'), np_test_dataset)
 
 	##### get files #######
-	train_path = "/home/bozhi2/work_vuln/data/json/d2a/test/my_train.jsonl.gz"
-	valid_path = "/home/bozhi2/work_vuln/data/json/d2a/test/my_valid.jsonl.gz"
-	test_path = "/home/bozhi2/work_vuln/data/json/d2a/test/my_test.jsonl.gz"
+	train_path = os.path.join(ROOT_DIR, "data/json/d2a/test/my_train.jsonl.gz")
+	valid_path = os.path.join(ROOT_DIR, "data/json/d2a/test/my_valid.jsonl.gz")
+	test_path = os.path.join(ROOT_DIR, "data/json/d2a/test/my_test.jsonl.gz")
 	train_files = load_jsonl_gz(train_path)
 	valid_files = load_jsonl_gz(valid_path)
 	test_files = load_jsonl_gz(test_path)
 
-	train_path = "/home/bozhi2/work_vuln/data/json/d2a/test/my_io_test_dataset.jsonl.gz"
-	valid_path = "/home/bozhi2/work_vuln/data/json/d2a/test/my_bo_test_dataset.jsonl.gz"
-	test_path = "/home/bozhi2/work_vuln/data/json/d2a/test/my_np_test_dataset.jsonl.gz"
+	train_path = os.path.join(ROOT_DIR, "data/json/d2a/test/my_io_test_dataset.jsonl.gz")
+	valid_path = os.path.join(ROOT_DIR, "data/json/d2a/test/my_bo_test_dataset.jsonl.gz")
+	test_path = os.path.join(ROOT_DIR, "data/json/d2a/test/my_np_test_dataset.jsonl.gz")
 	io_test_files = load_jsonl_gz(train_path)
 	bo_test_files = load_jsonl_gz(valid_path)
 	np_test_files = load_jsonl_gz(test_path)
@@ -348,26 +348,26 @@ def split_sard(output_folder):
 	save_jsonl_gz(os.path.join(output_folder,'multi_df_test_dataset.jsonl.gz'), multi_df)
 	save_jsonl_gz(os.path.join(output_folder,'multi_ua_test_dataset.jsonl.gz'), multi_ua)	
 
-
+ROOT_DIR = "data_process"
 if __name__ == "__main__":
 	### set output paths ######
-	sard_output_folder = "/home/bozhi2/work_vuln/data/json/sard"
-	d2a_output_folder = "/home/bozhi2/work_vuln/data/json/d2a"
+	sard_output_folder = os.path.join(ROOT_DIR, "data/json/sard")
+	d2a_output_folder = os.path.join(ROOT_DIR, "data/json/d2a")
 	### set operation flag: 0 for juliet data process, 1 for juliet data split, 3 for d2a data process, 4 for d2a data split #######
-	flag = 0
+	flag = 3
 
 	####################################   sard  ########################################################################
 	if flag == 0:
-		multi_func_folder = "/home/bozhi2/work_vuln/data/sard/func/multi/vuln"
-		multi_dot_folder = "/home/bozhi2/work_vuln/data/sard/dot/multi/vuln/combine"
-		single_func_folder = "/home/bozhi2/work_vuln/data/sard/func/single/vuln"
-		single_dot_folder = "/home/bozhi2/work_vuln/data/sard/dot/single/vuln/dots"
+		multi_func_folder = os.path.join(ROOT_DIR, "data/sard/func/multi/vuln")
+		multi_dot_folder = os.path.join(ROOT_DIR, "data/sard/dot/multi/vuln/combine")
+		single_func_folder = os.path.join(ROOT_DIR, "data/sard/func/single/vuln")
+		single_dot_folder = os.path.join(ROOT_DIR, "data/sard/dot/single/vuln/dots")
 		preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,sard_output_folder,'vuln')
 
-		multi_func_folder = "/home/bozhi2/work_vuln/data/sard/func/multi/nonvuln"
-		multi_dot_folder = "/home/bozhi2/work_vuln/data/sard/dot/multi/nonvuln/combine"
-		single_func_folder = "/home/bozhi2/work_vuln/data/sard/func/single/nonvuln"
-		single_dot_folder = "/home/bozhi2/work_vuln/data/sard/dot/single/nonvuln/dots"
+		multi_func_folder = os.path.join(ROOT_DIR, "data/sard/func/multi/nonvuln")
+		multi_dot_folder = os.path.join(ROOT_DIR, "data/sard/dot/multi/nonvuln/combine")
+		single_func_folder = os.path.join(ROOT_DIR, "data/sard/func/single/nonvuln")
+		single_dot_folder = os.path.join(ROOT_DIR, "data/sard/dot/single/nonvuln/dots")
 		preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,sard_output_folder,'nonvuln')
 
 	elif flag == 1:
@@ -376,16 +376,16 @@ if __name__ == "__main__":
 
 	####################################   d2a   ########################################################################
 	elif flag == 3:
-		multi_func_folder = "/home/bozhi2/work_vuln/data/d2a/func/vuln/multi"
-		multi_dot_folder = "/home/bozhi2/work_vuln/data/d2a/dot/vuln/combine"
-		single_func_folder = "/home/bozhi2/work_vuln/data/d2a/func/vuln/single"
-		single_dot_folder = "/home/bozhi2/work_vuln/data/d2a/dot/vuln/single/dots"
+		multi_func_folder = os.path.join(ROOT_DIR, "data/d2a/func/vuln/multi")
+		multi_dot_folder = os.path.join(ROOT_DIR, "data/d2a/dot/vuln/combine")
+		single_func_folder = os.path.join(ROOT_DIR, "data/d2a/func/vuln/single")
+		single_dot_folder = os.path.join(ROOT_DIR, "data/d2a/dot/vuln/single/dots")
 		preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,d2a_output_folder,'vuln')
 
-		multi_func_folder = "/home/bozhi2/work_vuln/data/d2a/func/nonvuln/multi"
-		multi_dot_folder = "/home/bozhi2/work_vuln/data/d2a/dot/nonvuln/combine"
-		single_func_folder = "/home/bozhi2/work_vuln/data/d2a/func/nonvuln/single"
-		single_dot_folder = "/home/bozhi2/work_vuln/data/d2a/dot/nonvuln/single/dots"
+		multi_func_folder = os.path.join(ROOT_DIR, "data/d2a/func/nonvuln/multi")
+		multi_dot_folder = os.path.join(ROOT_DIR, "data/d2a/dot/nonvuln/combine")
+		single_func_folder = os.path.join(ROOT_DIR, "data/d2a/func/nonvuln/single")
+		single_dot_folder = os.path.join(ROOT_DIR, "data/d2a/dot/nonvuln/single/dots")
 		preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,d2a_output_folder,'nonvuln')
 
 	elif flag == 4:

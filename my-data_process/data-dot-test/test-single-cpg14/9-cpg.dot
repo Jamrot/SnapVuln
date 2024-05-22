@@ -1,0 +1,12 @@
+digraph "ASN1_INTEGER_get" {  
+"309" [label = <(METHOD,ASN1_INTEGER_get)> ]
+"310" [label = <(PARAM,p1)> ]
+"311" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"312" [label = <(METHOD_RETURN,ANY)> ]
+  "309" -> "310"  [ label = "AST: "] 
+  "309" -> "311"  [ label = "AST: "] 
+  "309" -> "312"  [ label = "AST: "] 
+  "309" -> "312"  [ label = "CFG: "] 
+  "310" -> "312"  [ label = "DDG: p1"] 
+  "309" -> "310"  [ label = "DDG: "] 
+}

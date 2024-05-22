@@ -1,0 +1,7 @@
+digraph "source" {  
+"49" [label = <(METHOD,source)> ]
+"50" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"51" [label = <(METHOD_RETURN,ANY)> ]
+  "49" -> "50" 
+  "49" -> "51" 
+}

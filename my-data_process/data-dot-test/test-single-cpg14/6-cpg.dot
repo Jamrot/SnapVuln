@@ -1,0 +1,12 @@
+digraph "PKCS7_type_is_data" {  
+"295" [label = <(METHOD,PKCS7_type_is_data)> ]
+"296" [label = <(PARAM,p1)> ]
+"297" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"298" [label = <(METHOD_RETURN,ANY)> ]
+  "295" -> "296"  [ label = "AST: "] 
+  "295" -> "297"  [ label = "AST: "] 
+  "295" -> "298"  [ label = "AST: "] 
+  "295" -> "298"  [ label = "CFG: "] 
+  "296" -> "298"  [ label = "DDG: p1"] 
+  "295" -> "296"  [ label = "DDG: "] 
+}

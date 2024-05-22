@@ -49,7 +49,7 @@ def parallel_process(array, single_instance_process, args=(), n_cores=None):
 
 
 def get_slices(dotfile):
-	bo_slices, ml_slices, io_slices, np_slices, uaf_slices, df_slices = [], [], [], [], []
+	bo_slices, ml_slices, io_slices, np_slices, uaf_slices, df_slices = [], [], [], [], [], []
 
 	nodes, edges = get_nodes_and_edges(dotfile)
 	slice_set = bo_slice(nodes, edges)
@@ -189,6 +189,7 @@ def single_instance_process(file,multi_func_folder,multi_dot_folder,single_func_
 	# 	return None
 	bug_tokens = tokenizer(bug_txt)
 	bug_dot_nodes, bug_dot_edges = convert_nodes_edges(bug_dot)
+	# bo_slices, ml_slices, io_slices, np_slices, uaf_slices, df_slices = get_slices(bug_dot)
 
 	file = os.path.join(multi_func_folder,file)
 	file_txt = read_raw_function(file)
@@ -213,21 +214,44 @@ def single_instance_process(file,multi_func_folder,multi_dot_folder,single_func_
 	single_sample = {'single_graph':{'nodes': bug_dot_nodes, 'edges': bug_dot_edges}, 
 					 'bug_txt':bug_txt, 'bug_tokens':bug_tokens, 'bug_func':bug_func,'file':file,'vul_type':vul_type,'target': int(target)}	
 
-	myfile = os.path.join(output_folder,label+"_my.jsonl")
-	multi_file = os.path.join(output_folder,label+"_multi.jsonl")
-	single_file = os.path.join(output_folder,label+"_single.jsonl")
+	if not os.path.exists(output_folder):
+		os.makedirs(output_folder)
+	# myfile = os.path.join(output_folder,label+"_my.jsonl")
+	# multi_file = os.path.join(output_folder,label+"_multi.jsonl")
+	# single_file = os.path.join(output_folder,label+"_single.jsonl")
 
-	with open(myfile, "a") as f:
-		f.write(json.dumps(my_sample)+'\n')
-	with open(multi_file, "a") as f:
-		f.write(json.dumps(multi_sample)+'\n')
-	with open(single_file, "a") as f:
-		f.write(json.dumps(single_sample)+'\n')
+	# with open(myfile, "a") as f:
+	# 	f.write(json.dumps(my_sample)+'\n')
+	# with open(multi_file, "a") as f:
+	# 	f.write(json.dumps(multi_sample)+'\n')
+	# with open(single_file, "a") as f:
+	# 	f.write(json.dumps(single_sample)+'\n')
+
+	myfile = os.path.join(output_folder,label+"_my.json")
+	multi_file = os.path.join(output_folder,label+"_multi.json")
+	single_file = os.path.join(output_folder,label+"_single.json")
+
+	with open(myfile, "w") as f:
+		json.dump(my_sample, f)
+	with open(multi_file, "w") as f:
+		json.dump(multi_sample, f)
+	with open(single_file, "w") as f:
+		json.dump(single_sample, f)
+
+	print("output files: ", myfile, multi_file, single_file)
 
 
 def preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,output_folder,label):
+	# files = os.listdir(multi_func_folder)
+	# parallel_process(files, single_instance_process, (multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,output_folder,label))
+
 	files = os.listdir(multi_func_folder)
-	parallel_process(files, single_instance_process, (multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,output_folder,label))
+	results = []
+	for file in tqdm(files):
+		result = single_instance_process(file, multi_func_folder, multi_dot_folder, single_func_folder, single_dot_folder, output_folder, label)
+		if result is not None:
+			results.append(result)
+	return results
 
 
 if __name__ == '__main__':

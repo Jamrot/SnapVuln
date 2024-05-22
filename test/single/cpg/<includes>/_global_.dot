@@ -1,0 +1,11 @@
+digraph {
+  275 [label=METHOD AST_PARENT_TYPE="NAMESPACE_BLOCK" AST_PARENT_FULL_NAME="<includes>:<global>" ORDER=1 CODE="<global>" FULL_NAME="<includes>:<global>" LINE_NUMBER=1 IS_EXTERNAL=false FILENAME="<includes>" SIGNATURE="" NAME="<global>"]
+  276 [label=BLOCK ORDER=1 ARGUMENT_INDEX=-1 CODE="<empty>" TYPE_FULL_NAME="ANY"]
+  277 [label=METHOD_RETURN ORDER=2 CODE="RET" TYPE_FULL_NAME="ANY" EVALUATION_STRATEGY="BY_VALUE"]
+  275 -> 277 [label=AST ]
+  275 -> 277 [label=CFG ]
+  275 -> 276 [label=AST ]
+  275 -> 276 [label=CONTAINS ]
+  277 -> 275 [label=POST_DOMINATE ]
+  275 -> 277 [label=DOMINATE ]
+}

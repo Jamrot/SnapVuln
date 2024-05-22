@@ -1,0 +1,12 @@
+digraph "getenv" {  
+"357" [label = <(METHOD,getenv)> ]
+"358" [label = <(PARAM,p1)> ]
+"359" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"360" [label = <(METHOD_RETURN,ANY)> ]
+  "357" -> "358"  [ label = "AST: "] 
+  "357" -> "359"  [ label = "AST: "] 
+  "357" -> "360"  [ label = "AST: "] 
+  "357" -> "360"  [ label = "CFG: "] 
+  "358" -> "360"  [ label = "DDG: p1"] 
+  "357" -> "358"  [ label = "DDG: "] 
+}

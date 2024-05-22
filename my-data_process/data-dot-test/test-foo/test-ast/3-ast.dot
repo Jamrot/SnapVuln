@@ -1,0 +1,11 @@
+digraph "&lt;operator&gt;.assignment" {  
+"44" [label = <(METHOD,&lt;operator&gt;.assignment)> ]
+"45" [label = <(PARAM,p1)> ]
+"46" [label = <(PARAM,p2)> ]
+"47" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"48" [label = <(METHOD_RETURN,ANY)> ]
+  "44" -> "45" 
+  "44" -> "47" 
+  "44" -> "46" 
+  "44" -> "48" 
+}

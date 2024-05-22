@@ -1,0 +1,12 @@
+digraph "sink" {  
+"62" [label = <(METHOD,sink)> ]
+"63" [label = <(PARAM,p1)> ]
+"64" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"65" [label = <(METHOD_RETURN,ANY)> ]
+  "62" -> "63"  [ label = "AST: "] 
+  "62" -> "64"  [ label = "AST: "] 
+  "62" -> "65"  [ label = "AST: "] 
+  "62" -> "65"  [ label = "CFG: "] 
+  "63" -> "65"  [ label = "DDG: p1"] 
+  "62" -> "63"  [ label = "DDG: "] 
+}
