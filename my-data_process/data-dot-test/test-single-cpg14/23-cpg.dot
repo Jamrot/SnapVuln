@@ -1,0 +1,8 @@
+digraph "HMAC_CTX_new" {  
+"389" [label = <(METHOD,HMAC_CTX_new)> ]
+"390" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"391" [label = <(METHOD_RETURN,ANY)> ]
+  "389" -> "390"  [ label = "AST: "] 
+  "389" -> "391"  [ label = "AST: "] 
+  "389" -> "391"  [ label = "CFG: "] 
+}

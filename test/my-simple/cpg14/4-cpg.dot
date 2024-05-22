@@ -1,0 +1,12 @@
+digraph "gets" {  
+"48" [label = <(METHOD,gets)> ]
+"49" [label = <(PARAM,p1)> ]
+"50" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"51" [label = <(METHOD_RETURN,ANY)> ]
+  "48" -> "49"  [ label = "AST: "] 
+  "48" -> "50"  [ label = "AST: "] 
+  "48" -> "51"  [ label = "AST: "] 
+  "48" -> "51"  [ label = "CFG: "] 
+  "49" -> "51"  [ label = "DDG: p1"] 
+  "48" -> "49"  [ label = "DDG: "] 
+}

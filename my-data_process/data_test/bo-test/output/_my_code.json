@@ -1,0 +1,105 @@
+{
+    "bo_slices": [
+        {
+            "12": "void vulnerableFunction(char *input) {\n",
+            "13": "    char buffer[50];\n",
+            "15": "        strcpy(buffer, input);\n",
+            "17": "    printf(\"Buffer content: %s\\n\", buffer);\n",
+            "20": "int main() {\n",
+            "21": "    char userInput[100];\n",
+            "27": "    fgets(userInput, sizeof(userInput), stdin);\n",
+            "29": "        userInput[strcspn(userInput, \"\\n\")] = 0;\n",
+            "31": "        vulnerableFunction(userInput);\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "37",
+                "name": "printf",
+                "location": "17",
+                "code": "printf(\\\"Buffer content: %s\\\\n\\\", buffer)"
+            }
+        },
+        {
+            "20": "int main() {\n",
+            "29": "        userInput[strcspn(userInput, \"\\n\")] = 0;\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "56",
+                "name": "<operator>.assignment",
+                "location": "29",
+                "code": "userInput[strcspn(userInput, \\\"\\\\n\\\")] = 0"
+            }
+        },
+        {
+            "20": "int main() {\n",
+            "29": "        userInput[strcspn(userInput, \"\\n\")] = 0;\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "57",
+                "name": "<operator>.indirectIndexAccess",
+                "location": "29",
+                "code": "userInput[strcspn(userInput, \\\"\\\\n\\\")]"
+            }
+        },
+        {
+            "12": "void vulnerableFunction(char *input) {\n",
+            "13": "    char buffer[50];\n",
+            "15": "        strcpy(buffer, input);\n",
+            "20": "int main() {\n",
+            "21": "    char userInput[100];\n",
+            "27": "    fgets(userInput, sizeof(userInput), stdin);\n",
+            "29": "        userInput[strcspn(userInput, \"\\n\")] = 0;\n",
+            "31": "        vulnerableFunction(userInput);\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "34",
+                "name": "strcpy",
+                "location": "15",
+                "code": "strcpy(buffer, input)"
+            }
+        },
+        {
+            "20": "int main() {\n",
+            "21": "    char userInput[100];\n",
+            "27": "    fgets(userInput, sizeof(userInput), stdin);\n",
+            "29": "        userInput[strcspn(userInput, \"\\n\")] = 0;\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "59",
+                "name": "strcspn",
+                "location": "29",
+                "code": "strcspn(userInput, \\\"\\\\n\\\")"
+            }
+        },
+        {
+            "20": "int main() {\n",
+            "21": "    char userInput[100];\n",
+            "27": "    fgets(userInput, sizeof(userInput), stdin);\n",
+            "29": "        userInput[strcspn(userInput, \"\\n\")] = 0;\n",
+            "31": "        vulnerableFunction(userInput);\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "63",
+                "name": "vulnerableFunction",
+                "location": "31",
+                "code": "vulnerableFunction(userInput)"
+            }
+        },
+        {
+            "20": "int main() {\n",
+            "21": "    char userInput[100];\n",
+            "27": "    fgets(userInput, sizeof(userInput), stdin);\n",
+            "criterion": {
+                "type": "CALL",
+                "ID": "51",
+                "name": "fgets",
+                "location": "27",
+                "code": "fgets(userInput, sizeof(userInput), stdin)"
+            }
+        }
+    ],
+    "ml_slices": [],
+    "io_slices": [],
+    "np_slices": [],
+    "uaf_slices": [],
+    "df_slices": []
+}

@@ -1,0 +1,7 @@
+digraph "gets" {  
+"48" [label = <(METHOD,gets)> ]
+"51" [label = <(METHOD_RETURN,ANY)> ]
+"49" [label = <(PARAM,p1)> ]
+  "49" -> "51"  [ label = "DDG: p1"] 
+  "48" -> "49"  [ label = "DDG: "] 
+}

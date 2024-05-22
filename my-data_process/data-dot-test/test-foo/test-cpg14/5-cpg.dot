@@ -1,0 +1,16 @@
+digraph "&lt;operator&gt;.lessThan" {  
+"52" [label = <(METHOD,&lt;operator&gt;.lessThan)> ]
+"53" [label = <(PARAM,p1)> ]
+"54" [label = <(PARAM,p2)> ]
+"55" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"56" [label = <(METHOD_RETURN,ANY)> ]
+  "52" -> "53"  [ label = "AST: "] 
+  "52" -> "55"  [ label = "AST: "] 
+  "52" -> "54"  [ label = "AST: "] 
+  "52" -> "56"  [ label = "AST: "] 
+  "52" -> "56"  [ label = "CFG: "] 
+  "53" -> "56"  [ label = "DDG: p1"] 
+  "54" -> "56"  [ label = "DDG: p2"] 
+  "52" -> "53"  [ label = "DDG: "] 
+  "52" -> "54"  [ label = "DDG: "] 
+}

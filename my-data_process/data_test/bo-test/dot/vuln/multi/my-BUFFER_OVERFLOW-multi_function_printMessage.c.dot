@@ -1,0 +1,31 @@
+digraph {
+  22 [label=CALL ORDER=1 ARGUMENT_INDEX=-1 CODE="printf(\"This is a message from a harmless function.\\n\")" COLUMN_NUMBER=5 METHOD_FULL_NAME="printf" LINE_NUMBER=9 TYPE_FULL_NAME="<empty>" DISPATCH_TYPE="STATIC_DISPATCH" SIGNATURE="" NAME="printf"]
+  20 [label=METHOD COLUMN_NUMBER=1 LINE_NUMBER=8 COLUMN_NUMBER_END=1 IS_EXTERNAL=false SIGNATURE="void printMessage ()" NAME="printMessage" AST_PARENT_TYPE="TYPE_DECL" AST_PARENT_FULL_NAME="my-BUFFER_OVERFLOW-multi_function.c:<global>" ORDER=2 CODE="void printMessage() {
+    printf(\"This is a message from a harmless function.\\n\");
+}" FULL_NAME="printMessage" LINE_NUMBER_END=10 FILENAME="my-BUFFER_OVERFLOW-multi_function.c"]
+  24 [label=METHOD_RETURN ORDER=2 CODE="RET" COLUMN_NUMBER=1 LINE_NUMBER=8 TYPE_FULL_NAME="void" EVALUATION_STRATEGY="BY_VALUE"]
+  23 [label=LITERAL ORDER=1 ARGUMENT_INDEX=1 CODE="\"This is a message from a harmless function.\\n\"" COLUMN_NUMBER=12 LINE_NUMBER=9 TYPE_FULL_NAME="char"]
+  21 [label=BLOCK ORDER=1 ARGUMENT_INDEX=-1 CODE="{
+    printf(\"This is a message from a harmless function.\\n\");
+}" COLUMN_NUMBER=21 LINE_NUMBER=8 TYPE_FULL_NAME="void"]
+  24 -> 22 [label=POST_DOMINATE ]
+  20 -> 23 [label=CFG ]
+  20 -> 23 [label=REACHING_DEF VARIABLE=""]
+  23 -> 22 [label=DOMINATE ]
+  23 -> 22 [label=CFG ]
+  20 -> 21 [label=CONTAINS ]
+  23 -> 20 [label=POST_DOMINATE ]
+  22 -> 23 [label=AST ]
+  22 -> 24 [label=DOMINATE ]
+  20 -> 22 [label=CONTAINS ]
+  20 -> 21 [label=AST ]
+  22 -> 23 [label=ARGUMENT ]
+  20 -> 24 [label=AST ]
+  21 -> 22 [label=AST ]
+  20 -> 23 [label=DOMINATE ]
+  22 -> 23 [label=POST_DOMINATE ]
+  23 -> 22 [label=REACHING_DEF VARIABLE="\"This is a message from a harmless function.\\n\""]
+  20 -> 23 [label=CONTAINS ]
+  22 -> 24 [label=CFG ]
+  22 -> 24 [label=REACHING_DEF VARIABLE="printf(\"This is a message from a harmless function.\\n\")"]
+}

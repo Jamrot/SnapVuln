@@ -1,0 +1,16 @@
+digraph "printf" {  
+"43" [label = <(METHOD,printf)> ]
+"44" [label = <(PARAM,p1)> ]
+"45" [label = <(PARAM,p2)> ]
+"46" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"47" [label = <(METHOD_RETURN,ANY)> ]
+  "43" -> "44"  [ label = "AST: "] 
+  "43" -> "46"  [ label = "AST: "] 
+  "43" -> "45"  [ label = "AST: "] 
+  "43" -> "47"  [ label = "AST: "] 
+  "43" -> "47"  [ label = "CFG: "] 
+  "44" -> "47"  [ label = "DDG: p1"] 
+  "45" -> "47"  [ label = "DDG: p2"] 
+  "43" -> "44"  [ label = "DDG: "] 
+  "43" -> "45"  [ label = "DDG: "] 
+}

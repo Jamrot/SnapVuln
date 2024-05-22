@@ -1,0 +1,12 @@
+digraph "&lt;operator&gt;.sizeOf" {  
+"160" [label = <(METHOD,&lt;operator&gt;.sizeOf)> ]
+"161" [label = <(PARAM,p1)> ]
+"162" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"163" [label = <(METHOD_RETURN,ANY)> ]
+  "160" -> "161"  [ label = "AST: "] 
+  "160" -> "162"  [ label = "AST: "] 
+  "160" -> "163"  [ label = "AST: "] 
+  "160" -> "163"  [ label = "CFG: "] 
+  "161" -> "163"  [ label = "DDG: p1"] 
+  "160" -> "161"  [ label = "DDG: "] 
+}

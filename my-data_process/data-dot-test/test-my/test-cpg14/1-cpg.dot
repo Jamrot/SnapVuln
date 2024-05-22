@@ -1,0 +1,17 @@
+digraph "&lt;clinit&gt;" {  
+"16" [label = <(METHOD,&lt;clinit&gt;)<SUB>6</SUB>> ]
+"17" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"18" [label = <(&lt;operator&gt;.arrayInitializer,name[50])<SUB>8</SUB>> ]
+"19" [label = <(LITERAL,50,name[50])<SUB>8</SUB>> ]
+"20" [label = <(MODIFIER,STATIC)> ]
+"21" [label = <(METHOD_RETURN,ANY)> ]
+  "16" -> "17"  [ label = "AST: "] 
+  "16" -> "20"  [ label = "AST: "] 
+  "16" -> "21"  [ label = "AST: "] 
+  "17" -> "18"  [ label = "AST: "] 
+  "18" -> "19"  [ label = "AST: "] 
+  "18" -> "21"  [ label = "CFG: "] 
+  "16" -> "18"  [ label = "CFG: "] 
+  "18" -> "21"  [ label = "DDG: name[50]"] 
+  "16" -> "18"  [ label = "DDG: "] 
+}
