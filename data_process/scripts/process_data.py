@@ -49,7 +49,11 @@ def parallel_process(array, single_instance_process, args=(), n_cores=None):
 
 
 def get_slices(dotfile):
+<<<<<<< HEAD
 	bo_slices, ml_slices, io_slices, np_slices, uaf_slices, df_slices = [], [], [], [], [], []
+=======
+	bo_slices, ml_slices, io_slices, np_slices, uaf_slices, df_slices = [], [], [], [], []
+>>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 
 	nodes, edges = get_nodes_and_edges(dotfile)
 	slice_set = bo_slice(nodes, edges)
@@ -189,7 +193,10 @@ def single_instance_process(file,multi_func_folder,multi_dot_folder,single_func_
 	# 	return None
 	bug_tokens = tokenizer(bug_txt)
 	bug_dot_nodes, bug_dot_edges = convert_nodes_edges(bug_dot)
+<<<<<<< HEAD
 	# bo_slices, ml_slices, io_slices, np_slices, uaf_slices, df_slices = get_slices(bug_dot)
+=======
+>>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 
 	file = os.path.join(multi_func_folder,file)
 	file_txt = read_raw_function(file)
@@ -214,6 +221,7 @@ def single_instance_process(file,multi_func_folder,multi_dot_folder,single_func_
 	single_sample = {'single_graph':{'nodes': bug_dot_nodes, 'edges': bug_dot_edges}, 
 					 'bug_txt':bug_txt, 'bug_tokens':bug_tokens, 'bug_func':bug_func,'file':file,'vul_type':vul_type,'target': int(target)}	
 
+<<<<<<< HEAD
 	if not os.path.exists(output_folder):
 		os.makedirs(output_folder)
 	# myfile = os.path.join(output_folder,label+"_my.jsonl")
@@ -252,6 +260,23 @@ def preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_
 		if result is not None:
 			results.append(result)
 	return results
+=======
+	myfile = os.path.join(output_folder,label+"_my.jsonl")
+	multi_file = os.path.join(output_folder,label+"_multi.jsonl")
+	single_file = os.path.join(output_folder,label+"_single.jsonl")
+
+	with open(myfile, "a") as f:
+		f.write(json.dumps(my_sample)+'\n')
+	with open(multi_file, "a") as f:
+		f.write(json.dumps(multi_sample)+'\n')
+	with open(single_file, "a") as f:
+		f.write(json.dumps(single_sample)+'\n')
+
+
+def preprocess(multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,output_folder,label):
+	files = os.listdir(multi_func_folder)
+	parallel_process(files, single_instance_process, (multi_func_folder,multi_dot_folder,single_func_folder,single_dot_folder,output_folder,label))
+>>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 
 
 if __name__ == '__main__':

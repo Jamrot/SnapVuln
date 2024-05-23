@@ -82,6 +82,7 @@ def get_call_edges(names, ids, callees_ast, callees_pdg, callees_cfg):
 				
 	return call_graph_edges
 
+<<<<<<< HEAD
 def my_test():
 	multi_func = 'openssl-ff59ce71b50dbd735a065cb2a832ad870593845f_1-auto_labeler-INTEGER_OVERFLOW_L5-multi_function.c'
 	multi_dot_folder = 'data_process/data/d2a/dot/vuln/multi/dots'
@@ -90,6 +91,10 @@ def my_test():
 
 if __name__ == "__main__":
 	my_test()
+=======
+
+if __name__ == "__main__":
+>>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 	args = []
 
 	############# d2a ##################################################
