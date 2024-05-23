@@ -176,12 +176,7 @@ def get_graph(nodes, edges, g_type):
 
 def get_callee(nodes):
 	callees = [node['code'] for node in nodes if node['type'] == "CALLEE"]
-<<<<<<< HEAD
 	callees = list(set(callees))
-	print('callees:', callees)
-	exit()
-=======
->>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 	return callees
 
 
@@ -223,10 +218,6 @@ def get_pointers(nodes, edges):
 			pointer = [i for i in identifiers if i in code]
 			pointers.extend(pointer)
 	pointers = list(set(pointers))
-<<<<<<< HEAD
-	# print("pointers:", pointers)
-=======
->>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 	return pointers
 
 
@@ -244,10 +235,6 @@ def get_arrays(nodes, edges):
 			array = [i for i in identifiers if i in code.split("[")[0]]
 			arrays.extend(array)
 	arrays = list(set(arrays))
-<<<<<<< HEAD
-	print("arrays:", arrays)
-=======
->>>>>>> 1610eb400f25d7f7d73bb095d12bb470806f9b66
 	return arrays
 
 
