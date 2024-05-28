@@ -1,0 +1,22 @@
+[
+    {
+        "criterion": {
+            "line": 145,
+            "code": "\t\t*buf = NULL;"
+        },
+        "commit_id": "97bf6f81b29a8efaf5d0983251a7450e5794370d",
+        "version": {
+            "old": "080cbb890286cd794f1ee788bbc5463e2deb7c2b",
+            "new": "97bf6f81b29a8efaf5d0983251a7450e5794370d"
+        },
+        "file_path": {
+            "old": "net/tipc/msg.c",
+            "new": "net/tipc/msg.c"
+        },
+        "func_name": "tipc_buf_append",
+        "func_line": {
+            "start": 124,
+            "end": 193
+        }
+    }
+]

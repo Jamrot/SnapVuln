@@ -1,0 +1,670 @@
+{
+    "code": {
+        "124": "int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)\n",
+        "126": "\tstruct sk_buff *head = *headbuf;\n",
+        "127": "\tstruct sk_buff *frag = *buf;\n",
+        "129": "\tstruct tipc_msg *msg;\n",
+        "130": "\tu32 fragid;\n",
+        "134": "\tif (!frag)\n",
+        "137": "\tmsg = buf_msg(frag);\n",
+        "138": "\tfragid = msg_type(msg);\n",
+        "142": "\tif (fragid == FIRST_FRAGMENT) {\n",
+        "143": "\t\tif (unlikely(head))\n",
+        "145": "\t\t*buf = NULL;\n"
+    },
+    "nodes": {
+        "171": {
+            "AST_PARENT_FULL_NAME": "file_code_old-97bf6f81_145.c:<global>",
+            "AST_PARENT_TYPE": "TYPE_DECL",
+            "CODE": "int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)\n{\n\tstruct sk_buff *head = *headbuf;\n\tstruct sk_buff *frag = *buf;\n\tstruct sk_buff *tail = NULL;\n\tstruct tipc_msg *msg;\n\tu32 fragid;\n\tint delta;\n\tbool headstolen;\n\n\tif (!frag)\n\t\tgoto err;\n\n\tmsg = buf_msg(frag);\n\tfragid = msg_type(msg);\n\tfrag->next = NULL;\n\tskb_pull(frag, msg_hdr_sz(msg));\n\n\tif (fragid == FIRST_FRAGMENT) {\n\t\tif (unlikely(head))\n\t\t\tgoto err;\n\t\t*buf = NULL;\n\t\tif (skb_has_frag_list(frag) && __skb_linearize(frag))\n\t\t\tgoto err;\n\t\tfrag = skb_unshare(frag, GFP_ATOMIC);\n\t\tif (unlikely(!frag))\n\t\t\tgoto err;\n\t\thead = *headbuf = frag;\n\t\tTIPC_SKB_CB(head)->tail = NULL;\n\t\treturn 0;\n\t}\n\n\tif (!head)\n\t\tgoto err;\n\n\t/* Either the input skb ownership is transferred to headskb\n\t * or the input skb is freed, clear the reference to avoid\n\t * bad access on error path.\n\t */\n\t*buf = NULL;\n\tif (skb_try_coalesce(head, frag, &headstolen, &delta)) {\n\t\tkfree_skb_partial(frag, headstolen);\n\t} else {\n\t\ttail = TIPC_SKB_CB(head)->tail;...",
+            "COLUMN_NUMBER": "1",
+            "COLUMN_NUMBER_END": "1",
+            "FILENAME": "file_code_old-97bf6f81_145.c",
+            "FULL_NAME": "tipc_buf_append",
+            "IS_EXTERNAL": "false",
+            "LINE_NUMBER": "124",
+            "LINE_NUMBER_END": "193",
+            "NAME": "tipc_buf_append",
+            "ORDER": "6",
+            "SIGNATURE": "int tipc_buf_append (sk_buff**,sk_buff**)",
+            "id": "171",
+            "label": "METHOD",
+            "location": "124",
+            "type": "METHOD"
+        },
+        "195": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag",
+            "COLUMN_NUMBER": "7",
+            "LINE_NUMBER": "134",
+            "NAME": "frag",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "195",
+            "label": "IDENTIFIER",
+            "location": "134",
+            "type": "IDENTIFIER"
+        },
+        "201": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag",
+            "COLUMN_NUMBER": "16",
+            "LINE_NUMBER": "137",
+            "NAME": "frag",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "201",
+            "label": "IDENTIFIER",
+            "location": "137",
+            "type": "IDENTIFIER"
+        },
+        "205": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "msg",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "138",
+            "NAME": "msg",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "id": "205",
+            "label": "IDENTIFIER",
+            "location": "138",
+            "type": "IDENTIFIER"
+        },
+        "217": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "fragid",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "142",
+            "NAME": "fragid",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "u32",
+            "id": "217",
+            "label": "IDENTIFIER",
+            "location": "142",
+            "type": "IDENTIFIER"
+        },
+        "218": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "FIRST_FRAGMENT",
+            "COLUMN_NUMBER": "16",
+            "LINE_NUMBER": "142",
+            "NAME": "FIRST_FRAGMENT",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "id": "218",
+            "label": "IDENTIFIER",
+            "location": "142",
+            "type": "IDENTIFIER"
+        },
+        "222": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "head",
+            "COLUMN_NUMBER": "16",
+            "LINE_NUMBER": "143",
+            "NAME": "head",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "222",
+            "label": "IDENTIFIER",
+            "location": "143",
+            "type": "IDENTIFIER"
+        },
+        "173": {
+            "CODE": "struct sk_buff **buf",
+            "COLUMN_NUMBER": "47",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "2",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "124",
+            "NAME": "buf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "id": "173",
+            "label": "METHOD_PARAMETER_IN",
+            "location": "124",
+            "type": "PARAM"
+        },
+        "227": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "145",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "id": "227",
+            "label": "IDENTIFIER",
+            "location": "145",
+            "type": "IDENTIFIER"
+        },
+        "228": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "NULL",
+            "COLUMN_NUMBER": "10",
+            "LINE_NUMBER": "145",
+            "NAME": "NULL",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "id": "228",
+            "label": "IDENTIFIER",
+            "location": "145",
+            "type": "IDENTIFIER"
+        },
+        "194": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "!frag",
+            "COLUMN_NUMBER": "6",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "134",
+            "METHOD_FULL_NAME": "<operator>.logicalNot",
+            "NAME": "<operator>.logicalNot",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "194",
+            "label": "CALL",
+            "location": "134",
+            "type": "OPERATOR"
+        },
+        "200": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "buf_msg(frag)",
+            "COLUMN_NUMBER": "8",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "137",
+            "METHOD_FULL_NAME": "buf_msg",
+            "NAME": "buf_msg",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "200",
+            "label": "CALL",
+            "location": "137",
+            "type": "CALLEE"
+        },
+        "204": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "msg_type(msg)",
+            "COLUMN_NUMBER": "11",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "138",
+            "METHOD_FULL_NAME": "msg_type",
+            "NAME": "msg_type",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "204",
+            "label": "CALL",
+            "location": "138",
+            "type": "CALLEE"
+        },
+        "216": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "fragid == FIRST_FRAGMENT",
+            "COLUMN_NUMBER": "6",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "142",
+            "METHOD_FULL_NAME": "<operator>.equals",
+            "NAME": "<operator>.equals",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "216",
+            "label": "CALL",
+            "location": "142",
+            "type": "OPERATOR"
+        },
+        "221": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "unlikely(head)",
+            "COLUMN_NUMBER": "7",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "143",
+            "METHOD_FULL_NAME": "unlikely",
+            "NAME": "unlikely",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "221",
+            "label": "CALL",
+            "location": "143",
+            "type": "CALLEE"
+        },
+        "175": {
+            "CODE": "struct sk_buff* head",
+            "COLUMN_NUMBER": "17",
+            "LINE_NUMBER": "126",
+            "NAME": "head",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "175",
+            "label": "LOCAL",
+            "location": "126",
+            "type": "LOCAL"
+        },
+        "177": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "head",
+            "COLUMN_NUMBER": "18",
+            "LINE_NUMBER": "126",
+            "NAME": "head",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "177",
+            "label": "IDENTIFIER",
+            "location": "126",
+            "type": "IDENTIFIER"
+        },
+        "178": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "*headbuf",
+            "COLUMN_NUMBER": "25",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "126",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "178",
+            "label": "CALL",
+            "location": "126",
+            "type": "OPERATOR"
+        },
+        "180": {
+            "CODE": "struct sk_buff* frag",
+            "COLUMN_NUMBER": "17",
+            "LINE_NUMBER": "127",
+            "NAME": "frag",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "180",
+            "label": "LOCAL",
+            "location": "127",
+            "type": "LOCAL"
+        },
+        "182": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag",
+            "COLUMN_NUMBER": "18",
+            "LINE_NUMBER": "127",
+            "NAME": "frag",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "id": "182",
+            "label": "IDENTIFIER",
+            "location": "127",
+            "type": "IDENTIFIER"
+        },
+        "183": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "*buf",
+            "COLUMN_NUMBER": "25",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "127",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "183",
+            "label": "CALL",
+            "location": "127",
+            "type": "OPERATOR"
+        },
+        "199": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "msg",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "137",
+            "NAME": "msg",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "id": "199",
+            "label": "IDENTIFIER",
+            "location": "137",
+            "type": "IDENTIFIER"
+        },
+        "203": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "fragid",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "138",
+            "NAME": "fragid",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "u32",
+            "id": "203",
+            "label": "IDENTIFIER",
+            "location": "138",
+            "type": "IDENTIFIER"
+        },
+        "189": {
+            "CODE": "struct tipc_msg* msg",
+            "COLUMN_NUMBER": "18",
+            "LINE_NUMBER": "129",
+            "NAME": "msg",
+            "ORDER": "7",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "id": "189",
+            "label": "LOCAL",
+            "location": "129",
+            "type": "LOCAL"
+        },
+        "190": {
+            "CODE": "u32 fragid",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "130",
+            "NAME": "fragid",
+            "ORDER": "8",
+            "TYPE_FULL_NAME": "u32",
+            "id": "190",
+            "label": "LOCAL",
+            "location": "130",
+            "type": "LOCAL"
+        },
+        "225": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "*buf = NULL",
+            "COLUMN_NUMBER": "3",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "145",
+            "METHOD_FULL_NAME": "<operator>.assignment",
+            "NAME": "<operator>.assignment",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "225",
+            "label": "CALL",
+            "location": "145",
+            "type": "OPERATOR"
+        },
+        "226": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "*buf",
+            "COLUMN_NUMBER": "3",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "145",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "id": "226",
+            "label": "CALL",
+            "location": "145",
+            "type": "OPERATOR"
+        }
+    },
+    "edges": [
+        {
+            "front": "171",
+            "rear": "195",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "201",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "205",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "217",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "218",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "222",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "173",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "227",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "171",
+            "rear": "228",
+            "type": "REACHING_DEF"
+        },
+        {
+            "front": "195",
+            "rear": "201",
+            "type": "REACHING_DEF",
+            "variable": "frag"
+        },
+        {
+            "front": "195",
+            "rear": "194",
+            "type": "REACHING_DEF",
+            "variable": "frag"
+        },
+        {
+            "front": "201",
+            "rear": "200",
+            "type": "REACHING_DEF",
+            "variable": "frag"
+        },
+        {
+            "front": "205",
+            "rear": "204",
+            "type": "REACHING_DEF",
+            "variable": "msg"
+        },
+        {
+            "front": "217",
+            "rear": "216",
+            "type": "REACHING_DEF",
+            "variable": "fragid"
+        },
+        {
+            "front": "218",
+            "rear": "217",
+            "type": "REACHING_DEF",
+            "variable": "FIRST_FRAGMENT"
+        },
+        {
+            "front": "218",
+            "rear": "216",
+            "type": "REACHING_DEF",
+            "variable": "FIRST_FRAGMENT"
+        },
+        {
+            "front": "222",
+            "rear": "221",
+            "type": "REACHING_DEF",
+            "variable": "head"
+        },
+        {
+            "front": "173",
+            "rear": "227",
+            "type": "REF"
+        },
+        {
+            "front": "194",
+            "rear": "201",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "205",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "217",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "218",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "200",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "204",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "216",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "199",
+            "type": "CDG"
+        },
+        {
+            "front": "194",
+            "rear": "203",
+            "type": "CDG"
+        },
+        {
+            "front": "200",
+            "rear": "199",
+            "type": "REACHING_DEF",
+            "variable": "buf_msg(frag)"
+        },
+        {
+            "front": "204",
+            "rear": "203",
+            "type": "REACHING_DEF",
+            "variable": "msg_type(msg)"
+        },
+        {
+            "front": "216",
+            "rear": "222",
+            "type": "CDG"
+        },
+        {
+            "front": "216",
+            "rear": "221",
+            "type": "CDG"
+        },
+        {
+            "front": "221",
+            "rear": "227",
+            "type": "CDG"
+        },
+        {
+            "front": "221",
+            "rear": "228",
+            "type": "CDG"
+        },
+        {
+            "front": "221",
+            "rear": "225",
+            "type": "CDG"
+        },
+        {
+            "front": "221",
+            "rear": "226",
+            "type": "CDG"
+        },
+        {
+            "front": "175",
+            "rear": "222",
+            "type": "REF"
+        },
+        {
+            "front": "175",
+            "rear": "177",
+            "type": "REF"
+        },
+        {
+            "front": "177",
+            "rear": "222",
+            "type": "REACHING_DEF",
+            "variable": "head"
+        },
+        {
+            "front": "178",
+            "rear": "177",
+            "type": "REACHING_DEF",
+            "variable": "*headbuf"
+        },
+        {
+            "front": "180",
+            "rear": "195",
+            "type": "REF"
+        },
+        {
+            "front": "180",
+            "rear": "201",
+            "type": "REF"
+        },
+        {
+            "front": "180",
+            "rear": "182",
+            "type": "REF"
+        },
+        {
+            "front": "182",
+            "rear": "195",
+            "type": "REACHING_DEF",
+            "variable": "frag"
+        },
+        {
+            "front": "183",
+            "rear": "227",
+            "type": "REACHING_DEF",
+            "variable": "*buf"
+        },
+        {
+            "front": "183",
+            "rear": "182",
+            "type": "REACHING_DEF",
+            "variable": "*buf"
+        },
+        {
+            "front": "199",
+            "rear": "205",
+            "type": "REACHING_DEF",
+            "variable": "msg"
+        },
+        {
+            "front": "203",
+            "rear": "217",
+            "type": "REACHING_DEF",
+            "variable": "fragid"
+        },
+        {
+            "front": "189",
+            "rear": "205",
+            "type": "REF"
+        },
+        {
+            "front": "189",
+            "rear": "199",
+            "type": "REF"
+        },
+        {
+            "front": "190",
+            "rear": "217",
+            "type": "REF"
+        },
+        {
+            "front": "190",
+            "rear": "203",
+            "type": "REF"
+        },
+        {
+            "front": "226",
+            "rear": "225",
+            "type": "REACHING_DEF",
+            "variable": "*buf"
+        }
+    ]
+}

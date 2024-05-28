@@ -12,11 +12,11 @@ res =  j.runGremlinQuery("queryNodeIndex('type:Function')")
 
 # res =  j.runCypherQuery('...')
 
-if not res:
-    print("None")
+# if not res:
+    # print("None")
 
 for r in res: 
-    print(r)
+    # print(r)
     query_str = """queryNodeIndex('functionId:%s AND isCFGNode:True').outE('REACHES')""" % (r)
     res_1 =  j.runGremlinQuery(query_str)
-    print(res_1)
+    # print(res_1)
