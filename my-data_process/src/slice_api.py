@@ -17,8 +17,7 @@ NODE_TYPE_LIST = {
     'LOCAL':'IDENDECLSTATE', # TODO: local variable declare statement
     'LITERAL':'UNKNOWN', 
 	'UNKNOWN':'UNKNOWN',
-	'JUMP_TARGET':'UNKNOWN',
-	
+	'JUMP_TARGET':'UNKNOWN'
     }
 
 def tokenizer(fun):
