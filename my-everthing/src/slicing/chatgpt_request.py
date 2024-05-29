@@ -78,7 +78,7 @@ index 9a6e9bcbf694..76284fc538eb 100644
 
 def test():
     request_url = "https://api.openai.com/v1/chat/completions"
-    
+    api_key = os.getenv("OPENAI_API_KEY")
 
     # messages = [
     #     {"role": "system", "content": "You are a helpful assistant."},

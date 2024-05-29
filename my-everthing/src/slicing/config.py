@@ -14,3 +14,6 @@ desc_tags_prefixes = [
     "Reported by:", "(Merged from", "Reported-and-tested-by:", "Closes:", "Message-Id:", 
     "Reviewed by:", "Sponsored by:", "Differential revision:", "Submitted by"
 ]
+
+CODE_FILENAME_START = 'file_code_old'
+META_FILENAME_START = 'meta'
