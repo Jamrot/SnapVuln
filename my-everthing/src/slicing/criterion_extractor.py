@@ -3,6 +3,9 @@ import config
 import os
 from icecream import ic
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CriterionExtractor:
     """A class to extract and save criterions from a patch."""
@@ -58,7 +61,7 @@ class CriterionExtractor:
                         })
         return criterions
 
-    def save_criterion(self, criterions):
+    def save_criterion(self, criterions, save_file=True, save_meta=True):
         """Saves the extracted criterions to CODE_ROOT/commit_id directory.
 
         Parameters:
@@ -78,14 +81,23 @@ class CriterionExtractor:
             file_code_old = file_code['old']
             file_code_new = file_code['new']
             commit_id = criterion['commit_id']
+            func_name = criterion['func_name']
 
             commit_id_short = commit_id[:8]
-            save_filename = f"file_code_old-{commit_id_short}_{criterion_line}.c"
-            save_filepath = os.path.join(config.CODE_ROOT, commit_id_short, save_filename)
-            self._save_file(file_code_old, save_filepath)
-            meta_filename = f"meta-{commit_id_short}_{criterion_line}.json"
-            meta_filepath = os.path.join(config.CODE_ROOT, commit_id_short, meta_filename)
-            self._save_criterion_meta([criterion], meta_filepath)
+            funcname_line = "-".join([func_name, str(criterion_line)])
+            save_root = os.path.join(config.CODE_ROOT, commit_id_short, funcname_line)
+
+            if save_file:
+                # save code (old version) to code_filepath 
+                code_filename = "-".join([config.CODE_FILENAME_START, commit_id_short, funcname_line])+'.c'
+                code_filepath = os.path.join(save_root, code_filename)
+                self._save_file(file_code_old, code_filepath)
+
+            if save_meta:
+                # save criterion meta information to meta_filepath
+                meta_filename = "-".join([config.META_FILENAME_START, commit_id_short, funcname_line])+'.json'
+                meta_filepath = os.path.join(save_root, meta_filename)
+                self._save_criterion_meta([criterion], meta_filepath)
 
     def _save_criterion_meta(self, criterions, meta_filepath):
         """Saves the meta information of the extracted criterions to a file.
@@ -114,7 +126,8 @@ class CriterionExtractor:
         with open(meta_filepath, 'w') as f:
             f.write(json.dumps(meta, indent=4))
 
-        ic(f"Meta file saved to {meta_filepath}")
+        ic(f"[CriterionExtractor] Meta file saved to {meta_filepath}")
+        logger.info(f"Meta file saved to {meta_filepath}")
 
     def _save_file(self, file_content, file_path):
         """Saves content to a file, asking for confirmation if the file already exists.
@@ -124,10 +137,12 @@ class CriterionExtractor:
             file_path (str): The path where the file will be saved.
         """
         if os.path.exists(file_path):
-            ic(f"File {file_path} already exists")
+            logger.warning(f"File {file_path} already exists")
             confirm = input("Do you want to overwrite this file? (y/n)")
             if confirm.lower() != 'y':
                 return
+            else:
+                logger.warning(f"Overwriting file {file_path}")
 
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path))
@@ -136,8 +151,9 @@ class CriterionExtractor:
             f.write(file_content)
 
         ic(f"Code file saved to {file_path}")
+        logger.info(f"[CriterionExtractor] Code file saved to {file_path}")
 
-def main():
+def test():
     url = config.LINUX
     hash_id = "97bf6f81b29a8efaf5d0983251a7450e5794370d"
     extractor = CriterionExtractor(url, hash_id)
@@ -145,4 +161,4 @@ def main():
     extractor.save_criterion(criterions)
 
 if __name__ == "__main__":
-    main()
+    test()

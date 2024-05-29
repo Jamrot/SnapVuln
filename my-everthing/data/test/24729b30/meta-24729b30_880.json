@@ -1,0 +1,22 @@
+[
+    {
+        "criterion": {
+            "line": 880,
+            "code": "\tusb_ep_free_request(_ep, req);"
+        },
+        "commit_id": "24729b307eefcd7c476065cd7351c1a018082c19",
+        "version": {
+            "old": "ed30a4a51bb196781c8058073ea720133a65596f",
+            "new": "24729b307eefcd7c476065cd7351c1a018082c19"
+        },
+        "file_path": {
+            "old": "drivers/usb/gadget/function/f_fs.c",
+            "new": "drivers/usb/gadget/function/f_fs.c"
+        },
+        "func_name": "ffs_epfile_async_io_complete",
+        "func_line": {
+            "start": 873,
+            "end": 884
+        }
+    }
+]

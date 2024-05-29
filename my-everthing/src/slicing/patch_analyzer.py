@@ -1,7 +1,9 @@
 import config
 from pydriller import Git
 from icecream import ic
+import logging
 
+logger = logging.getLogger(__name__)
 
 class PatchAnalyzer:
     """A class to analyze patches from a Git repository.
@@ -24,23 +26,23 @@ class PatchAnalyzer:
         self.repo = Git(self.url)
         self.commit = self.repo.get_commit(self.commit_id)
 
-    def get_title(self):
+    def get_title(self)->str:
         commit = self.commit
         title = commit.msg.splitlines()[0]
         return title
 
-    def get_author_and_date(self):
+    def get_author_and_date(self)->tuple:
         commit = self.commit
         return commit.author, commit.author_date
 
-    def get_description(self, desc_tags_prefixes=config.desc_tags_prefixes):
+    def get_description(self, desc_tags_prefixes:list=config.desc_tags_prefixes)->tuple:
         """Gets the full and cleaned description of the commit message.
 
         Parameters:
-            desc_tags_prefixes (list): Prefixes to filter out from the commit message lines.
+            desc_tags_prefixes (list): Prefixes to filter out description tags.
 
         Returns:
-            tuple: The full commit message and the cleaned commit message.
+            tuple: full & clean commit message.
         """
         commit = self.commit
         lines = commit.msg.splitlines()
@@ -49,32 +51,27 @@ class PatchAnalyzer:
         clean_msg = "\n".join(lines_filter)
         return commit.msg, clean_msg
 
-    def get_version(self):
-        """Gets the version before and after the commit.
-
-        Returns:
-            tuple: The old version (parent commit hash) and the new version (current commit hash).
-        """
+    def get_version(self)->tuple:
         commit = self.commit
         version_old = commit.parents[0] if commit.parents else None
         version_new = commit.hash
         return version_old, version_new
     
-    def get_commit_info(self):
+    def get_commit_info(self)->dict:
         """Gets detailed information about the commit, including version, modified files, and changed methods.
 
         Returns:
             dict: Commit information with the following keys:
             - version: {'old': str, 'new': str}
             - files: [{
-                'file_path': {'old': str, 'new': str}, 
-                'file_code': {'old': str, 'new': str}, 
-                'functions': [{
-                    'func_name': str, 
-                    'func_line': {'start': int, 'end': int}, 
-                    'func_code': {'old': str, 'new': str}, 
-                    'func_stmt': {'added': [{'line': int, 'code': str}], 
-                    'deleted': [{'line': int, 'code': str}]}}]}]
+                - 'file_path': {'old': str, 'new': str}, 
+                - 'file_code': {'old': str, 'new': str}, 
+                - 'functions': [{
+                    - 'func_name': str, 
+                    - 'func_line': {'start': int, 'end': int}, 
+                    - 'func_code': {'old': str, 'new': str}, 
+                    - 'func_stmt': {'added': [{'line': int, 'code': str}], 
+                    - 'deleted': [{'line': int, 'code': str}]}}]}]
         """
         commit = self.commit
         commit_info = {}        
@@ -113,58 +110,24 @@ class PatchAnalyzer:
         return {self.commit_id: commit_info}
     
     def get_file_path(self, file):
-        """Gets the old and new file paths.
-
-        Parameters:
-            file (File): The file object.
-
-        Returns:
-            tuple: The old and new file paths.
-        """
         file_path_new = file.new_path
         file_path_old = file.old_path
-
         return file_path_old, file_path_new
 
 
     def get_file_code(self, file):
-        """Gets the old and new source code of the file.
-
-        Parameters:
-            file (File): The file object.
-
-        Returns:
-            tuple: The old and new source code.
-        """
         src_code_new = file.source_code
-        src_code_old = file.source_code_before
-        
+        src_code_old = file.source_code_before        
         return src_code_old, src_code_new
 
 
     def get_func_name(self, method):
-        """Gets the name of the method.
-
-        Parameters:
-            method (Method): The method object.
-
-        Returns:
-            str: The name of the method.
-        """
         method_name = method.name
-
         return method_name
     
 
-    def get_func_code(self, method, file):
-        """Gets the old and new source code of the method.
-
-        Parameters:
-            method (Method): The git-commit method object.
-            file (File): The git-commit file object containing the method.
-
-        Returns:
-            tuple: The old and new source code of the method.
+    def get_func_code(self, method:object, file:object)->tuple:
+        """Gets old & new source code of the method in file.
         """
         method_before = list(filter(lambda x: x.name==method.name, file.methods_before))
         if not method_before:
@@ -180,20 +143,13 @@ class PatchAnalyzer:
         return func_code_old, func_code_new
 
 
-    def _get_func_stmt(self, file, method):
-        """Gets the added and deleted statements in the method.
-
-        Parameters:
-            file (File): The file object containing the method.
-            method (Method): The method object.
-
-        Returns:
-            tuple: The added and deleted statements in the method.
+    def _get_func_stmt(self, file:object, method:object)->tuple:
+        """Gets added & deleted statements of the method in file.
         """
         diff_parsed = file.diff_parsed
         func_start_line = method.start_line
         func_end_line = method.end_line
-        # {'added': [(147, '\t\t*buf = NULL;')], 'deleted': [(145, '\t\t*buf = NULL;')], 'file_path_new': 'net/tipc/msg.c', 'file_path_old': 'net/tipc/msg.c'}
+        # diff_parsed: {'added': [(lineNum, code)], 'deleted': [(lineNum, code)], 'file_path_new': path, 'file_path_old': path}
         added_stmt = diff_parsed['added'] if 'added' in diff_parsed else []
         deleted_stmt = diff_parsed['deleted'] if 'deleted' in diff_parsed else []
         func_added_stmt = []
@@ -215,10 +171,10 @@ class PatchAnalyzer:
 
 
     def get_parsed_diff_code(self):
-        """Gets the parsed diff of the commit.
+        """Gets parsed diff of the modified files.
 
         Returns:
-            list: A list of parsed diffs for each modified file.
+            list: [{'added': [(lineNum, code)], 'deleted': [(lineNum, code)], 'file_path_new': path, 'file_path_old': path}]
         """
         diff_code = []
         commit = self.repo.get_commit(self.commit_id)
@@ -227,22 +183,15 @@ class PatchAnalyzer:
         return diff_code
 
 
-    def __get_func_code_from_src(self, source_code, method):
-        """Extracts the source code of a method from the given source code.
-
-        Parameters:
-            source_code (str): The source code of the file.
-            method (Method): The method object.
-
-        Returns:
-            str: The source code of the method.
+    def __get_func_code_from_src(self, source_code:str, method:object)->str:
+        """Extracts method source code from given file source_code.
         """
         source_code = source_code.split('\n')
         func_code = '\n'.join(source_code[method.start_line - 1:method.end_line])
         return func_code
 
 
-def test_analyzer():
+def test():
     url = config.LINUX
     hash_id = "97bf6f81b29a8efaf5d0983251a7450e5794370d"
     patch_analyzer = PatchAnalyzer(url, hash_id)
@@ -252,4 +201,4 @@ def test_analyzer():
 
 
 if __name__=="__main__":
-    test_analyzer()
+    test()
