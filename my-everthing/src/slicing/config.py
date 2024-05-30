@@ -7,6 +7,7 @@ DATA_ROOT = '/app/slicing-snapvuln/my-everthing/data'
 GRAPH_ROOT = os.path.join(DATA_ROOT, 'test')
 CODE_ROOT = os.path.join(DATA_ROOT, 'test')
 SLICE_ROOT = os.path.join(DATA_ROOT, 'test')
+META_ROOT = os.path.join(DATA_ROOT, 'test')
 
 desc_tags_prefixes = [
     "Signed-off-by:", "Reported-by:", "Fixes:", "Link:", "Suggested-by:", "cc:",
@@ -17,3 +18,8 @@ desc_tags_prefixes = [
 
 CODE_FILENAME_START = 'file_code_old'
 META_FILENAME_START = 'meta'
+MODULE_DIRNAME_START = 'module'
+
+BIN_CONFIRM = False
+MODULE_CONFIRM = False
+CODE_FILE_CONFIRM = False

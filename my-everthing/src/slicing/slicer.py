@@ -23,7 +23,7 @@ class Slicer:
         criterions = []
         for node in nodes:
             node_location = node['location']
-            if node_location == criterion_linenum:
+            if node_location and int(node_location) == int(criterion_linenum):
                 criterions.append(node)
         
         if len(criterions) == 0:
@@ -213,7 +213,7 @@ class Slicer:
         else:
             raise Exception("No such graph type: %s"%g_type)
         
-        if depth=="file":
+        if not depth=="function":
             edge_type_list.append('CALL')
 
         tgt_nodes = []

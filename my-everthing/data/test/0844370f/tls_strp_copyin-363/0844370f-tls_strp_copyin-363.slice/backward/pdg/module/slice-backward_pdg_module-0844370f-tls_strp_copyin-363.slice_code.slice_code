@@ -1,0 +1,403 @@
+/* tls_strp.c */
+static int tls_strp_copyin(read_descriptor_t *desc, struct sk_buff *in_skb,
+	struct tls_strparser *strp = (struct tls_strparser *)desc->arg.data;
+	struct sk_buff *skb;
+	if (strp->msg_ready)
+	skb = strp->anchor;
+	if (!skb->len)
+		skb_copy_decrypted(skb, in_skb);
+		strp->mixed_decrypted |= !!skb_cmp_decrypted(skb, in_skb);
+	if (IS_ENABLED(CONFIG_TLS_DEVICE) && strp->mixed_decrypted)
+		ret = tls_strp_copyin_skb(strp, skb, in_skb, offset, in_len);
+		ret = tls_strp_copyin_frag(strp, skb, in_skb, offset, in_len);
+	if (strp->stm.full_len && strp->stm.full_len == skb->len) {
+		strp->msg_ready = 1;
+/* tls.h */
+	struct sk_msg msg_plaintext;
+	struct sk_msg msg_encrypted;
+/* tls_sw.c */
+static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+	long timeo = sock_sndtimeo(sk, msg->msg_flags & MSG_DONTWAIT);
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_prot_info *prot = &tls_ctx->prot_info;
+	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+	bool async_capable = ctx->async_capable;
+	unsigned char record_type = TLS_RECORD_TYPE_DATA;
+	bool is_kvec = iov_iter_is_kvec(&msg->msg_iter);
+	bool eor = !(msg->msg_flags & MSG_MORE);
+	size_t try_to_copy;
+	ssize_t copied = 0;
+	struct sk_msg *msg_pl, *msg_en;
+	struct tls_rec *rec;
+	int required_size;
+	bool full_record;
+	int record_room;
+	int orig_size;
+	int ret = 0;
+	if (!eor && (msg->msg_flags & MSG_EOR))
+	if (unlikely(msg->msg_controllen)) {
+		ret = tls_process_cmsg(sk, msg, &record_type);
+		if (ret) {
+			if (ret == -EINPROGRESS)
+			else if (ret != -EAGAIN)
+	while (msg_data_left(msg)) {
+		if (sk->sk_err) {
+		if (ctx->open_rec)
+			rec = ctx->open_rec;
+			rec = ctx->open_rec = tls_get_rec(sk);
+		if (!rec) {
+		msg_pl = &rec->msg_plaintext;
+		msg_en = &rec->msg_encrypted;
+		orig_size = msg_pl->sg.size;
+		full_record = false;
+		try_to_copy = msg_data_left(msg);
+		record_room = TLS_MAX_PAYLOAD_SIZE - msg_pl->sg.size;
+		if (try_to_copy >= record_room) {
+			try_to_copy = record_room;
+			full_record = true;
+		required_size = msg_pl->sg.size + try_to_copy +
+				prot->overhead_size;
+		if (!sk_stream_memory_free(sk))
+		ret = tls_alloc_encrypted_msg(sk, required_size);
+		if (ret) {
+			if (ret != -ENOSPC)
+			try_to_copy -= required_size - msg_en->sg.size;
+			full_record = true;
+		if (try_to_copy && (msg->msg_flags & MSG_SPLICE_PAGES)) {
+			ret = tls_sw_sendmsg_splice(sk, msg, msg_pl,
+						    try_to_copy, &copied);
+			if (ret < 0)
+			tls_ctx->pending_open_record_frags = true;
+			if (sk_msg_full(msg_pl))
+				full_record = true;
+			if (full_record || eor)
+		if (!is_kvec && (full_record || eor) && !async_capable) {
+			u32 first = msg_pl->sg.end;
+			ret = sk_msg_zerocopy_from_iter(sk, &msg->msg_iter,
+							msg_pl, try_to_copy);
+			if (ret)
+			copied += try_to_copy;
+			sk_msg_sg_copy_set(msg_pl, first);
+			ret = bpf_exec_tx_verdict(msg_pl, sk, full_record,
+						  record_type, &copied,
+						  msg->msg_flags);
+			if (ret) {
+				if (ret == -EINPROGRESS)
+				else if (ret == -ENOMEM)
+				else if (ctx->open_rec && ret == -ENOSPC)
+				else if (ret != -EAGAIN)
+			copied -= try_to_copy;
+			sk_msg_sg_copy_clear(msg_pl, first);
+			iov_iter_revert(&msg->msg_iter,
+					msg_pl->sg.size - orig_size);
+			sk_msg_trim(sk, msg_pl, orig_size);
+		required_size = msg_pl->sg.size + try_to_copy;
+		ret = tls_clone_plaintext_msg(sk, required_size);
+		if (ret) {
+			if (ret != -ENOSPC)
+			try_to_copy -= required_size - msg_pl->sg.size;
+			full_record = true;
+			sk_msg_trim(sk, msg_en,
+				    msg_pl->sg.size + prot->overhead_size);
+		if (try_to_copy) {
+			ret = sk_msg_memcopy_from_iter(sk, &msg->msg_iter,
+						       msg_pl, try_to_copy);
+			if (ret < 0)
+		tls_ctx->pending_open_record_frags = true;
+		copied += try_to_copy;
+		if (full_record || eor) {
+			ret = bpf_exec_tx_verdict(msg_pl, sk, full_record,
+						  record_type, &copied,
+						  msg->msg_flags);
+			if (ret) {
+				if (ret == -EINPROGRESS)
+				else if (ret == -ENOMEM)
+				else if (ret != -EAGAIN) {
+		ret = sk_stream_wait_memory(sk, &timeo);
+		if (ret) {
+		if (ctx->open_rec && msg_en->sg.size < required_size)
+int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	int ret;
+	if (msg->msg_flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+			       MSG_CMSG_COMPAT | MSG_SPLICE_PAGES | MSG_EOR |
+			       MSG_SENDPAGE_NOPOLICY))
+	if (ret)
+	lock_sock(sk);
+	ret = tls_sw_sendmsg_locked(sk, msg, size);
+void tls_sw_splice_eof(struct socket *sock)
+	struct sock *sk = sock->sk;
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+	struct tls_rec *rec;
+	struct sk_msg *msg_pl;
+	ssize_t copied = 0;
+	bool retrying = false;
+	int ret = 0;
+	if (!ctx->open_rec)
+	lock_sock(sk);
+	rec = ctx->open_rec;
+	if (!rec)
+	msg_pl = &rec->msg_plaintext;
+	if (msg_pl->sg.size == 0)
+	ret = bpf_exec_tx_verdict(msg_pl, sk, false, TLS_RECORD_TYPE_DATA,
+				  &copied, 0);
+	switch (ret) {
+		if (retrying)
+static struct tls_rec *tls_get_rec(struct sock *sk)
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_prot_info *prot = &tls_ctx->prot_info;
+	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+	int mem_size;
+	mem_size = sizeof(struct tls_rec) + crypto_aead_reqsize(ctx->aead_send);
+static int tls_split_open_record(struct sock *sk, struct tls_rec *from,
+	new = tls_get_rec(sk);
+static int tls_push_record(struct sock *sk, int flags,
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_prot_info *prot = &tls_ctx->prot_info;
+	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+	struct tls_rec *rec = ctx->open_rec, *tmp = NULL;
+	u32 i, split_point, orig_end;
+	struct sk_msg *msg_pl, *msg_en;
+	bool split;
+	if (!rec)
+	msg_pl = &rec->msg_plaintext;
+	msg_en = &rec->msg_encrypted;
+	split_point = msg_pl->apply_bytes;
+	split = split_point && split_point < msg_pl->sg.size;
+	if (unlikely((!split &&
+		      msg_pl->sg.size +
+		      prot->overhead_size > msg_en->sg.size) ||
+		     (split &&
+		      split_point +
+		      prot->overhead_size > msg_en->sg.size))) {
+		split_point = msg_en->sg.size;
+	if (split) {
+		rc = tls_split_open_record(sk, rec, &tmp, msg_pl, msg_en,
+					   split_point, prot->overhead_size,
+					   &orig_end);
+static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
+			       bool full_record, u8 record_type,
+			       ssize_t *copied, int flags)
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+	struct sk_msg msg_redir = { };
+	struct sk_psock *psock;
+	struct sock *sk_redir;
+	struct tls_rec *rec;
+	bool enospc, policy, redir_ingress;
+	int err = 0, send;
+	policy = !(flags & MSG_SENDPAGE_NOPOLICY);
+	psock = sk_psock_get(sk);
+	if (!psock || !policy) {
+		err = tls_push_record(sk, flags, record_type);
+	enospc = sk_msg_full(msg);
+	if (psock->eval == __SK_NONE) {
+		psock->eval = sk_psock_msg_verdict(sk, psock, msg);
+		delta -= msg->sg.size;
+	if (msg->cork_bytes && msg->cork_bytes > msg->sg.size &&
+	    !enospc && !full_record) {
+	msg->cork_bytes = 0;
+	send = msg->sg.size;
+	if (msg->apply_bytes && msg->apply_bytes < send)
+		send = msg->apply_bytes;
+	switch (psock->eval) {
+		err = tls_push_record(sk, flags, record_type);
+		if (err && err != -EINPROGRESS && sk->sk_err == EBADMSG) {
+		redir_ingress = psock->redir_ingress;
+		sk_redir = psock->sk_redir;
+		memcpy(&msg_redir, msg, sizeof(*msg));
+		if (msg->apply_bytes < send)
+			msg->apply_bytes = 0;
+			msg->apply_bytes -= send;
+		sk_msg_return_zero(sk, msg, send);
+		msg->sg.size -= send;
+		release_sock(sk);
+		err = tcp_bpf_sendmsg_redir(sk_redir, redir_ingress,
+					    &msg_redir, send, flags);
+		lock_sock(sk);
+		if (err < 0) {
+			*copied -= sk_msg_free_nocharge(sk, &msg_redir);
+			msg->sg.size = 0;
+		if (msg->sg.size == 0)
+			tls_free_open_rec(sk);
+		sk_msg_free_partial(sk, msg, send);
+		if (msg->apply_bytes < send)
+			msg->apply_bytes = 0;
+			msg->apply_bytes -= send;
+		if (msg->sg.size == 0)
+			tls_free_open_rec(sk);
+		err = -EACCES;
+	if (likely(!err)) {
+		bool reset_eval = !ctx->open_rec;
+		rec = ctx->open_rec;
+		if (rec) {
+			msg = &rec->msg_plaintext;
+			if (!msg->apply_bytes)
+		if (reset_eval) {
+			psock->eval = __SK_NONE;
+			if (psock->sk_redir) {
+				psock->sk_redir = NULL;
+		if (rec)
+static int tls_sw_push_pending_record(struct sock *sk, int flags)
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_sw_context_tx *ctx = tls_sw_ctx_tx(tls_ctx);
+	struct tls_rec *rec = ctx->open_rec;
+	struct sk_msg *msg_pl;
+	size_t copied;
+	if (!rec)
+	msg_pl = &rec->msg_plaintext;
+	copied = msg_pl->sg.size;
+	if (!copied)
+	return bpf_exec_tx_verdict(msg_pl, sk, true, TLS_RECORD_TYPE_DATA,
+				   &copied, flags);
+/* tls_device.c */
+static int tls_create_new_record(struct tls_offload_context_tx *offload_ctx,
+				 struct page_frag *pfrag,
+				 size_t prepend_size)
+	struct tls_record_info *record;
+	skb_frag_t *frag;
+	record = kmalloc(sizeof(*record), GFP_KERNEL);
+	if (!record)
+	frag = &record->frags[0];
+	skb_frag_fill_page_desc(frag, pfrag->page, pfrag->offset,
+				prepend_size);
+	pfrag->offset += prepend_size;
+	record->num_frags = 1;
+	record->len = prepend_size;
+	offload_ctx->open_record = record;
+static int tls_do_allocation(struct sock *sk,
+			     struct tls_offload_context_tx *offload_ctx,
+			     struct page_frag *pfrag,
+			     size_t prepend_size)
+	if (!offload_ctx->open_record) {
+		if (unlikely(!skb_page_frag_refill(prepend_size, pfrag,
+						   sk->sk_allocation))) {
+		ret = tls_create_new_record(offload_ctx, pfrag, prepend_size);
+static int tls_push_data(struct sock *sk,
+			 struct iov_iter *iter,
+			 size_t size, int flags,
+			 unsigned char record_type)
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct tls_prot_info *prot = &tls_ctx->prot_info;
+	struct tls_offload_context_tx *ctx = tls_offload_ctx_tx(tls_ctx);
+	struct tls_record_info *record;
+	int tls_push_record_flags;
+	struct page_frag *pfrag;
+	size_t orig_size = size;
+	u32 max_open_record_len;
+	bool more = false;
+	bool done = false;
+	int copy, rc = 0;
+	long timeo;
+	if (flags &
+	    ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
+	      MSG_SPLICE_PAGES | MSG_EOR))
+	if ((flags & (MSG_MORE | MSG_EOR)) == (MSG_MORE | MSG_EOR))
+	if (unlikely(sk->sk_err))
+	flags |= MSG_SENDPAGE_DECRYPTED;
+	tls_push_record_flags = flags | MSG_MORE;
+	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
+	if (tls_is_partially_sent_record(tls_ctx)) {
+		rc = tls_push_partial_record(sk, tls_ctx, flags);
+		if (rc < 0)
+	pfrag = sk_page_frag(sk);
+	max_open_record_len = TLS_MAX_PAYLOAD_SIZE +
+			      prot->prepend_size;
+		rc = tls_do_allocation(sk, ctx, pfrag, prot->prepend_size);
+		if (unlikely(rc)) {
+			rc = sk_stream_wait_memory(sk, &timeo);
+			if (!rc)
+			record = ctx->open_record;
+			if (!record)
+			if (record_type != TLS_RECORD_TYPE_DATA) {
+			} else if (record->len > prot->prepend_size) {
+		record = ctx->open_record;
+		copy = min_t(size_t, size, max_open_record_len - record->len);
+		if (copy && (flags & MSG_SPLICE_PAGES)) {
+			struct page_frag zc_pfrag;
+			struct page **pages = &zc_pfrag.page;
+			size_t off;
+			rc = iov_iter_extract_pages(iter, &pages,
+						    copy, 1, 0, &off);
+			if (rc <= 0) {
+			copy = rc;
+			if (WARN_ON_ONCE(!sendpage_ok(zc_pfrag.page))) {
+				iov_iter_revert(iter, copy);
+			zc_pfrag.offset = off;
+			zc_pfrag.size = copy;
+			tls_append_frag(record, &zc_pfrag, copy);
+		} else if (copy) {
+			copy = min_t(size_t, copy, pfrag->size - pfrag->offset);
+			rc = tls_device_copy_data(page_address(pfrag->page) +
+						  pfrag->offset, copy,
+						  iter);
+			if (rc)
+			tls_append_frag(record, pfrag, copy);
+		size -= copy;
+		if (!size) {
+			tls_push_record_flags = flags;
+			if (flags & MSG_MORE) {
+			done = true;
+		if (done || record->len >= max_open_record_len ||
+		    (record->num_frags >= MAX_SKB_FRAGS - 1)) {
+			tls_device_record_close(sk, tls_ctx, record,
+						pfrag, record_type);
+			rc = tls_push_record(sk,
+					     tls_ctx,
+					     ctx,
+					     record,
+					     tls_push_record_flags);
+			if (rc < 0)
+	} while (!done);
+int tls_device_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
+	unsigned char record_type = TLS_RECORD_TYPE_DATA;
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	int rc;
+	if (!tls_ctx->zerocopy_sendfile)
+		msg->msg_flags &= ~MSG_SPLICE_PAGES;
+	lock_sock(sk);
+	if (unlikely(msg->msg_controllen)) {
+		rc = tls_process_cmsg(sk, msg, &record_type);
+		if (rc)
+	rc = tls_push_data(sk, &msg->msg_iter, size, msg->msg_flags,
+			   record_type);
+void tls_device_splice_eof(struct socket *sock)
+	struct sock *sk = sock->sk;
+	struct tls_context *tls_ctx = tls_get_ctx(sk);
+	struct iov_iter iter = {};
+	if (!tls_is_partially_sent_record(tls_ctx))
+	mutex_lock(&tls_ctx->tx_lock);
+	lock_sock(sk);
+	if (tls_is_partially_sent_record(tls_ctx)) {
+		iov_iter_bvec(&iter, ITER_SOURCE, NULL, 0, 0);
+		tls_push_data(sk, &iter, 0, 0, TLS_RECORD_TYPE_DATA);
+static int tls_device_push_pending_record(struct sock *sk, int flags)
+	struct iov_iter iter;
+	iov_iter_kvec(&iter, ITER_SOURCE, NULL, 0, 0);
+	return tls_push_data(sk, &iter, 0, flags, TLS_RECORD_TYPE_DATA);
+/* tls_main.c */
+static void tls_sk_proto_cleanup(struct sock *sk,
+				 struct tls_context *ctx, long timeo)
+	if (unlikely(sk->sk_write_pending) &&
+	    !wait_on_pending_writer(sk, &timeo))
+		tls_handle_open_record(sk, 0);
+	if (ctx->tx_conf == TLS_SW) {
+		tls_sw_release_resources_tx(sk);
+		TLS_DEC_STATS(sock_net(sk), LINUX_MIB_TLSCURRTXSW);
+	} else if (ctx->tx_conf == TLS_HW) {
+		tls_device_free_resources_tx(sk);
+		TLS_DEC_STATS(sock_net(sk), LINUX_MIB_TLSCURRTXDEVICE);
+	if (ctx->rx_conf == TLS_SW) {
+	} else if (ctx->rx_conf == TLS_HW) {
+		tls_device_offload_cleanup_rx(sk);
+static void tls_sk_proto_close(struct sock *sk, long timeout)
+	struct inet_connection_sock *icsk = inet_csk(sk);
+	struct tls_context *ctx = tls_get_ctx(sk);
+	long timeo = sock_sndtimeo(sk, 0);
+	if (ctx->tx_conf == TLS_SW)
+		tls_sw_cancel_work_tx(ctx);
+	lock_sock(sk);
+	free_ctx = ctx->tx_conf != TLS_HW && ctx->rx_conf != TLS_HW;
+	if (ctx->tx_conf != TLS_BASE || ctx->rx_conf != TLS_BASE)
+		tls_sk_proto_cleanup(sk, ctx, timeo);

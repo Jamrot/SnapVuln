@@ -17,6 +17,10 @@
         "func_line": {
             "start": 499,
             "end": 535
-        }
+        },
+        "save_root": "/app/slicing-snapvuln/my-everthing/data/test/0844370f",
+        "save_filename_base": "0844370f-tls_strp_read_sock-531",
+        "save_file_code_old_filepath": "/app/slicing-snapvuln/my-everthing/data/test/0844370f/tls_strp_read_sock-531/file_code_old-0844370f-tls_strp_read_sock-531.c",
+        "save_module_dirpath": "/app/slicing-snapvuln/my-everthing/data/test/0844370f/module-0844370f-net_tls"
     }
 ]
