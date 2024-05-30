@@ -1,0 +1,35 @@
+digraph {
+  8344 [label=METHOD COLUMN_NUMBER=1 LINE_NUMBER=1 COLUMN_NUMBER_END=1 IS_EXTERNAL=false SIGNATURE="" NAME="<global>" AST_PARENT_TYPE="TYPE_DECL" AST_PARENT_FULL_NAME="tls_proc.c:<global>" ORDER=1 CODE="<global>" FULL_NAME="tls_proc.c:<global>" LINE_NUMBER_END=8 FILENAME="tls_proc.c"]
+  8347 [label=UNKNOWN ORDER=2 PARSER_TYPE_NAME="CASTProblemDeclaration" ARGUMENT_INDEX=2 CODE="void __net_exit tls_proc_fini(struct net *net)
+{
+	remove_proc_entry(\"tls_stat\", net->proc_net);
+}" COLUMN_NUMBER=1 LINE_NUMBER=53 TYPE_FULL_NAME="<empty>" CONTAINED_REF="<empty>"]
+  8345 [label=BLOCK ORDER=1 ARGUMENT_INDEX=-1 CODE="<empty>" COLUMN_NUMBER=1 LINE_NUMBER=1 TYPE_FULL_NAME="ANY"]
+  8346 [label=UNKNOWN ORDER=1 PARSER_TYPE_NAME="CASTProblemDeclaration" ARGUMENT_INDEX=1 CODE="int __net_init tls_proc_init(struct net *net)
+{
+#ifdef CONFIG_PROC_FS
+	if (!proc_create_net_single(\"tls_stat\", 0444, net->proc_net,
+				    tls_statistics_seq_show, NULL))
+		return -ENOMEM;
+#endif /* CONFIG_PROC_FS */
+
+	return 0;
+}" COLUMN_NUMBER=1 LINE_NUMBER=42 TYPE_FULL_NAME="<empty>" CONTAINED_REF="<empty>"]
+  8348 [label=METHOD_RETURN ORDER=2 CODE="RET" COLUMN_NUMBER=1 LINE_NUMBER=1 TYPE_FULL_NAME="ANY" EVALUATION_STRATEGY="BY_VALUE"]
+  8344 -> 8347 [label=CONTAINS ]
+  8346 -> 8344 [label=POST_DOMINATE ]
+  8344 -> 8346 [label=CONTAINS ]
+  8344 -> 8346 [label=CFG ]
+  8344 -> 8348 [label=AST ]
+  8348 -> 8347 [label=POST_DOMINATE ]
+  8345 -> 8346 [label=AST ]
+  8347 -> 8348 [label=CFG ]
+  8344 -> 8346 [label=DOMINATE ]
+  8345 -> 8347 [label=AST ]
+  8347 -> 8348 [label=DOMINATE ]
+  8347 -> 8346 [label=POST_DOMINATE ]
+  8344 -> 8345 [label=CONTAINS ]
+  8346 -> 8347 [label=CFG ]
+  8346 -> 8347 [label=DOMINATE ]
+  8344 -> 8345 [label=AST ]
+}

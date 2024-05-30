@@ -17,6 +17,10 @@
         "func_line": {
             "start": 216,
             "end": 219
-        }
+        },
+        "save_root": "/app/slicing-snapvuln/my-everthing/data/test/0844370f",
+        "save_filename_base": "0844370f-tls_strp_msg_ready-218",
+        "save_file_code_old_filepath": "/app/slicing-snapvuln/my-everthing/data/test/0844370f/tls_strp_msg_ready-218/file_code_old-0844370f-tls_strp_msg_ready-218.c",
+        "save_module_dirpath": "/app/slicing-snapvuln/my-everthing/data/test/0844370f/module-0844370f-net_tls"
     }
 ]

@@ -3,6 +3,7 @@ import networkx as nx
 from icecream import ic
 import config
 import logging
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -13,19 +14,25 @@ class GraphBuilder:
         # self.graph = graph
         pass
 
-    def joern_parse(cls, source_path, bin_file = "tmp.bin"):
-        cmd = f'joern-parse  {source_path} -o {bin_file} > /dev/null 2>&1'
-        # ic(cmd)
-        logger.info("[GraphBuilder] %s", cmd)
-        os.system(cmd)
+    def joern_parse(self, source_path, bin_file = "tmp.bin"):
+        cmd = f'joern-parse  {source_path} -o {bin_file}'
+        self.execute_command(cmd)
 
     def joern_dump_graph(self, graph_dir="out_tmp", bin_file="tmp.bin",  graph_type='cpg'):
         if os.path.exists(graph_dir):
             os.system(f'rm -rf {graph_dir}')
-        cmd1 = f'joern-export --repr {graph_type} {bin_file} --out {graph_dir} > /dev/null 2>&1'
-        # ic(cmd1)
-        logger.info("[GraphBuilder] %s", cmd1)
-        os.system(cmd1)
+        cmd = f'joern-export --repr {graph_type} {bin_file} --out {graph_dir}'
+        self.execute_command(cmd)
+    
+    def execute_command(self, cmd):
+        logger.info("[GraphBuilder] Executing command: %s", cmd)
+        try:
+            result = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            logger.info("[GraphBuilder] Command output: %s", result.stdout)
+            if result.stderr:
+                logger.error("[GraphBuilder] Command error: %s", result.stderr)
+        except subprocess.CalledProcessError as e:
+            logger.error("[GraphBuilder] Command failed with error: %s", e.stderr)
     
     def read_graph(self, graph_path):
         G = nx.drawing.nx_agraph.read_dot(graph_path)
