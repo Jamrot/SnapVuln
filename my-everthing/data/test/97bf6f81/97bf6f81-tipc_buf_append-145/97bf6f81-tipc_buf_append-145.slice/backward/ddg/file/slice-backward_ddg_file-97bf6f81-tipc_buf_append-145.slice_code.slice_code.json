@@ -1,0 +1,5720 @@
+{
+    "code": {
+        "file_code_old-97bf6f81-tipc_buf_append-145.c": {
+            "124": "int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)\n",
+            "127": "\tstruct sk_buff *frag = *buf;\n",
+            "145": "\t\t*buf = NULL;\n",
+            "163": "\t*buf = NULL;\n",
+            "182": "\t\t*buf = head;\n",
+            "189": "\tkfree_skb(*buf);\n",
+            "191": "\t*buf = *headbuf = NULL;\n",
+            "372": "int tipc_msg_build(struct tipc_msg *mhdr, struct msghdr *m, int offset,\n",
+            "373": "\t\t   int dsz, int pktmax, struct sk_buff_head *list)\n",
+            "375": "\tint mhsz = msg_hdr_sz(mhdr);\n",
+            "377": "\tint msz = mhsz + dsz;\n",
+            "378": "\tint pktrem = pktmax;\n",
+            "380": "\tint drem = dsz;\n",
+            "381": "\tint pktno = 1;\n",
+            "386": "\tmsg_set_size(mhdr, msz);\n",
+            "389": "\tif (likely(msz <= pktmax)) {\n",
+            "390": "\t\tskb = tipc_buf_acquire(msz, GFP_KERNEL);\n",
+            "393": "\t\tif (unlikely(!skb)) {\n",
+            "394": "\t\t\tif (pktmax != MAX_MSG_SIZE)\n",
+            "396": "\t\t\trc = tipc_msg_build(mhdr, m, offset, dsz,\n",
+            "397": "\t\t\t\t\t    one_page_mtu, list);\n",
+            "398": "\t\t\tif (rc != dsz)\n",
+            "400": "\t\t\tif (tipc_msg_assemble(list))\n",
+            "401": "\t\t\t\treturn dsz;\n",
+            "404": "\t\tskb_orphan(skb);\n",
+            "405": "\t\t__skb_queue_tail(list, skb);\n",
+            "406": "\t\tskb_copy_to_linear_data(skb, mhdr, mhsz);\n",
+            "407": "\t\tpktpos = skb->data + mhsz;\n",
+            "408": "\t\tif (copy_from_iter_full(pktpos, dsz, &m->msg_iter))\n",
+            "409": "\t\t\treturn dsz;\n",
+            "415": "\ttipc_msg_init(msg_prevnode(mhdr), &pkthdr, MSG_FRAGMENTER,\n",
+            "416": "\t\t      FIRST_FRAGMENT, INT_H_SIZE, msg_destnode(mhdr));\n",
+            "417": "\tmsg_set_size(&pkthdr, pktmax);\n",
+            "418": "\tmsg_set_fragm_no(&pkthdr, pktno);\n",
+            "419": "\tmsg_set_importance(&pkthdr, msg_importance(mhdr));\n",
+            "422": "\tskb = tipc_buf_acquire(pktmax, GFP_KERNEL);\n",
+            "423": "\tif (!skb)\n",
+            "425": "\tskb_orphan(skb);\n",
+            "426": "\t__skb_queue_tail(list, skb);\n",
+            "427": "\tpktpos = skb->data;\n",
+            "428": "\tskb_copy_to_linear_data(skb, &pkthdr, INT_H_SIZE);\n",
+            "429": "\tpktpos += INT_H_SIZE;\n",
+            "430": "\tpktrem -= INT_H_SIZE;\n",
+            "431": "\tskb_copy_to_linear_data_offset(skb, INT_H_SIZE, mhdr, mhsz);\n",
+            "432": "\tpktpos += mhsz;\n",
+            "433": "\tpktrem -= mhsz;\n",
+            "436": "\t\tif (drem < pktrem)\n",
+            "437": "\t\t\tpktrem = drem;\n",
+            "439": "\t\tif (!copy_from_iter_full(pktpos, pktrem, &m->msg_iter)) {\n",
+            "443": "\t\tdrem -= pktrem;\n",
+            "445": "\t\tif (!drem)\n",
+            "449": "\t\tif (drem < (pktmax - INT_H_SIZE))\n",
+            "450": "\t\t\tpktsz = drem + INT_H_SIZE;\n",
+            "452": "\t\t\tpktsz = pktmax;\n",
+            "453": "\t\tskb = tipc_buf_acquire(pktsz, GFP_KERNEL);\n",
+            "454": "\t\tif (!skb) {\n",
+            "458": "\t\tskb_orphan(skb);\n",
+            "459": "\t\t__skb_queue_tail(list, skb);\n",
+            "460": "\t\tmsg_set_type(&pkthdr, FRAGMENT);\n",
+            "461": "\t\tmsg_set_size(&pkthdr, pktsz);\n",
+            "462": "\t\tmsg_set_fragm_no(&pkthdr, ++pktno);\n",
+            "463": "\t\tskb_copy_to_linear_data(skb, &pkthdr, INT_H_SIZE);\n",
+            "464": "\t\tpktpos = skb->data + INT_H_SIZE;\n",
+            "465": "\t\tpktrem = pktsz - INT_H_SIZE;\n",
+            "469": "\treturn dsz;\n",
+            "471": "\t__skb_queue_purge(list);\n",
+            "472": "\t__skb_queue_head_init(list);\n",
+            "739": "bool tipc_msg_assemble(struct sk_buff_head *list)\n",
+            "741": "\tstruct sk_buff *skb, *tmp = NULL;\n",
+            "743": "\tif (skb_queue_len(list) == 1)\n",
+            "746": "\twhile ((skb = __skb_dequeue(list))) {\n",
+            "747": "\t\tskb->next = NULL;\n",
+            "748": "\t\tif (tipc_buf_append(&tmp, &skb)) {\n",
+            "749": "\t\t\t__skb_queue_tail(list, skb);\n",
+            "752": "\t\tif (!tmp)\n",
+            "755": "\t__skb_queue_purge(list);\n",
+            "756": "\t__skb_queue_head_init(list);\n",
+            "764": "bool tipc_msg_reassemble(struct sk_buff_head *list, struct sk_buff_head *rcvq)\n",
+            "768": "\tstruct sk_buff *head = NULL;\n",
+            "772": "\tif (skb_queue_len(list) == 1) {\n",
+            "773": "\t\tskb = skb_peek(list);\n",
+            "783": "\tskb_queue_walk(list, skb) {\n",
+            "784": "\t\tfrag = skb_clone(skb, GFP_ATOMIC);\n",
+            "785": "\t\tif (!frag)\n",
+            "787": "\t\tfrag->next = NULL;\n",
+            "788": "\t\tif (tipc_buf_append(&head, &frag))\n"
+        }
+    },
+    "nodes": {
+        "916": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "32",
+            "LINE_NUMBER": "406",
+            "NAME": "mhdr",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "822": {
+            "CODE": "struct tipc_msg *mhdr",
+            "COLUMN_NUMBER": "20",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "1",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "372",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "915": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "27",
+            "LINE_NUMBER": "406",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "917": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "38",
+            "LINE_NUMBER": "406",
+            "NAME": "mhsz",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "833": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "375",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "921": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb->data",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "407",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "924": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "407",
+            "NAME": "mhsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "226": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "*buf",
+            "COLUMN_NUMBER": "3",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "145",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "225": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "*buf = NULL",
+            "COLUMN_NUMBER": "3",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "145",
+            "METHOD_FULL_NAME": "<operator>.assignment",
+            "NAME": "<operator>.assignment",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "375": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "*buf",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "189",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "376": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "13",
+            "LINE_NUMBER": "189",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "382": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "191",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "173": {
+            "CODE": "struct sk_buff **buf",
+            "COLUMN_NUMBER": "47",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "2",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "124",
+            "NAME": "buf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "993": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "429",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "992": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "429",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "996": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "430",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1003": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "432",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "995": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "430",
+            "NAME": "pktrem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "999": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "38",
+            "LINE_NUMBER": "431",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1809": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "30",
+            "LINE_NUMBER": "748",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1808": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "&skb",
+            "COLUMN_NUMBER": "29",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "748",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1813": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "27",
+            "LINE_NUMBER": "749",
+            "NAME": "skb",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1805": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "tipc_buf_append(&tmp, &skb)",
+            "COLUMN_NUMBER": "7",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "748",
+            "METHOD_FULL_NAME": "tipc_buf_append",
+            "NAME": "tipc_buf_append",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1812": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "21",
+            "LINE_NUMBER": "749",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "905": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "401",
+            "NAME": "dsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "825": {
+            "CODE": "int dsz",
+            "COLUMN_NUMBER": "6",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "4",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "373",
+            "NAME": "dsz",
+            "ORDER": "4",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "840": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "19",
+            "LINE_NUMBER": "377",
+            "NAME": "dsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "838": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "mhsz + dsz",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "377",
+            "METHOD_FULL_NAME": "<operator>.addition",
+            "NAME": "<operator>.addition",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "849": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "13",
+            "LINE_NUMBER": "380",
+            "NAME": "dsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "837": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "msz",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "377",
+            "NAME": "msz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "928": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "35",
+            "LINE_NUMBER": "408",
+            "NAME": "dsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "890": {
+            "ARGUMENT_INDEX": "4",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "41",
+            "LINE_NUMBER": "396",
+            "NAME": "dsz",
+            "ORDER": "4",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1113": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "9",
+            "LINE_NUMBER": "469",
+            "NAME": "dsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "848": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "380",
+            "NAME": "drem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "183": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "*buf",
+            "COLUMN_NUMBER": "25",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "127",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "227": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "145",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "269": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "163",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "966": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "tipc_buf_acquire(pktmax, GFP_KERNEL)",
+            "COLUMN_NUMBER": "8",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "422",
+            "METHOD_FULL_NAME": "tipc_buf_acquire",
+            "NAME": "tipc_buf_acquire",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "965": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "422",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "971": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "7",
+            "LINE_NUMBER": "423",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1046": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "449",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1044": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktmax - INT_H_SIZE",
+            "COLUMN_NUMBER": "15",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "449",
+            "METHOD_FULL_NAME": "<operator>.subtraction",
+            "NAME": "<operator>.subtraction",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1045": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "15",
+            "LINE_NUMBER": "449",
+            "NAME": "pktmax",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1052": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "19",
+            "LINE_NUMBER": "450",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1094": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "41",
+            "LINE_NUMBER": "463",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1043": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "7",
+            "LINE_NUMBER": "449",
+            "NAME": "drem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "826": {
+            "CODE": "int pktmax",
+            "COLUMN_NUMBER": "15",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "5",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "373",
+            "NAME": "pktmax",
+            "ORDER": "5",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "1057": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "452",
+            "NAME": "pktmax",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1050": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "drem + INT_H_SIZE",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "450",
+            "METHOD_FULL_NAME": "<operator>.addition",
+            "NAME": "<operator>.addition",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1091": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "27",
+            "LINE_NUMBER": "463",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1101": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "464",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1092": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "32",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "463",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "982": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "427",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "843": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "378",
+            "NAME": "pktrem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1006": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "2",
+            "LINE_NUMBER": "433",
+            "NAME": "pktrem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1903": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "head",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "788",
+            "NAME": "head",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1902": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&head",
+            "COLUMN_NUMBER": "23",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "788",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1901": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "tipc_buf_append(&head, &frag)",
+            "COLUMN_NUMBER": "7",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "788",
+            "METHOD_FULL_NAME": "tipc_buf_append",
+            "NAME": "tipc_buf_append",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1098": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb->data",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "464",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1065": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "8",
+            "LINE_NUMBER": "454",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1073": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "14",
+            "LINE_NUMBER": "458",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1076": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "459",
+            "NAME": "skb",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1097": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb->data + INT_H_SIZE",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "464",
+            "METHOD_FULL_NAME": "<operator>.addition",
+            "NAME": "<operator>.addition",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1075": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "459",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1096": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "464",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "920": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb->data + mhsz",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "407",
+            "METHOD_FULL_NAME": "<operator>.addition",
+            "NAME": "<operator>.addition",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "919": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "407",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1887": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb_clone(skb, GFP_ATOMIC)",
+            "COLUMN_NUMBER": "10",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "784",
+            "METHOD_FULL_NAME": "skb_clone",
+            "NAME": "skb_clone",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1886": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "784",
+            "NAME": "frag",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1892": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag",
+            "COLUMN_NUMBER": "8",
+            "LINE_NUMBER": "785",
+            "NAME": "frag",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1013": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "14",
+            "LINE_NUMBER": "436",
+            "NAME": "pktrem",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1012": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "7",
+            "LINE_NUMBER": "436",
+            "NAME": "drem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1022": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "36",
+            "LINE_NUMBER": "439",
+            "NAME": "pktrem",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1017": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "13",
+            "LINE_NUMBER": "437",
+            "NAME": "drem",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1034": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "443",
+            "NAME": "drem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1021": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "28",
+            "LINE_NUMBER": "439",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1035": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "11",
+            "LINE_NUMBER": "443",
+            "NAME": "pktrem",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1023": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "&m->msg_iter",
+            "COLUMN_NUMBER": "44",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "439",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "927": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktpos",
+            "COLUMN_NUMBER": "27",
+            "LINE_NUMBER": "408",
+            "NAME": "pktpos",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "char*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "929": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "&m->msg_iter",
+            "COLUMN_NUMBER": "40",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "408",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "935": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "11",
+            "LINE_NUMBER": "409",
+            "NAME": "dsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "948": {
+            "ARGUMENT_INDEX": "5",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "25",
+            "LINE_NUMBER": "416",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "5",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "990": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "40",
+            "LINE_NUMBER": "428",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "987": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "428",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "988": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "31",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "428",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1830": {
+            "METHOD_FULL_NAME": "tipc_msg_assemble",
+            "NAME": "tipc_msg_assemble",
+            "SIGNATURE": "bool tipc_msg_assemble (sk_buff_head*)",
+            "label": "BINDING"
+        },
+        "1777": {
+            "AST_PARENT_FULL_NAME": "file_code_old-97bf6f81-tipc_buf_append-145.c:<global>",
+            "AST_PARENT_TYPE": "TYPE_DECL",
+            "CODE": "bool tipc_msg_assemble(struct sk_buff_head *list)\n{\n\tstruct sk_buff *skb, *tmp = NULL;\n\n\tif (skb_queue_len(list) == 1)\n\t\treturn true;\n\n\twhile ((skb = __skb_dequeue(list))) {\n\t\tskb->next = NULL;\n\t\tif (tipc_buf_append(&tmp, &skb)) {\n\t\t\t__skb_queue_tail(list, skb);\n\t\t\treturn true;\n\t\t}\n\t\tif (!tmp)\n\t\t\tbreak;\n\t}\n\t__skb_queue_purge(list);\n\t__skb_queue_head_init(list);\n\tpr_warn(\"Failed do assemble buffer\\\\n\");\n\treturn false;\n}",
+            "COLUMN_NUMBER": "1",
+            "COLUMN_NUMBER_END": "1",
+            "FILENAME": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "FULL_NAME": "tipc_msg_assemble",
+            "IS_EXTERNAL": "false",
+            "LINE_NUMBER": "739",
+            "LINE_NUMBER_END": "759",
+            "NAME": "tipc_msg_assemble",
+            "ORDER": "17",
+            "SIGNATURE": "bool tipc_msg_assemble (sk_buff_head*)",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD"
+        },
+        "1818": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "tmp",
+            "COLUMN_NUMBER": "8",
+            "LINE_NUMBER": "752",
+            "NAME": "tmp",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1807": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "tmp",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "748",
+            "NAME": "tmp",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1778": {
+            "CODE": "struct sk_buff_head *list",
+            "COLUMN_NUMBER": "24",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "1",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "739",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "1788": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "743",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1797": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "30",
+            "LINE_NUMBER": "746",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1822": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "755",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1824": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "756",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "821": {
+            "AST_PARENT_FULL_NAME": "file_code_old-97bf6f81-tipc_buf_append-145.c:<global>",
+            "AST_PARENT_TYPE": "TYPE_DECL",
+            "CODE": "int tipc_msg_build(struct tipc_msg *mhdr, struct msghdr *m, int offset,\n\t\t   int dsz, int pktmax, struct sk_buff_head *list)\n{\n\tint mhsz = msg_hdr_sz(mhdr);\n\tstruct tipc_msg pkthdr;\n\tint msz = mhsz + dsz;\n\tint pktrem = pktmax;\n\tstruct sk_buff *skb;\n\tint drem = dsz;\n\tint pktno = 1;\n\tchar *pktpos;\n\tint pktsz;\n\tint rc;\n\n\tmsg_set_size(mhdr, msz);\n\n\t/* No fragmentation needed? */\n\tif (likely(msz <= pktmax)) {\n\t\tskb = tipc_buf_acquire(msz, GFP_KERNEL);\n\n\t\t/* Fall back to smaller MTU if node local message */\n\t\tif (unlikely(!skb)) {\n\t\t\tif (pktmax != MAX_MSG_SIZE)\n\t\t\t\treturn -ENOMEM;\n\t\t\trc = tipc_msg_build(mhdr, m, offset, dsz,\n\t\t\t\t\t    one_page_mtu, list);\n\t\t\tif (rc != dsz)\n\t\t\t\treturn rc;\n\t\t\tif (tipc_msg_assemble(list))\n\t\t\t\treturn dsz;\n\t\t\treturn -ENOMEM;\n\t\t}\n\t\tskb_orphan(skb);\n\t\t__skb_queue_tail(list, skb);\n\t\tskb_copy_to_linear_data(skb, mhdr, mhsz);\n\t\tpktpos = skb->data + mhsz;\n\t\tif (copy_from_iter_full(pktpos, dsz, &m->msg_iter))\n\t\t\treturn dsz;\n\t\trc = -EFAULT;\n\t\tgoto error;\n\t}\n\n\t/* Prepar...",
+            "COLUMN_NUMBER": "1",
+            "COLUMN_NUMBER_END": "1",
+            "FILENAME": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "FULL_NAME": "tipc_msg_build",
+            "IS_EXTERNAL": "false",
+            "LINE_NUMBER": "372",
+            "LINE_NUMBER_END": "474",
+            "NAME": "tipc_msg_build",
+            "ORDER": "10",
+            "SIGNATURE": "int tipc_msg_build (tipc_msg*,msghdr*,int,int,int,sk_buff_head*)",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD"
+        },
+        "823": {
+            "CODE": "struct msghdr *m",
+            "COLUMN_NUMBER": "43",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "2",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "372",
+            "NAME": "m",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "msghdr*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "824": {
+            "CODE": "int offset",
+            "COLUMN_NUMBER": "61",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "3",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "372",
+            "NAME": "offset",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "827": {
+            "CODE": "struct sk_buff_head *list",
+            "COLUMN_NUMBER": "27",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "6",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "373",
+            "NAME": "list",
+            "ORDER": "6",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "839": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "377",
+            "NAME": "mhsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "844": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "15",
+            "LINE_NUMBER": "378",
+            "NAME": "pktmax",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "853": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "1",
+            "COLUMN_NUMBER": "14",
+            "LINE_NUMBER": "381",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "LITERAL"
+        },
+        "858": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "15",
+            "LINE_NUMBER": "386",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "859": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "msz",
+            "COLUMN_NUMBER": "21",
+            "LINE_NUMBER": "386",
+            "NAME": "msz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "863": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "msz",
+            "COLUMN_NUMBER": "13",
+            "LINE_NUMBER": "389",
+            "NAME": "msz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "864": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "389",
+            "NAME": "pktmax",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "869": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "msz",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "390",
+            "NAME": "msz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "870": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "GFP_KERNEL",
+            "COLUMN_NUMBER": "31",
+            "LINE_NUMBER": "390",
+            "NAME": "GFP_KERNEL",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "874": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "17",
+            "LINE_NUMBER": "393",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "878": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "8",
+            "LINE_NUMBER": "394",
+            "NAME": "pktmax",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "879": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "MAX_MSG_SIZE",
+            "COLUMN_NUMBER": "18",
+            "LINE_NUMBER": "394",
+            "NAME": "MAX_MSG_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "887": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "396",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "888": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "m",
+            "COLUMN_NUMBER": "30",
+            "LINE_NUMBER": "396",
+            "NAME": "m",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "msghdr*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "889": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "offset",
+            "COLUMN_NUMBER": "33",
+            "LINE_NUMBER": "396",
+            "NAME": "offset",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "891": {
+            "ARGUMENT_INDEX": "5",
+            "CODE": "one_page_mtu",
+            "COLUMN_NUMBER": "10",
+            "LINE_NUMBER": "397",
+            "NAME": "one_page_mtu",
+            "ORDER": "5",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "892": {
+            "ARGUMENT_INDEX": "6",
+            "CODE": "list",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "397",
+            "NAME": "list",
+            "ORDER": "6",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "895": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "rc",
+            "COLUMN_NUMBER": "8",
+            "LINE_NUMBER": "398",
+            "NAME": "rc",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "896": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "dsz",
+            "COLUMN_NUMBER": "14",
+            "LINE_NUMBER": "398",
+            "NAME": "dsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "902": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "400",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "910": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "14",
+            "LINE_NUMBER": "404",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "912": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "405",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "913": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "405",
+            "NAME": "skb",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "931": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "m",
+            "COLUMN_NUMBER": "41",
+            "LINE_NUMBER": "408",
+            "NAME": "m",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "msghdr*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "943": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "29",
+            "LINE_NUMBER": "415",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "945": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "37",
+            "LINE_NUMBER": "415",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "950": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "50",
+            "LINE_NUMBER": "416",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "953": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "16",
+            "LINE_NUMBER": "417",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "954": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "417",
+            "NAME": "pktmax",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "957": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "418",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "958": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktno",
+            "COLUMN_NUMBER": "28",
+            "LINE_NUMBER": "418",
+            "NAME": "pktno",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "961": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "22",
+            "LINE_NUMBER": "419",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "963": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "45",
+            "LINE_NUMBER": "419",
+            "NAME": "mhdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "967": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktmax",
+            "COLUMN_NUMBER": "25",
+            "LINE_NUMBER": "422",
+            "NAME": "pktmax",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "968": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "GFP_KERNEL",
+            "COLUMN_NUMBER": "33",
+            "LINE_NUMBER": "422",
+            "NAME": "GFP_KERNEL",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "977": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "13",
+            "LINE_NUMBER": "425",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "979": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "19",
+            "LINE_NUMBER": "426",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "980": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "25",
+            "LINE_NUMBER": "426",
+            "NAME": "skb",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "989": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "32",
+            "LINE_NUMBER": "428",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "998": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "33",
+            "LINE_NUMBER": "431",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1000": {
+            "ARGUMENT_INDEX": "3",
+            "CODE": "mhdr",
+            "COLUMN_NUMBER": "50",
+            "LINE_NUMBER": "431",
+            "NAME": "mhdr",
+            "ORDER": "3",
+            "TYPE_FULL_NAME": "tipc_msg*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1001": {
+            "ARGUMENT_INDEX": "4",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "56",
+            "LINE_NUMBER": "431",
+            "NAME": "mhsz",
+            "ORDER": "4",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1004": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "432",
+            "NAME": "mhsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1007": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "433",
+            "NAME": "mhsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1025": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "m",
+            "COLUMN_NUMBER": "45",
+            "LINE_NUMBER": "439",
+            "NAME": "m",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "msghdr*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1038": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "8",
+            "LINE_NUMBER": "445",
+            "NAME": "drem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1051": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "drem",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "450",
+            "NAME": "drem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1061": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktsz",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "453",
+            "NAME": "pktsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1062": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "GFP_KERNEL",
+            "COLUMN_NUMBER": "33",
+            "LINE_NUMBER": "453",
+            "NAME": "GFP_KERNEL",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1079": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "17",
+            "LINE_NUMBER": "460",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1080": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "FRAGMENT",
+            "COLUMN_NUMBER": "25",
+            "LINE_NUMBER": "460",
+            "NAME": "FRAGMENT",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1083": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "17",
+            "LINE_NUMBER": "461",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1084": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktsz",
+            "COLUMN_NUMBER": "25",
+            "LINE_NUMBER": "461",
+            "NAME": "pktsz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1087": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "21",
+            "LINE_NUMBER": "462",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1089": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktno",
+            "COLUMN_NUMBER": "31",
+            "LINE_NUMBER": "462",
+            "NAME": "pktno",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1093": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pkthdr",
+            "COLUMN_NUMBER": "33",
+            "LINE_NUMBER": "463",
+            "NAME": "pkthdr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "tipc_msg",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1105": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktsz",
+            "COLUMN_NUMBER": "12",
+            "LINE_NUMBER": "465",
+            "NAME": "pktsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1106": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "INT_H_SIZE",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "465",
+            "NAME": "INT_H_SIZE",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1116": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "471",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1118": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "472",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "930": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "m->msg_iter",
+            "COLUMN_NUMBER": "41",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "408",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1024": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "m->msg_iter",
+            "COLUMN_NUMBER": "45",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "439",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "832": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "msg_hdr_sz(mhdr)",
+            "COLUMN_NUMBER": "13",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "375",
+            "METHOD_FULL_NAME": "msg_hdr_sz",
+            "NAME": "msg_hdr_sz",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "852": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktno",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "381",
+            "NAME": "pktno",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "868": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "tipc_buf_acquire(msz, GFP_KERNEL)",
+            "COLUMN_NUMBER": "9",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "390",
+            "METHOD_FULL_NAME": "tipc_buf_acquire",
+            "NAME": "tipc_buf_acquire",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "886": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "tipc_msg_build(mhdr, m, offset, dsz,\n\t\t\t\t\t    one_page_mtu, list)",
+            "COLUMN_NUMBER": "9",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "396",
+            "METHOD_FULL_NAME": "tipc_msg_build",
+            "NAME": "tipc_msg_build",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "901": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "tipc_msg_assemble(list)",
+            "COLUMN_NUMBER": "8",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "400",
+            "METHOD_FULL_NAME": "tipc_msg_assemble",
+            "NAME": "tipc_msg_assemble",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "944": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "36",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "415",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "952": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "15",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "417",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "956": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "19",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "418",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "960": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "21",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "419",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "962": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "msg_importance(mhdr)",
+            "COLUMN_NUMBER": "30",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "419",
+            "METHOD_FULL_NAME": "msg_importance",
+            "NAME": "msg_importance",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "983": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb->data",
+            "COLUMN_NUMBER": "11",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "427",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1016": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "437",
+            "NAME": "pktrem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1056": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktsz",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "452",
+            "NAME": "pktsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1060": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "tipc_buf_acquire(pktsz, GFP_KERNEL)",
+            "COLUMN_NUMBER": "9",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "453",
+            "METHOD_FULL_NAME": "tipc_buf_acquire",
+            "NAME": "tipc_buf_acquire",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1078": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "16",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "460",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1082": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "16",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "461",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1086": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&pkthdr",
+            "COLUMN_NUMBER": "20",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "462",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1088": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "++pktno",
+            "COLUMN_NUMBER": "29",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "462",
+            "METHOD_FULL_NAME": "<operator>.preIncrement",
+            "NAME": "<operator>.preIncrement",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1104": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "pktsz - INT_H_SIZE",
+            "COLUMN_NUMBER": "12",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "465",
+            "METHOD_FULL_NAME": "<operator>.subtraction",
+            "NAME": "<operator>.subtraction",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "885": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "rc",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "396",
+            "NAME": "rc",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1806": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "&tmp",
+            "COLUMN_NUMBER": "23",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "748",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1849": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "772",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1832": {
+            "CODE": "struct sk_buff_head *list",
+            "COLUMN_NUMBER": "26",
+            "EVALUATION_STRATEGY": "BY_VALUE",
+            "INDEX": "1",
+            "IS_VARIADIC": "false",
+            "LINE_NUMBER": "764",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD_PARAMETER_IN"
+        },
+        "1855": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "18",
+            "LINE_NUMBER": "773",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1882": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "list",
+            "COLUMN_NUMBER": "17",
+            "LINE_NUMBER": "783",
+            "NAME": "list",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff_head*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1883": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "23",
+            "LINE_NUMBER": "783",
+            "NAME": "skb",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1059": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "453",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "171": {
+            "AST_PARENT_FULL_NAME": "file_code_old-97bf6f81-tipc_buf_append-145.c:<global>",
+            "AST_PARENT_TYPE": "TYPE_DECL",
+            "CODE": "int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)\n{\n\tstruct sk_buff *head = *headbuf;\n\tstruct sk_buff *frag = *buf;\n\tstruct sk_buff *tail = NULL;\n\tstruct tipc_msg *msg;\n\tu32 fragid;\n\tint delta;\n\tbool headstolen;\n\n\tif (!frag)\n\t\tgoto err;\n\n\tmsg = buf_msg(frag);\n\tfragid = msg_type(msg);\n\tfrag->next = NULL;\n\tskb_pull(frag, msg_hdr_sz(msg));\n\n\tif (fragid == FIRST_FRAGMENT) {\n\t\tif (unlikely(head))\n\t\t\tgoto err;\n\t\t*buf = NULL;\n\t\tif (skb_has_frag_list(frag) && __skb_linearize(frag))\n\t\t\tgoto err;\n\t\tfrag = skb_unshare(frag, GFP_ATOMIC);\n\t\tif (unlikely(!frag))\n\t\t\tgoto err;\n\t\thead = *headbuf = frag;\n\t\tTIPC_SKB_CB(head)->tail = NULL;\n\t\treturn 0;\n\t}\n\n\tif (!head)\n\t\tgoto err;\n\n\t/* Either the input skb ownership is transferred to headskb\n\t * or the input skb is freed, clear the reference to avoid\n\t * bad access on error path.\n\t */\n\t*buf = NULL;\n\tif (skb_try_coalesce(head, frag, &headstolen, &delta)) {\n\t\tkfree_skb_partial(frag, headstolen);\n\t} else {\n\t\ttail = TIPC_SKB_CB(head)->tail;...",
+            "COLUMN_NUMBER": "1",
+            "COLUMN_NUMBER_END": "1",
+            "FILENAME": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "FULL_NAME": "tipc_buf_append",
+            "IS_EXTERNAL": "false",
+            "LINE_NUMBER": "124",
+            "LINE_NUMBER_END": "193",
+            "NAME": "tipc_buf_append",
+            "ORDER": "6",
+            "SIGNATURE": "int tipc_buf_append (sk_buff**,sk_buff**)",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD"
+        },
+        "357": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "182",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "184": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "buf",
+            "COLUMN_NUMBER": "26",
+            "LINE_NUMBER": "127",
+            "NAME": "buf",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff**",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "228": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "NULL",
+            "COLUMN_NUMBER": "10",
+            "LINE_NUMBER": "145",
+            "NAME": "NULL",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1103": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktrem",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "465",
+            "NAME": "pktrem",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "867": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "3",
+            "LINE_NUMBER": "390",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "390": {
+            "METHOD_FULL_NAME": "tipc_buf_append",
+            "NAME": "tipc_buf_append",
+            "SIGNATURE": "int tipc_buf_append (sk_buff**,sk_buff**)",
+            "label": "BINDING"
+        },
+        "1905": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag",
+            "COLUMN_NUMBER": "31",
+            "LINE_NUMBER": "788",
+            "NAME": "frag",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1888": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "20",
+            "LINE_NUMBER": "784",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1889": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "GFP_ATOMIC",
+            "COLUMN_NUMBER": "25",
+            "LINE_NUMBER": "784",
+            "NAME": "GFP_ATOMIC",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "ANY",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1049": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "pktsz",
+            "COLUMN_NUMBER": "4",
+            "LINE_NUMBER": "450",
+            "NAME": "pktsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1796": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "__skb_dequeue(list)",
+            "COLUMN_NUMBER": "16",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "746",
+            "METHOD_FULL_NAME": "__skb_dequeue",
+            "NAME": "__skb_dequeue",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1904": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "&frag",
+            "COLUMN_NUMBER": "30",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "788",
+            "METHOD_FULL_NAME": "<operator>.addressOf",
+            "NAME": "<operator>.addressOf",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "268": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "*buf",
+            "COLUMN_NUMBER": "2",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "163",
+            "METHOD_FULL_NAME": "<operator>.indirection",
+            "NAME": "<operator>.indirection",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1795": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb",
+            "COLUMN_NUMBER": "10",
+            "LINE_NUMBER": "746",
+            "NAME": "skb",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1896": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "frag->next",
+            "COLUMN_NUMBER": "3",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "787",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        },
+        "1843": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "head",
+            "COLUMN_NUMBER": "18",
+            "LINE_NUMBER": "768",
+            "NAME": "head",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "831": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "mhsz",
+            "COLUMN_NUMBER": "6",
+            "LINE_NUMBER": "375",
+            "NAME": "mhsz",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1926": {
+            "METHOD_FULL_NAME": "tipc_msg_reassemble",
+            "NAME": "tipc_msg_reassemble",
+            "SIGNATURE": "bool tipc_msg_reassemble (sk_buff_head*,sk_buff_head*)",
+            "label": "BINDING"
+        },
+        "1831": {
+            "AST_PARENT_FULL_NAME": "file_code_old-97bf6f81-tipc_buf_append-145.c:<global>",
+            "AST_PARENT_TYPE": "TYPE_DECL",
+            "CODE": "bool tipc_msg_reassemble(struct sk_buff_head *list, struct sk_buff_head *rcvq)\n{\n\tstruct sk_buff *skb, *_skb;\n\tstruct sk_buff *frag = NULL;\n\tstruct sk_buff *head = NULL;\n\tint hdr_len;\n\n\t/* Copy header if single buffer */\n\tif (skb_queue_len(list) == 1) {\n\t\tskb = skb_peek(list);\n\t\thdr_len = skb_headroom(skb) + msg_hdr_sz(buf_msg(skb));\n\t\t_skb = __pskb_copy(skb, hdr_len, GFP_ATOMIC);\n\t\tif (!_skb)\n\t\t\treturn false;\n\t\t__skb_queue_tail(rcvq, _skb);\n\t\treturn true;\n\t}\n\n\t/* Clone all fragments and reassemble */\n\tskb_queue_walk(list, skb) {\n\t\tfrag = skb_clone(skb, GFP_ATOMIC);\n\t\tif (!frag)\n\t\t\tgoto error;\n\t\tfrag->next = NULL;\n\t\tif (tipc_buf_append(&head, &frag))\n\t\t\tbreak;\n\t\tif (!head)\n\t\t\tgoto error;\n\t}\n\t__skb_queue_tail(rcvq, frag);\n\treturn true;\nerror:\n\tpr_warn(\"Failed do clone local mcast rcv buffer\\\\n\");\n\tkfree_skb(head);\n\treturn false;\n}",
+            "COLUMN_NUMBER": "1",
+            "COLUMN_NUMBER_END": "1",
+            "FILENAME": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "FULL_NAME": "tipc_msg_reassemble",
+            "IS_EXTERNAL": "false",
+            "LINE_NUMBER": "764",
+            "LINE_NUMBER_END": "799",
+            "NAME": "tipc_msg_reassemble",
+            "ORDER": "18",
+            "SIGNATURE": "bool tipc_msg_reassemble (sk_buff_head*,sk_buff_head*)",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "METHOD"
+        },
+        "1783": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "tmp",
+            "COLUMN_NUMBER": "24",
+            "LINE_NUMBER": "741",
+            "NAME": "tmp",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "sk_buff*",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "IDENTIFIER"
+        },
+        "1122": {
+            "METHOD_FULL_NAME": "tipc_msg_build",
+            "NAME": "tipc_msg_build",
+            "SIGNATURE": "int tipc_msg_build (tipc_msg*,msghdr*,int,int,int,sk_buff_head*)",
+            "label": "BINDING"
+        },
+        "1800": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "skb->next",
+            "COLUMN_NUMBER": "3",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "747",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-97bf6f81-tipc_buf_append-145.c",
+            "label": "CALL"
+        }
+    },
+    "edges": [
+        {
+            "916->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "916->915": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "916->917": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "822->833": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "915->916": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "915->917": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "915->921": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "917->916": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "917->915": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "917->924": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "833->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "833->858": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "833->832": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "921->920": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "924->920": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "226->225": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "226->375": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "226->376": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "375->382": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "376->173": {
+                "label": "REF"
+            }
+        },
+        {
+            "382->173": {
+                "label": "REF"
+            }
+        },
+        {
+            "173->376": {
+                "VARIABLE": "buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "173->382": {
+                "VARIABLE": "buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "173->227": {
+                "VARIABLE": "buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "173->269": {
+                "VARIABLE": "buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "173->357": {
+                "VARIABLE": "buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "173->184": {
+                "VARIABLE": "buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "993->992": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "993->996": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "992->1003": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "996->995": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "996->999": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1003->1021": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "995->1006": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "999->1046": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "999->998": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "999->1000": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "999->1001": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1809->1808": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1809->1813": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1808->1809": {
+                "VARIABLE": "&skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1808->1813": {
+                "VARIABLE": "&skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1808->1805": {
+                "VARIABLE": "&skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1813->1812": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1805->171": {
+                "label": "CALL"
+            }
+        },
+        {
+            "1812->1813": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1812->1778": {
+                "label": "REF"
+            }
+        },
+        {
+            "905->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "825->840": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "840->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "840->838": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "840->849": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "838->837": {
+                "VARIABLE": "mhsz + dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "849->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "849->928": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "849->890": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "849->1113": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "849->848": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "837->859": {
+                "VARIABLE": "msz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "928->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "928->927": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "928->929": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "928->935": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "890->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "890->896": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "890->886": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1113->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "848->1012": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "183->375": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "183->376": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "183->227": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "183->269": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "227->173": {
+                "label": "REF"
+            }
+        },
+        {
+            "269->173": {
+                "label": "REF"
+            }
+        },
+        {
+            "966->965": {
+                "VARIABLE": "tipc_buf_acquire(pktmax, GFP_KERNEL)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "965->971": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "971->977": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1046->1044": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1046->1045": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1046->1052": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1046->1094": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1044->1043": {
+                "VARIABLE": "pktmax - INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1045->1046": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1045->1044": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1045->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "1045->1057": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1052->1094": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1052->1050": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1094->1091": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1094->1101": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1094->1092": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1043->1044": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1043->1012": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1043->1051": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "826->844": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1057->1045": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1057->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "1057->1056": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1050->1049": {
+                "VARIABLE": "drem + INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1091->1094": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1091->1092": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1091->1098": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1101->1097": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1101->1106": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1092->1094": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1092->1091": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1092->1079": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1092->1078": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "982->992": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "843->995": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1006->1013": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1903->1902": {
+                "VARIABLE": "head",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1902->1901": {
+                "VARIABLE": "&head",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1901->171": {
+                "label": "CALL"
+            }
+        },
+        {
+            "1098->1091": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1098->1065": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1098->1073": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1098->1076": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1098->1097": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1065->1073": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1073->1076": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1076->1091": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1076->1075": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1097->1096": {
+                "VARIABLE": "skb->data + INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1075->1076": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1075->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "1075->1116": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1096->1021": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "920->919": {
+                "VARIABLE": "skb->data + mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "919->927": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1887->1886": {
+                "VARIABLE": "skb_clone(skb, GFP_ATOMIC)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1886->1892": {
+                "VARIABLE": "frag",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1892->1905": {
+                "VARIABLE": "frag",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1013->1012": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1013->1022": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1012->1013": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1012->1017": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1012->1034": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1022->1021": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1022->1035": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1022->1023": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1017->1034": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1017->1016": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1034->1038": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1021->1022": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1021->1023": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1035->1034": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1023->1022": {
+                "VARIABLE": "&m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1023->1021": {
+                "VARIABLE": "&m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1023->1024": {
+                "VARIABLE": "&m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "927->928": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "927->929": {
+                "VARIABLE": "pktpos",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "929->928": {
+                "VARIABLE": "&m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "929->927": {
+                "VARIABLE": "&m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "935->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "948->990": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "990->993": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "990->987": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "990->988": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "987->990": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "987->988": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "987->998": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "988->990": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "988->987": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "988->1079": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "988->1078": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1830->1777": {
+                "label": "REF"
+            }
+        },
+        {
+            "1777->1809": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1813": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1812": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1818": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1807": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1778": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1788": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1797": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1822": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1777->1824": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1818->1807": {
+                "VARIABLE": "tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1807->1818": {
+                "VARIABLE": "tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1807->1806": {
+                "VARIABLE": "tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1778->1788": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1788->1778": {
+                "label": "REF"
+            }
+        },
+        {
+            "1788->1797": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1797->1812": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1797->1778": {
+                "label": "REF"
+            }
+        },
+        {
+            "1797->1822": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1797->1796": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1822->1778": {
+                "label": "REF"
+            }
+        },
+        {
+            "1822->1824": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1824->1778": {
+                "label": "REF"
+            }
+        },
+        {
+            "821->916": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->822": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->915": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->917": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->833": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->924": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->993": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->992": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->996": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1003": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->995": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->999": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->905": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->825": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->840": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->849": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->928": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->890": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1113": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->971": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1046": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1045": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1052": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1094": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1043": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->826": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1057": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1091": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1101": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1006": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1065": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1073": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1076": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1075": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1013": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1012": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1022": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1017": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1034": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1021": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1035": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->927": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->935": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->948": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->990": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->987": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->823": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->824": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->827": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->839": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->844": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->853": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->858": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->859": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->863": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->864": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->869": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->870": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->874": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->878": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->879": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->887": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->888": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->889": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->891": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->892": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->895": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->896": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->902": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->910": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->912": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->913": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->931": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->943": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->945": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->950": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->953": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->954": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->957": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->958": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->961": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->963": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->967": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->968": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->977": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->979": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->980": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->989": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->998": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1000": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1001": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1004": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1007": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1025": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1038": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1051": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1061": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1062": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1079": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1080": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1083": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1084": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1087": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1089": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1093": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1105": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1106": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1116": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "821->1118": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "823->888": {
+                "VARIABLE": "m",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "823->931": {
+                "VARIABLE": "m",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "823->1025": {
+                "VARIABLE": "m",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "823->930": {
+                "VARIABLE": "m",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "823->1024": {
+                "VARIABLE": "m",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "824->889": {
+                "VARIABLE": "offset",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "827->892": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "827->912": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "827->979": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "839->917": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "839->838": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "839->1001": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "844->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "844->843": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "844->864": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "853->852": {
+                "VARIABLE": "1",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "858->916": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "858->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "858->859": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "858->887": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "858->943": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "859->858": {
+                "VARIABLE": "msz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "859->863": {
+                "VARIABLE": "msz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "863->864": {
+                "VARIABLE": "msz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "863->869": {
+                "VARIABLE": "msz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "864->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "864->863": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "864->878": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "864->954": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "869->868": {
+                "VARIABLE": "msz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "870->868": {
+                "VARIABLE": "GFP_KERNEL",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "874->910": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "878->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "879->878": {
+                "VARIABLE": "MAX_MSG_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "887->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "887->886": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "888->823": {
+                "label": "REF"
+            }
+        },
+        {
+            "888->886": {
+                "VARIABLE": "m",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "889->824": {
+                "label": "REF"
+            }
+        },
+        {
+            "889->886": {
+                "VARIABLE": "offset",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "891->886": {
+                "VARIABLE": "one_page_mtu",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "892->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "892->902": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "892->886": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "895->896": {
+                "VARIABLE": "rc",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "896->905": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "896->825": {
+                "label": "REF"
+            }
+        },
+        {
+            "896->895": {
+                "VARIABLE": "dsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "902->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "902->901": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "910->913": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "912->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "912->913": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "912->1116": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "913->915": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "913->912": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "931->823": {
+                "label": "REF"
+            }
+        },
+        {
+            "943->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "943->950": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->953": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->957": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->961": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->989": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "945->944": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "950->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "950->963": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->957": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->961": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->989": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "953->952": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "954->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "954->967": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "954->952": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->961": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->989": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "957->956": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "958->1089": {
+                "VARIABLE": "pktno",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "958->956": {
+                "VARIABLE": "pktno",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "961->989": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "961->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "961->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "961->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "961->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "961->960": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "963->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "963->1000": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "963->962": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "967->966": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "967->1045": {
+                "VARIABLE": "pktmax",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "967->826": {
+                "label": "REF"
+            }
+        },
+        {
+            "968->966": {
+                "VARIABLE": "GFP_KERNEL",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "968->1062": {
+                "VARIABLE": "GFP_KERNEL",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "977->980": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "979->1075": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "979->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "979->980": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "979->1116": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "980->987": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "980->979": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "980->983": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "989->988": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "989->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "989->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "989->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "989->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "998->999": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "998->1000": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "998->1001": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1000->822": {
+                "label": "REF"
+            }
+        },
+        {
+            "1000->999": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1000->998": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1000->1001": {
+                "VARIABLE": "mhdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1001->999": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1001->998": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1001->1000": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1001->1004": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1004->1003": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1004->1007": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1007->1006": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1025->823": {
+                "label": "REF"
+            }
+        },
+        {
+            "1038->1043": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1051->1050": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1051->1012": {
+                "VARIABLE": "drem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1061->1084": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1061->1060": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1062->1060": {
+                "VARIABLE": "GFP_KERNEL",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1079->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1079->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1079->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1079->1078": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1080->1078": {
+                "VARIABLE": "FRAGMENT",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1083->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1083->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1083->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1083->1082": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1084->1105": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1084->1082": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1087->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1087->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1087->1093": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1087->1086": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1089->1088": {
+                "VARIABLE": "pktno",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1093->1092": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1093->1079": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1093->1083": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1093->1087": {
+                "VARIABLE": "pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1105->1106": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1105->1104": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1106->1046": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1106->1105": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1106->1104": {
+                "VARIABLE": "INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1116->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "1116->1118": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1118->827": {
+                "label": "REF"
+            }
+        },
+        {
+            "930->929": {
+                "VARIABLE": "m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1024->1023": {
+                "VARIABLE": "m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1024->1025": {
+                "VARIABLE": "m->msg_iter",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "832->831": {
+                "VARIABLE": "msg_hdr_sz(mhdr)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "852->958": {
+                "VARIABLE": "pktno",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "868->867": {
+                "VARIABLE": "tipc_buf_acquire(msz, GFP_KERNEL)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "886->821": {
+                "label": "CALL"
+            }
+        },
+        {
+            "886->885": {
+                "VARIABLE": "tipc_msg_build(mhdr, m, offset, dsz,\n\t\t\t\t\t    one_page_mtu, list)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "901->1777": {
+                "label": "CALL"
+            }
+        },
+        {
+            "944->953": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "944->952": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "952->954": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "952->957": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "952->956": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "956->958": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "956->961": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "956->960": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "960->988": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "960->989": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "960->962": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "962->960": {
+                "VARIABLE": "msg_importance(mhdr)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->1091": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->982": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->1098": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->1065": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->1073": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->1076": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->987": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "983->998": {
+                "VARIABLE": "skb->data",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1016->1022": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1056->1061": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1060->1059": {
+                "VARIABLE": "tipc_buf_acquire(pktsz, GFP_KERNEL)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1078->1083": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1078->1082": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1082->1084": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1082->1087": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1082->1086": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1086->1092": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1086->1093": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1086->1088": {
+                "VARIABLE": "&pkthdr",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1088->1086": {
+                "VARIABLE": "++pktno",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1104->1103": {
+                "VARIABLE": "pktsz - INT_H_SIZE",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "885->895": {
+                "VARIABLE": "rc",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1806->1805": {
+                "VARIABLE": "&tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1806->1818": {
+                "VARIABLE": "&tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1806->1807": {
+                "VARIABLE": "&tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1849->1832": {
+                "label": "REF"
+            }
+        },
+        {
+            "1849->1855": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1849->1882": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1832->1849": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1855->1832": {
+                "label": "REF"
+            }
+        },
+        {
+            "1882->1832": {
+                "label": "REF"
+            }
+        },
+        {
+            "1882->1883": {
+                "VARIABLE": "list",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1883->1882": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1883->1888": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1059->1065": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->376": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->382": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->173": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->227": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->269": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->357": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->184": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "171->228": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "357->173": {
+                "label": "REF"
+            }
+        },
+        {
+            "184->173": {
+                "label": "REF"
+            }
+        },
+        {
+            "1103->1013": {
+                "VARIABLE": "pktrem",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "867->874": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "390->171": {
+                "label": "REF"
+            }
+        },
+        {
+            "1905->1904": {
+                "VARIABLE": "frag",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1888->1887": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1888->1889": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1889->1887": {
+                "VARIABLE": "GFP_ATOMIC",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1889->1888": {
+                "VARIABLE": "GFP_ATOMIC",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1049->1061": {
+                "VARIABLE": "pktsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1796->1795": {
+                "VARIABLE": "__skb_dequeue(list)",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1904->1901": {
+                "VARIABLE": "&frag",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "268->375": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "268->376": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "268->357": {
+                "VARIABLE": "*buf",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1795->1809": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1795->1813": {
+                "VARIABLE": "skb",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1896->1905": {
+                "VARIABLE": "frag->next",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1843->1903": {
+                "VARIABLE": "head",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "831->839": {
+                "VARIABLE": "mhsz",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1926->1831": {
+                "label": "REF"
+            }
+        },
+        {
+            "1831->1903": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1892": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1849": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1832": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1855": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1882": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1883": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1905": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1888": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1831->1889": {
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1783->1818": {
+                "VARIABLE": "tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1783->1807": {
+                "VARIABLE": "tmp",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1122->821": {
+                "label": "REF"
+            }
+        },
+        {
+            "1800->1809": {
+                "VARIABLE": "skb->next",
+                "label": "REACHING_DEF"
+            }
+        },
+        {
+            "1800->1813": {
+                "VARIABLE": "skb->next",
+                "label": "REACHING_DEF"
+            }
+        }
+    ]
+}

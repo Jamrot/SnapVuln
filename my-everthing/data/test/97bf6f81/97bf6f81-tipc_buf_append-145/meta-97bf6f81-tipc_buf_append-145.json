@@ -1,0 +1,26 @@
+[
+    {
+        "criterion": {
+            "line": 145,
+            "code": "\t\t*buf = NULL;"
+        },
+        "commit_id": "97bf6f81",
+        "version": {
+            "old": "080cbb890286cd794f1ee788bbc5463e2deb7c2b",
+            "new": "97bf6f81b29a8efaf5d0983251a7450e5794370d"
+        },
+        "file_path": {
+            "old": "net/tipc/msg.c",
+            "new": "net/tipc/msg.c"
+        },
+        "func_name": "tipc_buf_append",
+        "func_line": {
+            "start": 124,
+            "end": 193
+        },
+        "save_root": "/app/slicing-snapvuln/my-everthing/data/test/97bf6f81",
+        "save_filename_base": "97bf6f81-tipc_buf_append-145",
+        "save_file_code_old_filepath": "/app/slicing-snapvuln/my-everthing/data/test/97bf6f81/97bf6f81-tipc_buf_append-145/file_code_old-97bf6f81-tipc_buf_append-145.c",
+        "save_module_dirpath": "/app/slicing-snapvuln/my-everthing/data/test/97bf6f81/module-97bf6f81-net_tipc"
+    }
+]

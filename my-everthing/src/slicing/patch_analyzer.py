@@ -1,6 +1,5 @@
 import config
 from pydriller import Git
-from icecream import ic
 import logging
 
 logger = logging.getLogger(__name__)
@@ -196,8 +195,6 @@ def test():
     hash_id = "97bf6f81b29a8efaf5d0983251a7450e5794370d"
     patch_analyzer = PatchAnalyzer(url, hash_id)
     info = patch_analyzer.get_commit_info()
-    
-    ic(info['files'][0][''])
 
 
 if __name__=="__main__":

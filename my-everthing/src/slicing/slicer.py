@@ -1,12 +1,10 @@
 import networkx as nx
 import copy
 import queue as Queue
-from icecream import ic
 import re
 import logging
 logger = logging.getLogger(__name__)
 
-ic.configureOutput(includeContext=True)
 
 class Slicer:
     def __init__(self, node_graph_path, edge_graph_path):
@@ -14,7 +12,9 @@ class Slicer:
         self.G_edge = self.__read_graph(edge_graph_path)
     
     def __read_graph(self, graph_path):
+        logger.debug("Start reading graph: %s", graph_path)
         G = nx.drawing.nx_agraph.read_dot(graph_path)
+        logger.debug("Read graph: %s", graph_path)
         return G
 
 
@@ -27,20 +27,23 @@ class Slicer:
                 criterions.append(node)
         
         if len(criterions) == 0:
-            ic('no criterion node', criterion_linenum)
-            logger.error("[Slicer] No criterion node: %s", criterion_linenum)
+            logger.error("No criterion node: %s", criterion_linenum)
         
         logger.info("[Slicer] criterions: %s", criterions)
         return criterions
 
     
-    def build_slice(self, criterion_linenum, direction, g_type, depth='file'):     
+    def build_slice(self, criterion_linenum, direction, g_type, depth='file'):
+        logger.info("Start building slice...")
         nodes, edges = self.get_nodes_and_edges()
         criterions = self.__get_criterion_node(criterion_linenum, nodes)
+        graph_nodes, graph_edges = self.get_graph(nodes, edges, g_type, depth)
+        logger.debug("Finish getting graph nodes and edges")
+
         criterion_slices = []
         for criterion in criterions:
+            logger.debug("Start building slice for criterion: %s", criterion)
             criterion_slice = {'criterion':criterion, 'nodes':[], 'edges':[]}
-            graph_nodes, graph_edges = self.get_graph(nodes, edges, g_type, depth)
 
             if direction=='forward':
                 slice_nodes = self.forward_slice(criterion, graph_nodes, graph_edges)
@@ -49,20 +52,21 @@ class Slicer:
             elif direction=='bid':
                 slice_nodes = self.bid_slice(criterion, graph_nodes, graph_edges)
             else:
-                ic('unknown direction:', direction)
-                logger.warning("[Slicer] No such direction: %s", direction)
+                logger.warning("No such direction: %s", direction)
                 raise Exception("No such direction: %s"%direction)
             
+            logger.debug("Finish getting slice nodes")
             slice_nodes, slice_edges = self.get_subgraph_nodes_edges(slice_nodes, graph_edges)
+            logger.debug("Finish getting subgraph nodes and edges")
             if len(slice_edges) == 0 or len(slice_nodes) == 1:
-                ic('no slice edges or nodes', criterion)
-                logger.warning("[Slicer] No slice edges or nodes: %s", criterion)
+                logger.warning(" No slice edges or nodes: %s", criterion)
                 continue
             criterion_slice['nodes'] = slice_nodes
             criterion_slice['edges'] = slice_edges
             criterion_slices.append(criterion_slice)
-        
+        logger.debug("Finish building slice")
         criterion_graph = self.__generate_subgraph(criterion_slices)
+        logger.debug("Finish generating slice subgraph")
         return criterion_graph
     
 
@@ -79,9 +83,9 @@ class Slicer:
 
 
     def save_graph(self, G, save_path):
+        logger.info("Start saving graph...")
         nx.drawing.nx_agraph.write_dot(G, save_path)
-        ic(save_path)
-        logger.info("[Slicer] Save graph to: %s", save_path)
+        logger.info("Save graph to: %s", save_path)
     
     def get_nodes_and_edges(self):
         G_graph = self.G_node
@@ -118,8 +122,7 @@ class Slicer:
     def __skip_edge(self, edge, edge_type, edge_var):
         """skip the edge with NULL reaching def"""
         if edge_type=="REACHING_DEF" and edge_var=='NULL':
-            # ic('skip edge with NULL reaching def', edge)
-            logger.warning("[Slicer] Skip edge with 'NULL' variable in REACHING_DEF edge: %s", edge)
+            logger.warning("Skip edge with 'NULL' variable in REACHING_DEF edge: %s", edge)
             return True
         return False
 
@@ -181,7 +184,6 @@ class Slicer:
         if node_type in NODE_TYPE_LIST:
             my_node_type = NODE_TYPE_LIST[node_type]
         else:
-            # ic('unknown node type:', node_type)
             logger.warning('unknown node type: %s, node: %s', node_type, node)
             my_node_type = node_type
 
@@ -361,7 +363,7 @@ def test():
     # extract info based on filename_pattern
     regex_result = re.search(filename_pattern, code_filepath)
     if not regex_result:
-        ic('no commit id or line number')
+        print('no commit id or line number')
         return
     commit_id = regex_result.group(1)
     criterion_linenum = regex_result.group(2)

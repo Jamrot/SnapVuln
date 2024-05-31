@@ -2,6 +2,7 @@ import os
 import config
 from graph_builder import GraphBuilder
 import logging
+from icecream import ic
 
 logger = logging.getLogger(__name__)
 

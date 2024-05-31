@@ -1,0 +1,87 @@
+file: /* file_code_old-97bf6f81-tipc_buf_append-145.c */
+124: int tipc_buf_append(struct sk_buff **headbuf, struct sk_buff **buf)
+127: 	struct sk_buff *frag = *buf;
+145: 		*buf = NULL;
+163: 	*buf = NULL;
+182: 		*buf = head;
+189: 	kfree_skb(*buf);
+191: 	*buf = *headbuf = NULL;
+372: int tipc_msg_build(struct tipc_msg *mhdr, struct msghdr *m, int offset,
+373: 		   int dsz, int pktmax, struct sk_buff_head *list)
+375: 	int mhsz = msg_hdr_sz(mhdr);
+377: 	int msz = mhsz + dsz;
+378: 	int pktrem = pktmax;
+380: 	int drem = dsz;
+381: 	int pktno = 1;
+386: 	msg_set_size(mhdr, msz);
+389: 	if (likely(msz <= pktmax)) {
+390: 		skb = tipc_buf_acquire(msz, GFP_KERNEL);
+393: 		if (unlikely(!skb)) {
+394: 			if (pktmax != MAX_MSG_SIZE)
+396: 			rc = tipc_msg_build(mhdr, m, offset, dsz,
+397: 					    one_page_mtu, list);
+398: 			if (rc != dsz)
+400: 			if (tipc_msg_assemble(list))
+401: 				return dsz;
+404: 		skb_orphan(skb);
+405: 		__skb_queue_tail(list, skb);
+406: 		skb_copy_to_linear_data(skb, mhdr, mhsz);
+407: 		pktpos = skb->data + mhsz;
+408: 		if (copy_from_iter_full(pktpos, dsz, &m->msg_iter))
+409: 			return dsz;
+415: 	tipc_msg_init(msg_prevnode(mhdr), &pkthdr, MSG_FRAGMENTER,
+416: 		      FIRST_FRAGMENT, INT_H_SIZE, msg_destnode(mhdr));
+417: 	msg_set_size(&pkthdr, pktmax);
+418: 	msg_set_fragm_no(&pkthdr, pktno);
+419: 	msg_set_importance(&pkthdr, msg_importance(mhdr));
+422: 	skb = tipc_buf_acquire(pktmax, GFP_KERNEL);
+423: 	if (!skb)
+425: 	skb_orphan(skb);
+426: 	__skb_queue_tail(list, skb);
+427: 	pktpos = skb->data;
+428: 	skb_copy_to_linear_data(skb, &pkthdr, INT_H_SIZE);
+429: 	pktpos += INT_H_SIZE;
+430: 	pktrem -= INT_H_SIZE;
+431: 	skb_copy_to_linear_data_offset(skb, INT_H_SIZE, mhdr, mhsz);
+432: 	pktpos += mhsz;
+433: 	pktrem -= mhsz;
+436: 		if (drem < pktrem)
+437: 			pktrem = drem;
+439: 		if (!copy_from_iter_full(pktpos, pktrem, &m->msg_iter)) {
+443: 		drem -= pktrem;
+445: 		if (!drem)
+449: 		if (drem < (pktmax - INT_H_SIZE))
+450: 			pktsz = drem + INT_H_SIZE;
+452: 			pktsz = pktmax;
+453: 		skb = tipc_buf_acquire(pktsz, GFP_KERNEL);
+454: 		if (!skb) {
+458: 		skb_orphan(skb);
+459: 		__skb_queue_tail(list, skb);
+460: 		msg_set_type(&pkthdr, FRAGMENT);
+461: 		msg_set_size(&pkthdr, pktsz);
+462: 		msg_set_fragm_no(&pkthdr, ++pktno);
+463: 		skb_copy_to_linear_data(skb, &pkthdr, INT_H_SIZE);
+464: 		pktpos = skb->data + INT_H_SIZE;
+465: 		pktrem = pktsz - INT_H_SIZE;
+469: 	return dsz;
+471: 	__skb_queue_purge(list);
+472: 	__skb_queue_head_init(list);
+739: bool tipc_msg_assemble(struct sk_buff_head *list)
+741: 	struct sk_buff *skb, *tmp = NULL;
+743: 	if (skb_queue_len(list) == 1)
+746: 	while ((skb = __skb_dequeue(list))) {
+747: 		skb->next = NULL;
+748: 		if (tipc_buf_append(&tmp, &skb)) {
+749: 			__skb_queue_tail(list, skb);
+752: 		if (!tmp)
+755: 	__skb_queue_purge(list);
+756: 	__skb_queue_head_init(list);
+764: bool tipc_msg_reassemble(struct sk_buff_head *list, struct sk_buff_head *rcvq)
+768: 	struct sk_buff *head = NULL;
+772: 	if (skb_queue_len(list) == 1) {
+773: 		skb = skb_peek(list);
+783: 	skb_queue_walk(list, skb) {
+784: 		frag = skb_clone(skb, GFP_ATOMIC);
+785: 		if (!frag)
+787: 		frag->next = NULL;
+788: 		if (tipc_buf_append(&head, &frag))
