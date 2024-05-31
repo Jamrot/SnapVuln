@@ -1,7 +1,6 @@
 from patch_analyzer import PatchAnalyzer
 import config 
 import os
-from icecream import ic
 import json
 import logging
 
@@ -86,16 +85,16 @@ class CriterionExtractor:
             file_path_new = criterion['file_path']['new']
 
             commit_id_short = commit_id[:8]
-            funcname_line = "-".join([func_name, str(criterion_line)])
+            # funcname_line = "-".join([func_name, str(criterion_line)])
             save_root = os.path.join(config.CODE_ROOT, commit_id_short)
-            save_filename_base = "-".join([commit_id_short, funcname_line])
+            save_filename_base = "-".join([commit_id_short, func_name, str(criterion_line)])
             criterion['save_root'] = save_root
             criterion['save_filename_base'] = save_filename_base
 
             if save_file:
                 # save code (old version) to code_filepath 
                 code_filename = "-".join([config.CODE_FILENAME_START, save_filename_base])+'.c'
-                code_filepath = os.path.join(save_root, funcname_line, code_filename)
+                code_filepath = os.path.join(save_root, save_filename_base, code_filename)
                 self._save_file(file_code_old, code_filepath, confirm=config.CODE_FILE_CONFIRM)
 
                 criterion['save_file_code_old_filepath'] = code_filepath
@@ -105,18 +104,18 @@ class CriterionExtractor:
                 module_dir = os.path.dirname(file_path_old)
                 module_dirname = "-".join([config.MODULE_DIRNAME_START, commit_id_short, "_".join(module_dir.split("/"))])
                 module_dirpath = os.path.join(save_root, module_dirname)
-                self._save_module(criterion=criterion, module_dirpath=module_dirpath, confirm=config.MODULE_CONFIRM)
+                self._save_module(criterion=criterion, module_dirpath=module_dirpath, confirm=config.MODULE_CONFIRM, overwrite=config.MODULE_OVERWRITE)
 
                 criterion['save_module_dirpath'] = module_dirpath
             
             if save_meta:
                 # save criterion meta information to meta_filepath
                 meta_filename = "-".join([config.META_FILENAME_START, save_filename_base])+'.json'
-                meta_filepath = os.path.join(save_root, funcname_line, meta_filename)
+                meta_filepath = os.path.join(save_root, save_filename_base, meta_filename)
                 self._save_criterion_meta([criterion], meta_filepath)
 
     
-    def _save_module(self, criterion, module_dirpath, confirm=True):
+    def _save_module(self, criterion, module_dirpath, confirm=True, overwrite=True):
         """copy local_module_path to module_dirpath, default to overwrite."""
         file_path_new = criterion['file_path']['new']
         old_version = criterion['version']['old']
@@ -132,10 +131,11 @@ class CriterionExtractor:
             if not len(os.listdir(module_dirpath)) == 0:
                 logger.warning(f"Module directory {module_dirpath} already exists and is not empty")
                 
-                confirm_input = input(f"{module_dirpath} already exists, overwrite (y/n)") if confirm else 'y' # default to overwrite                
-                if confirm_input.lower() != 'y':
-                    return
-                else:
+                if confirm:
+                    confirm_input = input(f"{module_dirpath} already exists, overwrite (y/n)")              
+                    if confirm_input.lower() != 'y':
+                        overwrite = False
+                if overwrite:
                     logger.warning(f"Overwriting module directory {module_dirpath}")
                     os.system(f"rm -rf {module_dirpath}")
 
@@ -178,7 +178,6 @@ class CriterionExtractor:
         with open(meta_filepath, 'w') as f:
             f.write(json.dumps(meta, indent=4))
 
-        ic(f"[CriterionExtractor] Meta file saved to {meta_filepath}")
         logger.info(f"Meta file saved to {meta_filepath}")
 
     def _save_file(self, file_content, file_path, confirm=True):
@@ -203,8 +202,7 @@ class CriterionExtractor:
         with open(file_path, 'w') as f:
             f.write(file_content)
 
-        ic(f"Code file saved to {file_path}")
-        logger.info(f"[CriterionExtractor] Code file saved to {file_path}")
+        logger.info(f"Code file saved to {file_path}")
 
 def test():
     url = config.LINUX

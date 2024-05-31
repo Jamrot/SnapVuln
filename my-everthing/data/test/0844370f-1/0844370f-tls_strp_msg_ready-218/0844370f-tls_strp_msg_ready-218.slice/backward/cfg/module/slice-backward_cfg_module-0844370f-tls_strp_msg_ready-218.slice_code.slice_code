@@ -1,0 +1,209 @@
+file: /* tls.h */
+216: static inline bool tls_strp_msg_ready(struct tls_sw_context_rx *ctx)
+218: 	return ctx->strp.msg_ready;
+file: /* tls_sw.c */
+1307: static int
+1311: 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+1312: 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+1313: 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+1314: 	int ret = 0;
+1317: 	timeo = sock_rcvtimeo(sk, nonblock);
+1319: 	while (!tls_strp_msg_ready(ctx)) {
+1320: 		if (!sk_psock_queue_empty(psock))
+1323: 		if (sk->sk_err)
+1326: 		if (ret < 0)
+1329: 		if (!skb_queue_empty(&sk->sk_receive_queue)) {
+1330: 			tls_strp_check_rcv(&ctx->strp);
+1331: 			if (tls_strp_msg_ready(ctx))
+1335: 		if (sk->sk_shutdown & RCV_SHUTDOWN)
+1338: 		if (sock_flag(sk, SOCK_DONE))
+1341: 		if (!timeo)
+1344: 		released = true;
+1345: 		add_wait_queue(sk_sleep(sk), &wait);
+1346: 		sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
+1347: 		ret = sk_wait_event(sk, &timeo,
+1348: 				    tls_strp_msg_ready(ctx) ||
+1349: 				    !sk_psock_queue_empty(psock),
+1350: 				    &wait);
+1351: 		sk_clear_bit(SOCKWQ_ASYNC_WAITDATA, sk);
+1352: 		remove_wait_queue(sk_sleep(sk), &wait);
+1355: 		if (signal_pending(current))
+1950: int tls_sw_recvmsg(struct sock *sk,
+1956: 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+1957: 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+1958: 	struct tls_prot_info *prot = &tls_ctx->prot_info;
+1959: 	ssize_t decrypted = 0, async_copy_bytes = 0;
+1961: 	unsigned char control = 0;
+1962: 	size_t flushed_at = 0;
+1965: 	ssize_t copied = 0;
+1966: 	ssize_t peeked = 0;
+1967: 	bool async = false;
+1969: 	bool is_kvec = iov_iter_is_kvec(&msg->msg_iter);
+1970: 	bool is_peek = flags & MSG_PEEK;
+1971: 	bool rx_more = false;
+1972: 	bool released = true;
+1976: 	if (unlikely(flags & MSG_ERRQUEUE))
+1979: 	err = tls_rx_reader_lock(sk, ctx, flags & MSG_DONTWAIT);
+1980: 	if (err < 0)
+1982: 	psock = sk_psock_get(sk);
+1983: 	bpf_strp_enabled = sk_psock_strp_enabled(psock);
+1986: 	err = ctx->async_wait.err;
+1987: 	if (err)
+1991: 	err = process_rx_list(ctx, msg, &control, 0, len, is_peek, &rx_more);
+1992: 	if (err < 0)
+1995: 	copied = err;
+1996: 	if (len <= copied || (copied && control != TLS_RECORD_TYPE_DATA) || rx_more)
+1999: 	target = sock_rcvlowat(sk, flags & MSG_WAITALL, len);
+2000: 	len = len - copied;
+2002: 	zc_capable = !bpf_strp_enabled && !is_kvec && !is_peek &&
+2003: 		ctx->zc_capable;
+2004: 	decrypted = 0;
+2005: 	while (len && (decrypted + copied < target || tls_strp_msg_ready(ctx))) {
+2009: 		err = tls_rx_rec_wait(sk, psock, flags & MSG_DONTWAIT,
+2010: 				      released);
+2011: 		if (err <= 0) {
+2012: 			if (psock) {
+2013: 				chunk = sk_msg_recvmsg(sk, psock, msg, len,
+2014: 						       flags);
+2015: 				if (chunk > 0) {
+2016: 					decrypted += chunk;
+2017: 					len -= chunk;
+2018: 					continue;
+2024: 		memset(&darg.inargs, 0, sizeof(darg.inargs));
+2026: 		rxm = strp_msg(tls_strp_msg(ctx));
+2027: 		tlm = tls_msg(tls_strp_msg(ctx));
+2029: 		to_decrypt = rxm->full_len - prot->overhead_size;
+2031: 		if (zc_capable && to_decrypt <= len &&
+2032: 		    tlm->control == TLS_RECORD_TYPE_DATA)
+2033: 			darg.zc = true;
+2036: 		if (tlm->control == TLS_RECORD_TYPE_DATA && !bpf_strp_enabled)
+2037: 			darg.async = ctx->async_capable;
+2039: 			darg.async = false;
+2041: 		err = tls_rx_one_record(sk, msg, &darg);
+2042: 		if (err < 0) {
+2047: 		async |= darg.async;
+2056: 		err = tls_record_content_type(msg, tls_msg(darg.skb), &control);
+2057: 		if (err <= 0) {
+2066: 		released = tls_read_flush_backlog(sk, prot, len, to_decrypt,
+2067: 						  decrypted + copied,
+2068: 						  &flushed_at);
+2071: 		rxm = strp_msg(darg.skb);
+2072: 		chunk = rxm->full_len;
+2073: 		tls_rx_rec_done(ctx);
+2075: 		if (!darg.zc) {
+2076: 			bool partially_consumed = chunk > len;
+2077: 			struct sk_buff *skb = darg.skb;
+2079: 			DEBUG_NET_WARN_ON_ONCE(darg.skb == ctx->strp.anchor);
+2081: 			if (async) {
+2084: 				async_copy_bytes += chunk;
+2085: put_on_rx_list:
+2086: 				decrypted += chunk;
+2087: 				len -= chunk;
+2088: 				__skb_queue_tail(&ctx->rx_list, skb);
+2089: 				if (unlikely(control != TLS_RECORD_TYPE_DATA))
+2091: 				continue;
+2094: 			if (bpf_strp_enabled) {
+2095: 				released = true;
+2096: 				err = sk_psock_tls_strp_read(psock, skb);
+2097: 				if (err != __SK_PASS) {
+2098: 					rxm->offset = rxm->offset + rxm->full_len;
+2099: 					rxm->full_len = 0;
+2100: 					if (err == __SK_DROP)
+2101: 						consume_skb(skb);
+2102: 					continue;
+2106: 			if (partially_consumed)
+2107: 				chunk = len;
+2109: 			err = skb_copy_datagram_msg(skb, rxm->offset,
+2110: 						    msg, chunk);
+2111: 			if (err < 0)
+2114: 			if (is_peek) {
+2115: 				peeked += chunk;
+2116: 				goto put_on_rx_list;
+2119: 			if (partially_consumed) {
+2120: 				rxm->offset += chunk;
+2121: 				rxm->full_len -= chunk;
+2122: 				goto put_on_rx_list;
+2125: 			consume_skb(skb);
+2128: 		decrypted += chunk;
+2129: 		len -= chunk;
+2134: 		msg->msg_flags |= MSG_EOR;
+2135: 		if (control != TLS_RECORD_TYPE_DATA)
+2175: ssize_t tls_sw_splice_read(struct socket *sock,  loff_t *ppos,
+2179: 	struct tls_context *tls_ctx = tls_get_ctx(sock->sk);
+2180: 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+2181: 	struct strp_msg *rxm = NULL;
+2182: 	struct sock *sk = sock->sk;
+2185: 	ssize_t copied = 0;
+2189: 	err = tls_rx_reader_lock(sk, ctx, flags & SPLICE_F_NONBLOCK);
+2190: 	if (err < 0)
+2193: 	if (!skb_queue_empty(&ctx->rx_list)) {
+2198: 		err = tls_rx_rec_wait(sk, NULL, flags & SPLICE_F_NONBLOCK,
+2199: 				      true);
+2246: int tls_sw_read_sock(struct sock *sk, read_descriptor_t *desc,
+2249: 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+2250: 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+2251: 	struct tls_prot_info *prot = &tls_ctx->prot_info;
+2252: 	struct strp_msg *rxm = NULL;
+2253: 	struct sk_buff *skb = NULL;
+2255: 	size_t flushed_at = 0;
+2256: 	bool released = true;
+2258: 	ssize_t copied = 0;
+2262: 	psock = sk_psock_get(sk);
+2263: 	if (psock) {
+2267: 	err = tls_rx_reader_acquire(sk, ctx, true);
+2268: 	if (err < 0)
+2272: 	err = ctx->async_wait.err;
+2273: 	if (err)
+2276: 	decrypted = 0;
+2278: 		if (!skb_queue_empty(&ctx->rx_list)) {
+2279: 			skb = __skb_dequeue(&ctx->rx_list);
+2280: 			rxm = strp_msg(skb);
+2281: 			tlm = tls_msg(skb);
+2285: 			err = tls_rx_rec_wait(sk, NULL, true, released);
+2286: 			if (err <= 0)
+2289: 			memset(&darg.inargs, 0, sizeof(darg.inargs));
+2291: 			err = tls_rx_one_record(sk, NULL, &darg);
+2292: 			if (err < 0) {
+2297: 			released = tls_read_flush_backlog(sk, prot, INT_MAX,
+2298: 							  0, decrypted,
+2299: 							  &flushed_at);
+2300: 			skb = darg.skb;
+2301: 			rxm = strp_msg(skb);
+2302: 			tlm = tls_msg(skb);
+2303: 			decrypted += rxm->full_len;
+2305: 			tls_rx_rec_done(ctx);
+2309: 		if (tlm->control != TLS_RECORD_TYPE_DATA) {
+2314: 		used = read_actor(desc, skb, rxm->offset, rxm->full_len);
+2315: 		if (used <= 0) {
+2320: 		copied += used;
+2321: 		if (used < rxm->full_len) {
+2322: 			rxm->offset += used;
+2323: 			rxm->full_len -= used;
+2324: 			if (!desc->count)
+2327: 			consume_skb(skb);
+2328: 			if (!desc->count)
+2329: 				skb = NULL;
+2331: 	} while (skb);
+2342: bool tls_sw_sock_is_readable(struct sock *sk)
+2344: 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+2345: 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+2346: 	bool ingress_empty = true;
+2349: 	rcu_read_lock();
+2350: 	psock = sk_psock(sk);
+2351: 	if (psock)
+2352: 		ingress_empty = list_empty(&psock->ingress_msg);
+2353: 	rcu_read_unlock();
+2355: 	return !ingress_empty || tls_strp_msg_ready(ctx) ||
+file: /* tls_main.c */
+404: static __poll_t tls_sk_poll(struct file *file, struct socket *sock,
+409: 	struct sock *sk = sock->sk;
+411: 	__poll_t mask = 0;
+415: 	mask = tcp_poll(file, sock, wait);
+417: 	state = inet_sk_state_load(sk);
+418: 	shutdown = READ_ONCE(sk->sk_shutdown);
+419: 	if (unlikely(state != TCP_ESTABLISHED || shutdown & RCV_SHUTDOWN))
+422: 	tls_ctx = tls_get_ctx(sk);
+423: 	ctx = tls_sw_ctx_rx(tls_ctx);
+424: 	psock = sk_psock_get(sk);
+426: 	if (skb_queue_empty_lockless(&ctx->rx_list) &&
+427: 	    !tls_strp_msg_ready(ctx) &&
