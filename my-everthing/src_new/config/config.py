@@ -40,3 +40,17 @@ GRAPH_ALL_OVERWRITE = False
 BIN_CONFIRM = False
 MODULE_CONFIRM = False
 CODE_FILE_CONFIRM = False
+
+
+# patch
+COMMIT_ID = "a282a2f10539dce2aa619e71e1817570d557fc97"
+# COMMIT_ID = "6825bdde44340c5a9121f6d6fa25cc885bd9e821"
+PROMPT_FILEPATH = "my-everthing/prompts/prompt.json"
+
+# requests
+REQUEST_URL = "https://api.openai.com/v1/chat/completions"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+REQUEST_MODEL = "gpt-4o"
+
+RESPONSE_DIR = '/app/slicing-snapvuln/my-everthing/responses/original'
+PARSED_DIR = '/app/slicing-snapvuln/my-everthing/responses/parsed'

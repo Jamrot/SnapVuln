@@ -1,0 +1,76 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584",
+      "modification": "DELETE",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "reason": "This loop is responsible for iterating over command buffers, which is crucial for identifying and freeing them."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "modification": "DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "This condition checks if a command buffer needs to be freed, which is essential for preventing memory leaks."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "DELETE",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This function call actually frees the command buffer, directly addressing the memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587",
+      "modification": "DELETE",
+      "statement": "\t}",
+      "reason": "This statement closes the loop, which is necessary for the correct iteration and freeing of command buffers."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "modification": "ADD",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++)",
+      "reason": "This loop is reintroduced to iterate over command buffers, which is crucial for identifying and freeing them."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "ADD",
+      "statement": "\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This function call is reintroduced to free the command buffer, directly addressing the memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587",
+      "modification": "ADD",
+      "statement": "\tnvmet_tcp_free_cmd_buffers(&queue->connect);",
+      "reason": "This additional function call ensures that the connect command buffer is also freed, preventing potential memory leaks."
+    }
+  ],
+  "sorted_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "relevance": "1"
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587",
+      "relevance": "2"
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "relevance": "3"
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584",
+      "relevance": "4"
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "relevance": "5"
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "relevance": "6"
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587",
+      "relevance": "7"
+    }
+  ]
+}

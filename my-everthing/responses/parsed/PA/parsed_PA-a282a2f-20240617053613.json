@@ -1,0 +1,5 @@
+{
+  "patch_summary": "The patch adds checks to ensure segment lengths in Ceph's messenger protocol are within valid ranges to prevent buffer overruns.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun due to improper handling of segment lengths, potentially leading to memory corruption."
+}

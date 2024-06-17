@@ -1,0 +1,28 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "modification": "DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "The condition check for freeing command buffers is removed, which indicates that previously some buffers might not have been freed if the condition was not met, leading to a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "DELETE",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is part of the conditional block that was removed. It shows that the command buffers were only freed if the condition was met, which could have caused a memory leak if the condition was false."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "ADD",
+      "statement": "\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement ensures that command buffers are always freed, addressing the memory leak by removing the conditional check."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587",
+      "modification": "ADD",
+      "statement": "\tnvmet_tcp_free_cmd_buffers(&queue->connect);",
+      "reason": "This statement ensures that the connect command buffer is also freed, which might have been missed previously, contributing to the memory leak."
+    }
+  ]
+}

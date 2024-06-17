@@ -1,0 +1,156 @@
+{
+  "relevant_statements": [
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 527,
+      "modification": "DELETE",
+      "statement": "if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement checks if the last segment is empty, which is crucial for preventing buffer overruns."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 528,
+      "modification": "DELETE",
+      "statement": "pr_err(\"last segment empty\\n\");",
+      "reason": "This statement logs an error if the last segment is empty, which helps in identifying potential buffer overrun issues."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 532,
+      "modification": "DELETE",
+      "statement": "if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement checks if the control segment length exceeds the maximum allowed length, which is essential for preventing buffer overruns."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 533,
+      "modification": "DELETE",
+      "statement": "pr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length exceeds the maximum allowed length, which helps in identifying potential buffer overrun issues."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 536,
+      "modification": "DELETE",
+      "statement": "if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement checks if the front segment length exceeds the maximum allowed length, which is essential for preventing buffer overruns."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 537,
+      "modification": "DELETE",
+      "statement": "pr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length exceeds the maximum allowed length, which helps in identifying potential buffer overrun issues."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 540,
+      "modification": "DELETE",
+      "statement": "if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement checks if the middle segment length exceeds the maximum allowed length, which is essential for preventing buffer overruns."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 541,
+      "modification": "DELETE",
+      "statement": "pr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length exceeds the maximum allowed length, which helps in identifying potential buffer overrun issues."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 544,
+      "modification": "DELETE",
+      "statement": "if (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement checks if the data segment length exceeds the maximum allowed length, which is essential for preventing buffer overruns."
+    },
+    {
+      "file_path": {
+        "file_path_old": "net/ceph/messenger_v2.c",
+        "file_path_new": "net/ceph/messenger_v2.c"
+      },
+      "function_name": "decode_preamble",
+      "line_changes": 545,
+      "modification": "DELETE",
+      "statement": "pr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length exceeds the maximum allowed length, which helps in identifying potential buffer overrun issues."
+    }
+  ],
+  "sorted_statements": [
+    {
+      "statement": "if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "relevance": 1
+    },
+    {
+      "statement": "pr_err(\"last segment empty\\n\");",
+      "relevance": 2
+    },
+    {
+      "statement": "if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "relevance": 3
+    },
+    {
+      "statement": "pr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "relevance": 4
+    },
+    {
+      "statement": "if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "relevance": 5
+    },
+    {
+      "statement": "pr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "relevance": 6
+    },
+    {
+      "statement": "if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "relevance": 7
+    },
+    {
+      "statement": "pr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "relevance": 8
+    },
+    {
+      "statement": "if (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "relevance": 9
+    },
+    {
+      "statement": "pr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "relevance": 10
+    }
+  ]
+}
