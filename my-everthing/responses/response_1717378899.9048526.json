@@ -1,0 +1,23 @@
+{
+  "id": "chatcmpl-9VqzXOOxyk14ubMJOAAkkBCvG60jj",
+  "object": "chat.completion",
+  "created": 1717378895,
+  "model": "gpt-4o-2024-05-13",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "**memory corruption**\n\nThe patch changes the `name_len` variable from a signed int to an unsigned int to prevent potential memory corruption caused by interpreting large values from the server as negative."
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 466,
+    "completion_tokens": 37,
+    "total_tokens": 503
+  },
+  "system_fingerprint": "fp_319be4768e"
+}

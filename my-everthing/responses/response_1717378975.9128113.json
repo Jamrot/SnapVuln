@@ -1,0 +1,8 @@
+{
+  "error": {
+    "message": "Missing required parameter: 'messages[0].role'. You provided 'rolt', did you mean to provide 'role'?",
+    "type": "invalid_request_error",
+    "param": "messages[0].role",
+    "code": "missing_required_parameter"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "chatcmpl-9Vr1kLPRueA6cyfkXMgwKxHtoHJ76",
+  "object": "chat.completion",
+  "created": 1717379032,
+  "model": "gpt-4o-2024-05-13",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<vulnerability-type>overflow</vulnerability-type>\n<patch-summary>This patch changes the name_len variable to unsigned in CIFSFindNext to prevent potential memory corruption from large values sent by the server."
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 431,
+    "completion_tokens": 40,
+    "total_tokens": 471
+  },
+  "system_fingerprint": "fp_319be4768e"
+}

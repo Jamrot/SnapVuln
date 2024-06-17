@@ -69,8 +69,7 @@ class PatchAnalyzer:
                     - 'func_name': str, 
                     - 'func_line': {'start': int, 'end': int}, 
                     - 'func_code': {'old': str, 'new': str}, 
-                    - 'func_stmt': {'added': [{'line': int, 'code': str}], 
-                    - 'deleted': [{'line': int, 'code': str}]}}]}]
+                    - 'func_stmt': {'added': [{'line': int, 'code': str}], 'deleted': [{'line': int, 'code': str}]}}]}]
         """
         commit = self.commit
         commit_info = {}        
@@ -144,6 +143,8 @@ class PatchAnalyzer:
 
     def _get_func_stmt(self, file:object, method:object)->tuple:
         """Gets added & deleted statements of the method in file.
+        
+        [(lineNum, code)]
         """
         diff_parsed = file.diff_parsed
         func_start_line = method.start_line
@@ -190,11 +191,35 @@ class PatchAnalyzer:
         return func_code
 
 
+    def get_diff_code(self):
+        """Gets the diff code of the commit.
+        """
+        commit = self.commit
+        diff_code = ""
+        for mod_files in commit.modified_files:
+            diff_code += "diff --git a/" + mod_files.old_path + " b/" + mod_files.new_path + "\n"
+            diff_code += "--- a/" + mod_files.old_path + "\n"
+            diff_code += "+++ b/" + mod_files.new_path + "\n"
+            diff_code += mod_files.diff + "\n"
+        return diff_code
+    
+
+    def get_changed_type(self):
+        """Gets the changed type of the commit.
+        """
+        commit = self.commit
+        changed_type = []
+        for mod_files in commit.modified_files:
+            changed_type.append(mod_files.change_type.name)
+        return changed_type
+
+
 def test():
     url = config.LINUX
-    hash_id = "97bf6f81b29a8efaf5d0983251a7450e5794370d"
+    hash_id = "a282a2f10539dce2aa619e71e1817570d557fc97"
     patch_analyzer = PatchAnalyzer(url, hash_id)
-    info = patch_analyzer.get_commit_info()
+    info = patch_analyzer.get_changed_type()
+    print(info)
 
 
 if __name__=="__main__":

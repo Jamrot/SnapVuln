@@ -1,0 +1,23 @@
+{
+  "id": "chatcmpl-9Y7rwkGSX93gY6Nmabu1YI9j0uUz3",
+  "object": "chat.completion",
+  "created": 1717920428,
+  "model": "gpt-4o-2024-05-13",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n  \"patch_summary\": \"The patch fixes a potential memory corruption issue in the CIFSFindNext function by changing the name_len variable from a signed int to an unsigned int.\",\n  \"vulnerability_type\": \"overflow\",\n  \"vulnerability_summary\": \"The vulnerability involves a potential integer overflow where a large unsigned value from the server could be misinterpreted as a negative signed integer, leading to memory corruption during a memcpy operation.\"\n}"
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 458,
+    "completion_tokens": 89,
+    "total_tokens": 547
+  },
+  "system_fingerprint": "fp_319be4768e"
+}

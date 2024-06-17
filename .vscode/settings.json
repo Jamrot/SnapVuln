@@ -1,3 +1,8 @@
 {
-    "python.REPL.enableREPLSmartSend": false
+    "python.REPL.enableREPLSmartSend": false,
+    "files.exclude": {
+        "**/__pycache__": true
+    },
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.pythonPath": "${workspaceFolder}/env3.7_snapvuln/bin/python",
 }

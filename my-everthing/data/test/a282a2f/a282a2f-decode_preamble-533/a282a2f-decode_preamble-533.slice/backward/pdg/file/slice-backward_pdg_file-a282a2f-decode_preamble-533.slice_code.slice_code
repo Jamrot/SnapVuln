@@ -1,0 +1,85 @@
+file: /* file_code_old-a282a2f-decode_preamble-533.c */
+2727: static int handle_preamble(struct ceph_connection *con)
+2729: 	struct ceph_frame_desc *desc = &con->v2.in_desc;
+2732: 	if (con_secure(con)) {
+2733: 		ret = decrypt_preamble(con);
+2734: 		if (ret) {
+2735: 			if (ret == -EBADMSG)
+2736: 				con->error_msg = "integrity error, bad preamble auth tag";
+2741: 	ret = decode_preamble(con->v2.in_buf, desc);
+2742: 	if (ret) {
+2743: 		if (ret == -EBADMSG)
+2744: 			con->error_msg = "integrity error, bad crc";
+2746: 			con->error_msg = "protocol error, bad preamble";
+2750: 	dout("%s con %p tag %d seg_cnt %d %d+%d+%d+%d\n", __func__,
+2751: 	     con, desc->fd_tag, desc->fd_seg_cnt, desc->fd_lens[0],
+2752: 	     desc->fd_lens[1], desc->fd_lens[2], desc->fd_lens[3]);
+2754: 	if (!con_secure(con))
+2755: 		return prepare_read_control(con);
+2757: 	if (desc->fd_lens[0] > CEPH_PREAMBLE_INLINE_LEN)
+2758: 		return prepare_read_control_remainder(con);
+2760: 	return __handle_control(con, CTRL_BODY(con->v2.in_buf));
+2854: static int populate_in_iter(struct ceph_connection *con)
+2858: 	dout("%s con %p state %d in_state %d\n", __func__, con, con->state,
+2859: 	     con->v2.in_state);
+2860: 	WARN_ON(iov_iter_count(&con->v2.in_iter));
+2862: 	if (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {
+2863: 		ret = process_banner_prefix(con);
+2864: 	} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {
+2865: 		ret = process_banner_payload(con);
+2866: 	} else if ((con->state >= CEPH_CON_S_V2_HELLO &&
+2867: 		    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||
+2868: 		   con->state == CEPH_CON_S_OPEN) {
+2869: 		switch (con->v2.in_state) {
+2871: 			ret = handle_preamble(con);
+2874: 			ret = handle_control(con);
+2877: 			ret = handle_control_remainder(con);
+2880: 			ret = prepare_read_data(con);
+2883: 			prepare_read_data_cont(con);
+2884: 			ret = 0;
+2887: 			prepare_read_enc_page(con);
+2888: 			ret = 0;
+2891: 			ret = handle_epilogue(con);
+2894: 			finish_skip(con);
+2895: 			ret = 0;
+2898: 			WARN(1, "bad in_state %d", con->v2.in_state);
+2902: 		WARN(1, "bad state %d", con->state);
+2905: 	if (ret) {
+2906: 		dout("%s con %p error %d\n", __func__, con, ret);
+2910: 	if (WARN_ON(!iov_iter_count(&con->v2.in_iter)))
+2912: 	dout("%s con %p populated %zu\n", __func__, con,
+2913: 	     iov_iter_count(&con->v2.in_iter));
+2917: int ceph_con_v2_try_read(struct ceph_connection *con)
+2921: 	dout("%s con %p state %d need %zu\n", __func__, con, con->state,
+2922: 	     iov_iter_count(&con->v2.in_iter));
+2924: 	if (con->state == CEPH_CON_S_PREOPEN)
+2932: 	if (WARN_ON(!iov_iter_count(&con->v2.in_iter)))
+2936: 		ret = ceph_tcp_recv(con);
+2937: 		if (ret <= 0)
+2940: 		ret = populate_in_iter(con);
+2941: 		if (ret <= 0) {
+2942: 			if (ret && ret != -EAGAIN && !con->error_msg)
+2943: 				con->error_msg = "read processing error";
+495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)
+497: 	void *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;
+501: 	crc = crc32c(0, p, crcp - p);
+502: 	expected_crc = get_unaligned_le32(crcp);
+503: 	if (crc != expected_crc) {
+509: 	memset(desc, 0, sizeof(*desc));
+511: 	desc->fd_tag = ceph_decode_8(&p);
+512: 	desc->fd_seg_cnt = ceph_decode_8(&p);
+513: 	if (desc->fd_seg_cnt < 1 ||
+514: 	    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {
+515: 		pr_err("bad segment count %d\n", desc->fd_seg_cnt);
+518: 	for (i = 0; i < desc->fd_seg_cnt; i++) {
+519: 		desc->fd_lens[i] = ceph_decode_32(&p);
+520: 		desc->fd_aligns[i] = ceph_decode_16(&p);
+527: 	if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {
+532: 	if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {
+533: 		pr_err("control segment too big %d\n", desc->fd_lens[0]);
+536: 	if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {
+537: 		pr_err("front segment too big %d\n", desc->fd_lens[1]);
+540: 	if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {
+541: 		pr_err("middle segment too big %d\n", desc->fd_lens[2]);
+544: 	if (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {
+545: 		pr_err("data segment too big %d\n", desc->fd_lens[3]);
