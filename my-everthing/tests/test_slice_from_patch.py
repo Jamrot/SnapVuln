@@ -1,0 +1,20 @@
+import sys
+import os
+import logging
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src_new'))
+print("sys.path:", sys.path)
+sys.path.append(project_root)
+
+print("update sys.path:", sys.path)
+
+from log_config.log_config import setup_logging
+
+log_filename = os.path.join(os.path.dirname(__file__), 'log_test_slice_from_patch.log')
+setup_logging(log_filename=log_filename)
+logger = logging.getLogger(__name__)
+
+from slices.slice_from_patch import slice_from_patch
+
+if __name__ == '__main__':
+    slice_from_patch()

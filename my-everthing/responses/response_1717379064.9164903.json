@@ -1,0 +1,23 @@
+{
+  "id": "chatcmpl-9Vr2CyirtgY4PKKtPKderEHzZdGPV",
+  "object": "chat.completion",
+  "created": 1717379060,
+  "model": "gpt-4o-2024-05-13",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "<vulnerability-type>Signed-to-unsigned conversion leading to memory corruption</vulnerability-type>\n<patch-summary>This patch changes the name_len variable from signed to unsigned to prevent potential memory corruption in CIFSFindNext.</patch-summary>"
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 431,
+    "completion_tokens": 46,
+    "total_tokens": 477
+  },
+  "system_fingerprint": "fp_319be4768e"
+}

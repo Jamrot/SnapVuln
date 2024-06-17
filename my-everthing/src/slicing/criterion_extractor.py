@@ -3,6 +3,7 @@ import config
 import os
 import json
 import logging
+import get_path
 
 logger = logging.getLogger(__name__)
 
@@ -83,39 +84,25 @@ class CriterionExtractor:
             func_name = criterion['func_name']
             file_path_old = criterion['file_path']['old']
             file_path_new = criterion['file_path']['new']
+            
+            save_root, criterion_dir, code_filepath, module_dirpath, meta_filepath = get_path.get_criterion_savepath(commit_id=commit_id, criterion=criterion)
 
-            commit_id_short = commit_id[:8]
-            # funcname_line = "-".join([func_name, str(criterion_line)])
-            save_root = os.path.join(config.CODE_ROOT, commit_id_short)
-            save_filename_base = "-".join([commit_id_short, func_name, str(criterion_line)])
             criterion['save_root'] = save_root
-            criterion['save_filename_base'] = save_filename_base
+            criterion['save_filename_base'] = criterion_dir
 
             if save_file:
-                # save code (old version) to code_filepath 
-                code_filename = "-".join([config.CODE_FILENAME_START, save_filename_base])+'.c'
-                code_filepath = os.path.join(save_root, save_filename_base, code_filename)
-                self._save_file(file_code_old, code_filepath, confirm=config.CODE_FILE_CONFIRM)
-
+                self._save_file(file_code_old, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
                 criterion['save_file_code_old_filepath'] = code_filepath
 
             if save_module:
-                # save old module to module_dir
-                module_dir = os.path.dirname(file_path_old)
-                module_dirname = "-".join([config.MODULE_DIRNAME_START, commit_id_short, "_".join(module_dir.split("/"))])
-                module_dirpath = os.path.join(save_root, module_dirname)
-                self._save_module(criterion=criterion, module_dirpath=module_dirpath, confirm=config.MODULE_CONFIRM, overwrite=config.MODULE_OVERWRITE)
-
+                self._save_module(criterion=criterion, module_dirpath=module_dirpath, overwrite=config.MODULE_OVERWRITE)
                 criterion['save_module_dirpath'] = module_dirpath
             
             if save_meta:
-                # save criterion meta information to meta_filepath
-                meta_filename = "-".join([config.META_FILENAME_START, save_filename_base])+'.json'
-                meta_filepath = os.path.join(save_root, save_filename_base, meta_filename)
                 self._save_criterion_meta([criterion], meta_filepath)
 
     
-    def _save_module(self, criterion, module_dirpath, confirm=True, overwrite=True):
+    def _save_module(self, criterion, module_dirpath, overwrite=False):
         """copy local_module_path to module_dirpath, default to overwrite."""
         file_path_new = criterion['file_path']['new']
         old_version = criterion['version']['old']
@@ -127,17 +114,12 @@ class CriterionExtractor:
         # checkout the version
         os.system(f"git -C {config.LINUX} checkout {old_version} -- {file_path_new}")
 
-        if os.path.exists(module_dirpath):
+        if os.path.exists(module_dirpath) and overwrite:
             if not len(os.listdir(module_dirpath)) == 0:
                 logger.warning(f"Module directory {module_dirpath} already exists and is not empty")
                 
-                if confirm:
-                    confirm_input = input(f"{module_dirpath} already exists, overwrite (y/n)")              
-                    if confirm_input.lower() != 'y':
-                        overwrite = False
-                if overwrite:
-                    logger.warning(f"Overwriting module directory {module_dirpath}")
-                    os.system(f"rm -rf {module_dirpath}")
+            logger.warning(f"Overwriting module directory {module_dirpath}")
+            os.system(f"rm -rf {module_dirpath}")
 
         os.system(f"cp -r {local_module_path} {module_dirpath}")
         
@@ -180,21 +162,12 @@ class CriterionExtractor:
 
         logger.info(f"Meta file saved to {meta_filepath}")
 
-    def _save_file(self, file_content, file_path, confirm=True):
-        """Saves content to a file, default to overwrite.
-
-        Parameters:
-            file_content (str): The content to be saved in the file.
-            file_path (str): The path where the file will be saved.
-            confirm (bool): Whether to ask for confirmation before overwriting the file.
-        """
-        if os.path.exists(file_path):
+    def _save_file(self, file_content, file_path, overwrite=False):
+        if os.path.exists(file_path) and overwrite:
             logger.warning(f"File {file_path} already exists")
-            confirm_input = input(f"File {file_path} already exists, overwrite? (y/n)") if confirm else 'y' # default to overwrite
-            if confirm_input.lower() != 'y':
-                return
-            else:
-                logger.warning(f"Overwriting file {file_path}")
+            logger.warning(f"Overwriting file {file_path}")
+        else:
+            return
 
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path))
