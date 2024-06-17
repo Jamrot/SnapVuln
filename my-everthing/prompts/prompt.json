@@ -29,10 +29,40 @@
             "content": "{{\n  \"patch\": \"{}\"\n}}"
         }        
     ],
-    "stmt_extraction":[
+    "stmt_extraction-0617":[
         {
             "role": "system",
             "content": "You are an expert in patch analysis and code modification tracking. Given the provided patch summary, vulnerability type, vulnerability summary, and the list of all modification statements (including file path, function name, line number changes, and whether the statement is ADD or DELETE), your task is to extract all statements relevant to the vulnerability and sort them by their relevance to the vulnerability. First, identify all the modification statements in the patch that are relevant to the vulnerability. Then, sort these statements in an order that reflects their significance and relevance to the vulnerability. Ensure that the statements are accurately extracted and sorted to reflect their importance in understanding and addressing the vulnerability.\n\nResponse format:\n{\n  \"relevant_statements\": [{\"file_path\": {\"file_path_old\": \"[old file path]\",\"file_path_new\": \"[new file path]\"},\"function_name\": \"[function name]\",\"line_changes\": \"[line number changes]\",\"modification\": \"[ADD/DELETE]\",\"statement\": \"[code statement]\",\"reason\": \"[brief reason why this statement is relevant to the vulnerability]\"}, ... ],\n  \"sorted_statements\": [{\"statement\": \"[code statement]\",\"relevance\": \"[relevance order indicating the significance of the statement to the vulnerability]\"}, ... ]\n}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"patch_information\": {}\n}}"
+        }        
+    ],
+    "stmt_extraction-1":[
+        {
+            "role": "system",
+            "content": "You are an expert in patch analysis and code modification tracking. Given the provided patch summary, vulnerability type, vulnerability summary, and the list of all modification statements (including file path, function name, line number changes, and whether the statement is ADD or DELETE), your task is to extract all statements causing the vulnerability and sort them by their relevance to the root cause of the vulnerability. First, identify all the modification statements in the patch that causing the vulnerability. Then, sort these statements in an order that reflects their significance and relevance to the root cause of the vulnerability. Ensure that the statements are accurately extracted and sorted to reflect their importance in understanding and addressing the vulnerability.\n\nResponse format:\n{\n  \"relevant_statements\": [{\"file_path\": {\"file_path_old\": \"[old file path]\",\"file_path_new\": \"[new file path]\"},\"function_name\": \"[function name]\",\"line_changes\": \"[line number changes]\",\"modification\": \"[ADD/DELETE]\",\"statement\": \"[code statement]\",\"reason\": \"[brief reason why this statement is relevant to the vulnerability]\"}, ... ],\n  \"sorted_statements\": [{\"statement\": \"[code statement]\",\"relevance\": \"[relevance order indicating the significance of the statement to the vulnerability]\"}, ... ]\n}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"patch_information\": {}\n}}"
+        }        
+    ],
+    "stmt_extraction":[
+        {
+            "role": "system",
+            "content": "You are an expert in patch analysis and code modification tracking. Given the provided patch summary, vulnerability type, vulnerability summary, and the list of all modification statements (including statement information, and whether the statement is ADD or DELETE), your task is to extract all statements that causing the vulnerability. Ensure that the statements are accurately extracted.\n\nResponse format:\n{\n  \"relevant_statements\": [{\"statement_info\": \"[statement infomation]\",\"modification\": \"[ADD/DELETE]\",\"statement\": \"[code statement]\",\"reason\": \"[brief reason why this statement is relevant to the vulnerability]\"}, ... ],\n}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"patch_information\": {}\n}}"
+        }        
+    ],
+    "stmt_extraction_sort":[
+        {
+            "role": "system",
+            "content": "You are an expert in patch analysis and code modification tracking. Given the provided patch summary, vulnerability type, vulnerability summary, and the list of all modification statements (including file path, function name, line number changes, and whether the statement is ADD or DELETE), your task is to extract all statements causing the vulnerability and sort them by their relevance to the root cause of the vulnerability. First, identify all the modification statements in the patch that causing the vulnerability. Then, sort these statements in an order that reflects their significance and relevance to the root cause of the vulnerability. Ensure that the statements are accurately extracted and sorted to reflect their importance in understanding and addressing the vulnerability.\n\nResponse format:\n{\n  \"relevant_statements\": [{\"statement_info\": \"[statement infomation]\",\"modification\": \"[ADD/DELETE]\",\"statement\": \"[code statement]\",\"reason\": \"[brief reason why this statement is relevant to the vulnerability]\"}, ... ],\n  \"sorted_statements\": [{\"statement_info\": \"[statement infomation]\",\"modification\": \"[ADD/DELETE]\",\"statement\": \"[code statement]\",\"relevance\": \"[relevance order indicating the significance of the statement to the vulnerability]\"}, ... ]\n}"
         },
         {
             "role": "user",
@@ -43,6 +73,16 @@
         {
             "role": "system",
             "content": "You are an expert in program slicing and code analysis. Given the provided information about a patch including its patch summary, vulnerability type, vulnerability summary, and related code, your task is to recommend the most suitable direction for program slicing (forward, backward, or bidirectional) and the most appropriate code representation graph (Control Flow Graph, Data Dependency Graph, Control Dependency Graph, Program Dependence Graph, Abstract Syntax Tree, Code Property Graph) to use. Your recommendations should aim to prevent path explosion while identifying the most precise code related to the vulnerability. Provide a brief justification for your choices.\n\nResponse format:\n{\n  \"slicing_direction\": \"[forward/backward/bidirectional]\",\n  \"code_representation_graph\": \"[Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph]\",\n  \"justification\": \"[brief justification for your choices]\"\n}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"patch_information\": {}\n}}"
+        }
+    ],
+    "slicing_strategy_stmt":[
+        {
+            "role": "system",
+            "content": "You are an expert in program slicing and code analysis. Given the provided information about a patch including its patch summary, vulnerability type, vulnerability summary, and related code, your task is to recommend the most suitable direction for program slicing (forward, backward, or bidirectional) and the most appropriate code representation graph (Control Flow Graph, Data Dependency Graph, Control Dependency Graph, Program Dependence Graph, Abstract Syntax Tree, Code Property Graph) to use for each provided relevant statement. Your recommendations should aim to identify the precise code related to the vulnerability while preventing path explosion. Provide a brief justification for your choices based on the nature of each statement and its role in the vulnerability.\n\nResponse format:\n{\n  \"statements\": [\n    {\n      \"statement_info\": \"file_path \\| function_name \\| line_number\",\n      \"slicing_direction\": \"\\[forward/backward/bidirectional\\]\",\n      \"code_representation_graph\": \"\\[Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph\\]\",\n      \"justification\": \"\\[brief justification for your choices\\]\"\n    },\n    ...\n  ]\n}"
         },
         {
             "role": "user",

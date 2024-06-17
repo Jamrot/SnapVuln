@@ -1,0 +1,16 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "modification": "DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "This condition potentially skips the deallocation of command buffers, leading to a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "DELETE",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is responsible for freeing the command buffers. Its deletion without proper replacement can cause a memory leak."
+    }
+  ]
+}

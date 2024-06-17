@@ -11,7 +11,11 @@ log_filename = os.path.join(os.path.dirname(__file__), 'log_test_slice_from_patc
 setup_logging(log_filename=log_filename)
 logger = logging.getLogger(__name__)
 
-from slices.slice_from_patch import slice_from_patch
+import api_requests.stmt_extraction as stmt_extraction
+import api_requests.patch_analysis as patch_analysis
+import api_requests.slicing_strategy as slicing_strategy
 
 if __name__ == '__main__':
-    slice_from_patch()
+    # patch_analysis.test()
+    # stmt_extraction.test()
+    slicing_strategy.test()

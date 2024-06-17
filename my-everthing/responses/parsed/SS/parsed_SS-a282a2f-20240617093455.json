@@ -1,0 +1,64 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks if the last segment is empty, which is part of the validation process. A backward slice will help identify the conditions and variables leading to this check, and a Control Dependency Graph will effectively capture the control flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the last segment is empty. A backward slice will help trace the conditions that lead to this logging, and a Control Dependency Graph will capture the control flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the control segment length exceeds the maximum allowed length. A backward slice will help identify the source and validation of `desc->fd_lens[0]`, and a Data Dependency Graph will capture the data flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the control segment length is too large. A backward slice will help trace the conditions that lead to this logging, and a Control Dependency Graph will capture the control flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the front segment length exceeds the maximum allowed length. A backward slice will help identify the source and validation of `desc->fd_lens[1]`, and a Data Dependency Graph will capture the data flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the front segment length is too large. A backward slice will help trace the conditions that lead to this logging, and a Control Dependency Graph will capture the control flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the middle segment length exceeds the maximum allowed length. A backward slice will help identify the source and validation of `desc->fd_lens[2]`, and a Data Dependency Graph will capture the data flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the middle segment length is too large. A backward slice will help trace the conditions that lead to this logging, and a Control Dependency Graph will capture the control flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the data segment length exceeds the maximum allowed length. A backward slice will help identify the source and validation of `desc->fd_lens[3]`, and a Data Dependency Graph will capture the data flow dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the data segment length is too large. A backward slice will help trace the conditions that lead to this logging, and a Control Dependency Graph will capture the control flow dependencies."
+    }
+  ]
+}

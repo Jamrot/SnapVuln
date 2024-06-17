@@ -1,0 +1,64 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "To understand the conditions leading to the check for an empty last segment, we need to trace back the control flow that determines `desc->fd_seg_cnt`. The Control Dependency Graph will help identify the control structures influencing this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This error logging is dependent on the condition in the previous statement. Using the Control Dependency Graph will help trace back the control flow to understand under what conditions this error is logged."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To verify the control segment length, we need to trace back the data flow that sets `desc->fd_lens[0]`. The Data Dependency Graph will help identify the data sources and transformations leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This error logging is dependent on the condition in the previous statement. Using the Control Dependency Graph will help trace back the control flow to understand under what conditions this error is logged."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To verify the front segment length, we need to trace back the data flow that sets `desc->fd_lens[1]`. The Data Dependency Graph will help identify the data sources and transformations leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This error logging is dependent on the condition in the previous statement. Using the Control Dependency Graph will help trace back the control flow to understand under what conditions this error is logged."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To verify the middle segment length, we need to trace back the data flow that sets `desc->fd_lens[2]`. The Data Dependency Graph will help identify the data sources and transformations leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This error logging is dependent on the condition in the previous statement. Using the Control Dependency Graph will help trace back the control flow to understand under what conditions this error is logged."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To verify the data segment length, we need to trace back the data flow that sets `desc->fd_lens[3]`. The Data Dependency Graph will help identify the data sources and transformations leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This error logging is dependent on the condition in the previous statement. Using the Control Dependency Graph will help trace back the control flow to understand under what conditions this error is logged."
+    }
+  ]
+}

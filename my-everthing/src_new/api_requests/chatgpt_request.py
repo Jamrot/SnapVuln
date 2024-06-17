@@ -7,9 +7,12 @@ import requests
 import time
 from dotenv import load_dotenv
 
+import logging
+logger = logging.getLogger(__name__)
+
 from analysis.patch_analyzer import PatchAnalyzer
 import config.config as config
-from requests.get_prompts import *
+from api_requests.get_prompts import *
 
 load_dotenv()
 
@@ -112,19 +115,16 @@ def save_response(response, response_filepath, request_content=""):
 
 
 def test():
-    request_url = "https://api.openai.com/v1/chat/completions"
-    api_key = os.getenv("OPENAI_API_KEY")
-
-    commit_id = "a282a2f10539dce2aa619e71e1817570d557fc97"
+    commit_id = config.COMMIT_ID
     patch_desc, patch_diff_code, patch_info = get_patch(commit_id)
 
-    prompt_filepath = "my-everthing/prompts/prompt.json"
+    prompt_filepath = config.PROMPT_FILEPATH
     patch = patch_desc+'\n'+patch_diff_code
     messages = get_PA_prompts(prompt_filepath=prompt_filepath, patch=patch)
 
     response_info, request_content = chatgpt_request(
-        request_url=request_url,
-        api_key=api_key,
+        request_url=config.REQUEST_URL,
+        api_key=config.OPENAI_API_KEY,
         model="gpt-4o",
         messages=messages
     )

@@ -1,0 +1,5 @@
+{
+  "patch_summary": "The patch addresses a potential memory leak during the teardown of an NVMe TCP controller by ensuring all command buffers are freed.",
+  "vulnerability_type": "Memory Leak",
+  "vulnerability_summary": "A memory leak can occur when command buffers are not properly deallocated during the teardown of an NVMe TCP controller."
+}

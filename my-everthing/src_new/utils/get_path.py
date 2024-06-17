@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def get_save_root(commit_id):
-    commit_id_short = get_commit_id_short
+    commit_id_short = get_commit_id_short(commit_id=commit_id)
     save_root = os.path.join(config.DATA_ROOT, commit_id_short)
 
     return save_root
@@ -14,7 +14,7 @@ def get_criterion_savepath(commit_id, criterion):
     """get criterion save root, criterion dir, criterion code_file save_path, criterion module_dir save_path, criterion meta_data save_path"""
     save_root = get_save_root(commit_id=commit_id)
 
-    commit_id_short = get_commit_id_short
+    commit_id_short = get_commit_id_short(commit_id=commit_id)
     criterion_line = criterion['criterion']['line']
     file_code = criterion['file_code']
     file_code_old = file_code['old']
@@ -113,3 +113,17 @@ def get_slice_save_filepath(criterion, direction, graph_type, depth):
     slice_save_path = os.path.join(slice_dir, direction, graph_type, depth, f"{config.SLICE_START}-{direction}_{graph_type}_{depth}-{filename_base}{config.SLICE_DOT_FILE_END}")
 
     return slice_save_path
+
+
+from datetime import datetime
+
+CURRENT_TIME = datetime.now().strftime("%Y%m%d%H%M%S")
+
+def get_response_filename(response_type, commit_id="", parsed=False):
+    timestamp = CURRENT_TIME
+    commit_id = get_commit_id_short(commit_id)
+    if parsed:
+        response_filename = f"parsed_{response_type}-{commit_id}-{timestamp}.json"
+    else:
+        response_filename = f"response_{response_type}-{commit_id}-{timestamp}.json"
+    return response_filename

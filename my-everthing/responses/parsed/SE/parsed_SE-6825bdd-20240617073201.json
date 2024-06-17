@@ -1,0 +1,40 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584",
+      "modification": "DELETE",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "reason": "This statement is relevant to the vulnerability because it is part of the loop that was supposed to free command buffers, but it was not doing so correctly, leading to a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "modification": "DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "This statement is relevant to the vulnerability because it was part of the condition that was supposed to check if the command buffer needs to be freed, but it was not doing so correctly, leading to a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "DELETE",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is relevant to the vulnerability because it was supposed to free the command buffer, but it was not doing so correctly, leading to a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "modification": "ADD",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++)",
+      "reason": "This statement is relevant to the vulnerability because it is part of the corrected loop that now properly frees command buffers, addressing the memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "modification": "ADD",
+      "statement": "\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is relevant to the vulnerability because it is the corrected statement that now properly frees the command buffer, addressing the memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587",
+      "modification": "ADD",
+      "statement": "\tnvmet_tcp_free_cmd_buffers(&queue->connect);",
+      "reason": "This statement is relevant to the vulnerability because it is the new statement that ensures all command buffers are freed, addressing the memory leak."
+    }
+  ]
+}

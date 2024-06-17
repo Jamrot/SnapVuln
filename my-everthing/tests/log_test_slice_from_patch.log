@@ -1,2 +1,2 @@
-2024-06-17 10:19:33 - git.cmd - DEBUG - Popen(['git', 'version'], cwd=/app/slicing-snapvuln, stdin=None, shell=False, universal_newlines=False) [in /app/slicing-snapvuln/env3.7_snapvuln/lib/python3.7/site-packages/git/cmd.py:1259]
-2024-06-17 10:19:33 - git.cmd - DEBUG - Popen(['git', 'version'], cwd=/app/slicing-snapvuln, stdin=None, shell=False, universal_newlines=False) [in /app/slicing-snapvuln/env3.7_snapvuln/lib/python3.7/site-packages/git/cmd.py:1259]
+2024-06-17 17:34:54 - git.cmd - DEBUG - Popen(['git', 'version'], cwd=/app/slicing-snapvuln, stdin=None, shell=False, universal_newlines=False) [in /app/slicing-snapvuln/env3.7_snapvuln/lib/python3.7/site-packages/git/cmd.py:1259]
+2024-06-17 17:34:54 - git.cmd - DEBUG - Popen(['git', 'version'], cwd=/app/slicing-snapvuln, stdin=None, shell=False, universal_newlines=False) [in /app/slicing-snapvuln/env3.7_snapvuln/lib/python3.7/site-packages/git/cmd.py:1259]
