@@ -1,0 +1,64 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement is part of a validation check. Backward slicing will help identify the conditions and variables leading to this check, and the Control Dependency Graph will show how this check is influenced by previous control structures."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This logging statement is dependent on the previous validation check. Backward slicing will help trace the conditions leading to this log, and the Control Dependency Graph will show the control dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks the control segment length. Backward slicing will help identify the source and conditions of `desc->fd_lens[0]`, and the Control Dependency Graph will show the control dependencies affecting this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This logging statement is dependent on the control segment length check. Backward slicing will help trace the conditions leading to this log, and the Control Dependency Graph will show the control dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks the front segment length. Backward slicing will help identify the source and conditions of `desc->fd_lens[1]`, and the Control Dependency Graph will show the control dependencies affecting this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This logging statement is dependent on the front segment length check. Backward slicing will help trace the conditions leading to this log, and the Control Dependency Graph will show the control dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks the middle segment length. Backward slicing will help identify the source and conditions of `desc->fd_lens[2]`, and the Control Dependency Graph will show the control dependencies affecting this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This logging statement is dependent on the middle segment length check. Backward slicing will help trace the conditions leading to this log, and the Control Dependency Graph will show the control dependencies."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks the data segment length. Backward slicing will help identify the source and conditions of `desc->fd_lens[3]`, and the Control Dependency Graph will show the control dependencies affecting this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This logging statement is dependent on the data segment length check. Backward slicing will help trace the conditions leading to this log, and the Control Dependency Graph will show the control dependencies."
+    }
+  ]
+}
