@@ -1,0 +1,25 @@
+{
+  "statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement initiates a loop that iterates over all commands in the queue. A forward slice from this point will help identify all the statements that could potentially be affected by this loop, which is crucial for understanding the memory leak. A Control Flow Graph is suitable as it will help visualize the flow of the program and the paths that the loop can take."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the command needs data in. A backward slice from this point will help identify all the statements that contribute to the state of the command at this point, which is crucial for understanding the memory leak. A Data Dependency Graph is suitable as it will help visualize the data dependencies that could potentially lead to a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "slicing_direction": "bidirectional",
+      "code_representation_graph": "Program Dependence Graph",
+      "justification": "This statement attempts to free the command buffers. A bidirectional slice from this point will help identify all the statements that contribute to and are affected by this statement, which is crucial for understanding the memory leak. A Program Dependence Graph is suitable as it will help visualize both the control and data dependencies that could potentially lead to a memory leak."
+    }
+  ]
+}

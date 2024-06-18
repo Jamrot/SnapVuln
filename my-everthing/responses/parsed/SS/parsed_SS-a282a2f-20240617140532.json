@@ -1,0 +1,64 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks if the last segment is empty, which is part of the validation process. A backward slice will help identify the conditions and control flow leading to this check, ensuring that all relevant validation logic is captured."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the last segment is empty. A backward slice will help trace the control flow and conditions that lead to this logging, ensuring that the context of the error is fully understood."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks if the control segment length exceeds the maximum allowed length. A backward slice will help identify the control flow and conditions leading to this check, ensuring that all relevant validation logic is captured."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the control segment length is too large. A backward slice will help trace the control flow and conditions that lead to this logging, ensuring that the context of the error is fully understood."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks if the front segment length exceeds the maximum allowed length. A backward slice will help identify the control flow and conditions leading to this check, ensuring that all relevant validation logic is captured."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the front segment length is too large. A backward slice will help trace the control flow and conditions that lead to this logging, ensuring that the context of the error is fully understood."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks if the middle segment length exceeds the maximum allowed length. A backward slice will help identify the control flow and conditions leading to this check, ensuring that all relevant validation logic is captured."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the middle segment length is too large. A backward slice will help trace the control flow and conditions that lead to this logging, ensuring that the context of the error is fully understood."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement checks if the data segment length exceeds the maximum allowed length. A backward slice will help identify the control flow and conditions leading to this check, ensuring that all relevant validation logic is captured."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement logs an error if the data segment length is too large. A backward slice will help trace the control flow and conditions that lead to this logging, ensuring that the context of the error is fully understood."
+    }
+  ]
+}

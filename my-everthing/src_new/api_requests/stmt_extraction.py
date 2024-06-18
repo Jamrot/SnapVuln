@@ -8,10 +8,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 import config.config as config
-from api_requests.get_prompts import *
 import api_requests.chatgpt_request as chatgpt_request
+import api_requests.response_parser as response_parser
 import utils.get_path as get_path
-import utils.read_file as read_file
 
 
 def get_SE_prompts_1(prompt_filepath, parsed_response, commit_info):
@@ -64,11 +63,13 @@ def get_SE_prompts_1(prompt_filepath, parsed_response, commit_info):
     return messages
 
 
-def get_SE_prompts(prompt_filepath, parsed_response, commit_info):
-    with open(prompt_filepath, 'r') as f:
-        all_prompts = json.load(f)
+def get_SE_prompts(prompt_filepath, parsed_response, commit_id):
     
+    with open(prompt_filepath, 'r') as f:
+        all_prompts = json.load(f)    
     prompt_template = all_prompts['stmt_extraction']
+
+    desc_clean, diff_code, commit_info = response_parser.get_patch(commit_id)
 
     messages = prompt_template
     # parsed_response = json.loads(response_PA)
@@ -118,7 +119,7 @@ def do_SE_request(messages):
 
 
 def parse_SE_response(response_info):
-    response_content = chatgpt_request.get_response_content(response_info)
+    response_content = response_parser.get_response_content(response_info)
     response_dict = json.loads(response_content)
     # TODO: check if the response is in the correct format
     return response_dict
@@ -126,41 +127,53 @@ def parse_SE_response(response_info):
 
 def save_SE_response(response_info, request_content, commit_id):
     response_dir = os.path.join(config.RESPONSE_DIR, 'SE')
-    response_filename = get_path.get_response_filename(response_type='SE', commit_id=commit_id, parsed=False)
+    response_filename = get_path.get_response_filename(task='SE', commit_id=commit_id, parsed=False)
     response_filepath = os.path.join(response_dir, response_filename)
-    chatgpt_request.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
+    response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
 
 def save_SE_parse(response_dict, commit_id):
     parsed_dir = os.path.join(config.PARSED_DIR, 'SE')
     if not os.path.exists(parsed_dir):
         os.makedirs(parsed_dir)
-    parsed_filename = get_path.get_response_filename(response_type='SE', commit_id=commit_id, parsed=True)
+    parsed_filename = get_path.get_response_filename(task='SE', commit_id=commit_id, parsed=True)
     parsed_filepath = os.path.join(parsed_dir, parsed_filename)
     with open(parsed_filepath, 'w') as f:
         json.dump(response_dict, f, indent=2)
-    
 
-def read_parsed_response(filepath):
-    with open(filepath, 'r') as f:
-        parsed_response = json.load(f)
-    return parsed_response
+    return parsed_filepath
 
 
-def test():
-    commit_id = config.COMMIT_ID
-    filepath = "my-everthing/responses/parsed/PA/parsed_PA-a282a2f-20240617053613.json"
-    parsed_response = read_parsed_response(filepath)
+def do_stmt_extraction(commit_id, filepath_PA):
+    prompt_filepath = config.PROMPT_FILEPATH
+    parsed_response = response_parser.read_parsed_response(filepath_PA)
 
-    prompt_filepath = config.PROMPT_FILEPATH    
-    patch_desc, patch_diff_code, patch_info = chatgpt_request.get_patch(commit_id)
-    messages = get_SE_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_info=patch_info)
+    messages = get_SE_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_id=commit_id)
 
     response_info, request_content = do_SE_request(messages)
 
     save_SE_response(response_info=response_info, request_content=request_content, commit_id=commit_id)
+    
+    response_SE = parse_SE_response(response_info)
+    filepath_SE = save_SE_parse(response_dict=response_SE, commit_id=commit_id)
+
+    return filepath_SE
+
+
+def test():
+    commit_id = config.COMMIT_ID   
+    prompt_filepath = config.PROMPT_FILEPATH    
+    filepath = config.PA_RESPONSE_FILEPATH
+    parsed_response = response_parser.read_parsed_response(filepath)
+
+    messages = get_SE_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_id=commit_id)
+
+    response_info, request_content = do_SE_request(messages)
+    
+    timestamp = response_parser.get_response_timestamp(response_info=response_info)
+    save_SE_response(response_info=response_info, request_content=request_content, commit_id=commit_id, timestamp=timestamp)
 
     # filepath = "my-everthing/responses/original/SE/response_SE-a282a2f-20240617062716.json"
     # response_info = read_file.read_response_info(response_filepath=filepath)
     response_SE = parse_SE_response(response_info)
-    save_SE_parse(response_dict=response_SE, commit_id=commit_id)
+    save_SE_parse(response_dict=response_SE, commit_id=commit_id, timestamp=timestamp)

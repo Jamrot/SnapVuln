@@ -1,0 +1,74 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527",
+      "statement": "if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement is a conditional check that determines the flow of the program based on the value of `desc->fd_lens[desc->fd_seg_cnt - 1]`. Analyzing the control dependencies will help understand the conditions under which this check is performed, which is crucial for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528",
+      "statement": "pr_err(\"last segment empty\\n\");",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement logs an error message if the condition in the previous statement is true. Understanding the control flow leading to this log statement will help trace back to the conditions causing the error, which is essential for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532",
+      "statement": "if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This conditional check ensures the control segment length does not exceed the maximum allowed length. Analyzing the control dependencies will help understand the conditions under which this check is performed, which is crucial for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533",
+      "statement": "pr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement logs an error message if the control segment length exceeds the maximum allowed length. Understanding the control flow leading to this log statement will help trace back to the conditions causing the error, which is essential for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536",
+      "statement": "if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This conditional check ensures the front segment length does not exceed the maximum allowed length. Analyzing the control dependencies will help understand the conditions under which this check is performed, which is crucial for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537",
+      "statement": "pr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement logs an error message if the front segment length exceeds the maximum allowed length. Understanding the control flow leading to this log statement will help trace back to the conditions causing the error, which is essential for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540",
+      "statement": "if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This conditional check ensures the middle segment length does not exceed the maximum allowed length. Analyzing the control dependencies will help understand the conditions under which this check is performed, which is crucial for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541",
+      "statement": "pr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement logs an error message if the middle segment length exceeds the maximum allowed length. Understanding the control flow leading to this log statement will help trace back to the conditions causing the error, which is essential for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544",
+      "statement": "if (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This conditional check ensures the data segment length does not exceed the maximum allowed length. Analyzing the control dependencies will help understand the conditions under which this check is performed, which is crucial for identifying the vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545",
+      "statement": "pr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement logs an error message if the data segment length exceeds the maximum allowed length. Understanding the control flow leading to this log statement will help trace back to the conditions causing the error, which is essential for identifying the vulnerability."
+    }
+  ]
+}

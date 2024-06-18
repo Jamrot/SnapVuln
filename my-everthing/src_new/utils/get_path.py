@@ -117,13 +117,18 @@ def get_slice_save_filepath(criterion, direction, graph_type, depth):
 
 from datetime import datetime
 
-CURRENT_TIME = datetime.now().strftime("%Y%m%d%H%M%S")
+CURRENT_TIME = datetime.now().strftime("N%Y%m%d%H%M%S")
 
-def get_response_filename(response_type, commit_id="", parsed=False):
-    timestamp = CURRENT_TIME
+def get_response_filepath(task, commit_id="", parsed=False, timestamp=CURRENT_TIME):
+    if not timestamp:
+        timestamp = CURRENT_TIME
     commit_id = get_commit_id_short(commit_id)
     if parsed:
-        response_filename = f"parsed_{response_type}-{commit_id}-{timestamp}.json"
+        response_filename = f"parsed_{task}-{commit_id}-{timestamp}.json"
     else:
-        response_filename = f"response_{response_type}-{commit_id}-{timestamp}.json"
-    return response_filename
+        response_filename = f"response_{task}-{commit_id}-{timestamp}.json"
+    
+    response_dir = os.path.join(config.RESPONSE_DIR, task)
+    response_filepath = os.path.join(response_dir, response_filename)
+
+    return response_filepath

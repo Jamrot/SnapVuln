@@ -1,0 +1,39 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement checks if the last segment is empty, which is a part of the validation process to prevent buffer overruns. A backward slice from this point will help identify the data flow leading to this check. Control Flow Graph is suitable as it can help understand the flow of the program leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the control segment length exceeds the maximum allowed length, which is crucial to prevent buffer overflows. A backward slice from this point will help identify the data flow leading to this check. Data Dependency Graph is suitable as it can help understand the data dependencies leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the front segment length exceeds the maximum allowed length, which is crucial to prevent buffer overflows. A backward slice from this point will help identify the data flow leading to this check. Data Dependency Graph is suitable as it can help understand the data dependencies leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the middle segment length exceeds the maximum allowed length, which is crucial to prevent buffer overflows. A backward slice from this point will help identify the data flow leading to this check. Data Dependency Graph is suitable as it can help understand the data dependencies leading to this check."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the data segment length exceeds the maximum allowed length, which is crucial to prevent buffer overflows. A backward slice from this point will help identify the data flow leading to this check. Data Dependency Graph is suitable as it can help understand the data dependencies leading to this check."
+    }
+  ]
+}
