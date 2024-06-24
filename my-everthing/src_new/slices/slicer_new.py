@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 class Slicer:
     def __init__(self, G_graph):
-        self.G_graph = self.G_graph
+        self.G_graph = G_graph
     
     # def read_graph(self, graph_path):
     #     G = nx.drawing.nx_agraph.read_dot(graph_path)

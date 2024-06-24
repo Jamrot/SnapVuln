@@ -7,7 +7,7 @@ sys.path.append(project_root)
 
 from log_config.log_config import setup_logging
 
-log_filename = os.path.join(os.path.dirname(__file__), 'log_test_slice_from_patch.log')
+log_filename = os.path.join(os.path.dirname(__file__), 'log_test_chatgpt_request.log')
 setup_logging(log_filename=log_filename)
 logger = logging.getLogger(__name__)
 

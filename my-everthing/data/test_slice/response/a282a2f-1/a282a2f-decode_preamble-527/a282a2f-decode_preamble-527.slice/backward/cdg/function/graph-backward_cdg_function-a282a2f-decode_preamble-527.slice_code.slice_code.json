@@ -1,0 +1,211 @@
+{
+    "code": {
+        "file_code_old-a282a2f-decode_preamble-527.c": {
+            "503": "\tif (crc != expected_crc) {\n",
+            "513": "\tif (desc->fd_seg_cnt < 1 ||\n",
+            "527": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n"
+        }
+    },
+    "nodes": {
+        "1508": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "desc->fd_seg_cnt < 1 ||\n\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT",
+            "COLUMN_NUMBER": "6",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "513",
+            "METHOD_FULL_NAME": "<operator>.logicalOr",
+            "NAME": "<operator>.logicalOr",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        },
+        "1561": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "desc->fd_lens[desc->fd_seg_cnt - 1]",
+            "COLUMN_NUMBER": "7",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "527",
+            "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
+            "NAME": "<operator>.indirectIndexAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        },
+        "1564": {
+            "ARGUMENT_INDEX": "2",
+            "CANONICAL_NAME": "fd_lens",
+            "CODE": "fd_lens",
+            "COLUMN_NUMBER": "7",
+            "LINE_NUMBER": "527",
+            "ORDER": "2",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "FIELD_IDENTIFIER"
+        },
+        "1566": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "desc->fd_seg_cnt",
+            "COLUMN_NUMBER": "21",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "527",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        },
+        "1562": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "desc->fd_lens",
+            "COLUMN_NUMBER": "7",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "527",
+            "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+            "NAME": "<operator>.indirectFieldAccess",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        },
+        "1563": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "desc",
+            "COLUMN_NUMBER": "7",
+            "LINE_NUMBER": "527",
+            "NAME": "desc",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "ceph_frame_desc*",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "IDENTIFIER"
+        },
+        "1560": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "!desc->fd_lens[desc->fd_seg_cnt - 1]",
+            "COLUMN_NUMBER": "6",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "527",
+            "METHOD_FULL_NAME": "<operator>.logicalNot",
+            "NAME": "<operator>.logicalNot",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        },
+        "1568": {
+            "ARGUMENT_INDEX": "2",
+            "CANONICAL_NAME": "fd_seg_cnt",
+            "CODE": "fd_seg_cnt",
+            "COLUMN_NUMBER": "21",
+            "LINE_NUMBER": "527",
+            "ORDER": "2",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "FIELD_IDENTIFIER"
+        },
+        "1567": {
+            "ARGUMENT_INDEX": "1",
+            "CODE": "desc",
+            "COLUMN_NUMBER": "21",
+            "LINE_NUMBER": "527",
+            "NAME": "desc",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "ceph_frame_desc*",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "IDENTIFIER"
+        },
+        "1569": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "1",
+            "COLUMN_NUMBER": "40",
+            "LINE_NUMBER": "527",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "int",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "LITERAL"
+        },
+        "1565": {
+            "ARGUMENT_INDEX": "2",
+            "CODE": "desc->fd_seg_cnt - 1",
+            "COLUMN_NUMBER": "21",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "527",
+            "METHOD_FULL_NAME": "<operator>.subtraction",
+            "NAME": "<operator>.subtraction",
+            "ORDER": "2",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        },
+        "1476": {
+            "ARGUMENT_INDEX": "-1",
+            "CODE": "crc != expected_crc",
+            "COLUMN_NUMBER": "6",
+            "DISPATCH_TYPE": "STATIC_DISPATCH",
+            "LINE_NUMBER": "503",
+            "METHOD_FULL_NAME": "<operator>.notEquals",
+            "NAME": "<operator>.notEquals",
+            "ORDER": "1",
+            "TYPE_FULL_NAME": "<empty>",
+            "filename": "file_code_old-a282a2f-decode_preamble-527.c",
+            "label": "CALL"
+        }
+    },
+    "edges": [
+        {
+            "1508->1561": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1564": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1566": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1562": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1563": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1560": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1568": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1567": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1569": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1508->1565": {
+                "label": "CDG"
+            }
+        },
+        {
+            "1476->1508": {
+                "label": "CDG"
+            }
+        }
+    ]
+}

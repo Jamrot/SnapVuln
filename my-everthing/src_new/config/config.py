@@ -1,7 +1,7 @@
 import os
 LINUX = '/mnt/wsl2/home/jamrot/linux'
 
-DATA_ROOT = '/app/slicing-snapvuln/my-everthing/data/test'
+DATA_ROOT = '/app/slicing-snapvuln/my-everthing/data/test_slice/response'
 # GRAPH_ROOT = os.path.join(DATA_ROOT, 'graph')
 # CODE_ROOT = os.path.join(DATA_ROOT, 'code')
 # GRAPH_ROOT = os.path.join(DATA_ROOT, 'test')
@@ -9,7 +9,10 @@ DATA_ROOT = '/app/slicing-snapvuln/my-everthing/data/test'
 # SLICE_ROOT = os.path.join(DATA_ROOT, 'test')
 # META_ROOT = os.path.join(DATA_ROOT, 'test')
 
-GRAPH_ROOT = CODE_ROOT = SLICE_ROOT = META_ROOT = DATA_ROOT
+SLICE_ROOT = META_ROOT = DATA_ROOT
+
+CODE_DIRNAME = 'code'
+GRAPH_DIRNAME = 'graph'
 
 desc_tags_prefixes = [
     "Signed-off-by:", "Reported-by:", "Fixes:", "Link:", "Suggested-by:", "cc:",
@@ -23,19 +26,22 @@ META_FILENAME_START = 'meta'
 MODULE_DIRNAME_START = 'module'
 
 GRAPH_START = 'graph'
-
 GRAPH_DIR_END = '.graph'
 GRAPH_FILE_END = '.dot'
 
-SLICEs_START = 'graph'
+SLICE_START = 'slice'
 SLICE_DIR_END = '.slice'
 SLICE_DOT_FILE_END = '.slice_code.dot'
 
-CODE_FILE_OVERWRITE = False
-MODULE_OVERWRITE = False
+PARSED_START = 'parsed'
+PARSED_DIR_END = '.parsed'
+PARSED_FILE_END = '.json'
+
+CODE_FILE_OVERWRITE = True
+MODULE_OVERWRITE = True
 BIN_OVERWRITE = False
 GRAPH_OVERWRITE = False
-GRAPH_ALL_OVERWRITE = False
+GRAPH_ALL_OVERWRITE = True
 
 BIN_CONFIRM = False
 MODULE_CONFIRM = False
@@ -43,17 +49,25 @@ CODE_FILE_CONFIRM = False
 
 
 # patch
-# COMMIT_ID = "a282a2f10539dce2aa619e71e1817570d557fc97"
-COMMIT_ID = "6825bdde44340c5a9121f6d6fa25cc885bd9e821"
-PROMPT_FILEPATH = "my-everthing/prompts/prompt.json"
+COMMIT_ID = "a282a2f10539dce2aa619e71e1817570d557fc97"
+# COMMIT_ID = "6825bdde44340c5a9121f6d6fa25cc885bd9e821"
+
+# prompt
+PROMPT_FILEPATH = "my-everthing/prompts/prompt-dump.json"
+PROMPT_STMT_EXTRACTION = "stmt_extraction"
+PROMPT_PATCH_ANALYSIS = "patch_analysis"
+PROMPT_SLICING_STRAIGHT = "slicing_strategy_stmt"
 
 # requests
 REQUEST_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-REQUEST_MODEL = "gpt-4"
+REQUEST_MODEL = "gpt-4o"
 
 RESPONSE_DIR = '/app/slicing-snapvuln/my-everthing/responses/original'
-PARSED_DIR = '/app/slicing-snapvuln/my-everthing/responses/parsed'
+PARSED_DIR = '/app/slicing-snapvuln/my-everthing/data/test_api/parsed_response'
 
 PA_RESPONSE_FILEPATH = "my-everthing/responses/parsed/PA/parsed_PA-a282a2f-20240617053613.json"
 SE_RESPONSE_FILEPATH = "my-everthing/responses/parsed/SE/parsed_SE-a282a2f-20240617073944.json"
+
+# slicing
+PARSED_FILEPATH = "my-everthing/data/test_api/parsed_response/a282a2f/SS/parsed_SS-a282a2f-20240618090253.json"

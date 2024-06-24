@@ -1,0 +1,28 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "reason": "Loop through command buffers to deallocate data in buffers."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "Check if data in buffers are needed before deallocation."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "Free the command buffers if data in buffers are needed."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t}",
+      "reason": "End of loop for deallocating command buffers."
+    }
+  ]
+}

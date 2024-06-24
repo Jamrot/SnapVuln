@@ -1,0 +1,32 @@
+{
+  "statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584 | DELETE",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "Since this statement marks the beginning of a loop that iterates over command buffers to deallocate data, a backward slicing direction starting from this point can help trace back the flow of data dependencies and control flow within the loop."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585 | DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This conditional statement checks if data in buffers are needed before deallocation. A backward slicing direction with a focus on data dependencies can help identify the variables influencing this decision."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586 | DELETE",
+      "statement": "\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement is responsible for freeing the command buffers if data in buffers are needed. A backward slicing direction with a control dependency graph can capture the conditions that lead to this operation."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587 | DELETE",
+      "statement": "\t}",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "As the end of the loop for deallocating command buffers, a backward slicing direction with a control flow graph can help in understanding the loop termination and its impact on the deallocation process."
+    }
+  ]
+}

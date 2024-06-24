@@ -1,0 +1,8 @@
+file: /* file_code_old-a282a2f-decode_preamble-541.c */
+503: 	if (crc != expected_crc) {
+513: 	if (desc->fd_seg_cnt < 1 ||
+527: 	if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {
+532: 	if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {
+536: 	if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {
+540: 	if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {
+541: 		pr_err("middle segment too big %d\n", desc->fd_lens[2]);

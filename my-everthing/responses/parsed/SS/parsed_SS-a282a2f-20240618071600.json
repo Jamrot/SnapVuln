@@ -1,0 +1,18 @@
+{
+  "statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "Forward slicing is suitable to trace how the condition for the middle segment length check is evaluated. Using a Control Flow Graph will help visualize the flow of control through the conditional statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing is appropriate to identify the data dependencies leading to the error message printing. A Data Dependency Graph will show how the value of 'desc->fd_lens[2]' is propagated to the error message."
+    }
+  ]
+}

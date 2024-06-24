@@ -10,14 +10,14 @@ logger = logging.getLogger(__name__)
 class CriterionExtractor:
     """A class to extract and save criterions from a patch."""
 
-    def __init__(self, url, hash_id):
+    def __init__(self, url, commit_id):
         """Initializes CriterionExtractor to creates a PatchAnalyzer instance.
 
         Parameters:
             url (str): The URL of the Git repository.
             hash_id (str): The commit hash ID.
         """
-        self.patch_analyzer = PatchAnalyzer(url, hash_id)
+        self.patch_analyzer = PatchAnalyzer(url, commit_id)
 
     def get_criterion_from_patch(self):
         """Extracts criterions from a patch using the given PatchAnalyzer.
@@ -32,6 +32,7 @@ class CriterionExtractor:
                 - func_line: {'start': int, 'end': int}
                 - func_code: {'old': str, 'new': str}
                 - file_code: {'old': str, 'new': str}
+                - modification: str
         """
         info = self.patch_analyzer.get_commit_info()
         criterions = []
@@ -49,6 +50,7 @@ class CriterionExtractor:
                     func_stmt = func_info['func_stmt']
                     func_deleted_stmt = func_stmt['deleted']
                     for del_stmt_info in func_deleted_stmt:
+                        modifcation = 'DELETE'
                         criterions.append({
                             'criterion': del_stmt_info,  # line, code
                             'commit_id': commit_id,
@@ -58,6 +60,7 @@ class CriterionExtractor:
                             'func_line': func_line,  # start, end
                             'func_code': func_code,  # old, new
                             'file_code': file_code,  # old, new
+                            'modification': modifcation
                         })
         return criterions
 
@@ -91,7 +94,9 @@ class CriterionExtractor:
             criterion['save_filename_base'] = criterion_dir
 
             if save_file:
-                self._save_file(file_code_old, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
+                if not os.path.exists(code_filepath):
+                    logger.warning(f"Code file {code_filepath} does not exist")
+                    self._save_file(file_code_old, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
                 criterion['save_file_code_old_filepath'] = code_filepath
 
             if save_module:
@@ -163,11 +168,13 @@ class CriterionExtractor:
         logger.info(f"Meta file saved to {meta_filepath}")
 
     def _save_file(self, file_content, file_path, overwrite=False):
-        if os.path.exists(file_path) and overwrite:
-            logger.warning(f"File {file_path} already exists")
-            logger.warning(f"Overwriting file {file_path}")
-        else:
-            return
+        if os.path.exists(file_path):
+            if overwrite:
+                logger.warning(f"File {file_path} already exists")
+                logger.warning(f"Overwriting file {file_path}")
+            else:
+                logger.warning(f"File {file_path} already exists, and not overwriting")
+                return
 
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path))

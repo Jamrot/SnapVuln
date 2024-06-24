@@ -58,9 +58,13 @@ def save_response(response, response_filepath, request_content=""):
         json.dump(save_content, f, indent=2)
 
 
-def save_strategy():
-    # TODO: save slicing strategy for each criterion
-    pass
+def save_parsed_response(response_dict, parsed_filepath):
+    save_dir = os.path.dirname(parsed_filepath)
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    with open(parsed_filepath, 'w') as f:
+        json.dump(response_dict, f, indent=2)
+    return parsed_filepath
 
 
 def get_patch(commit_id):
@@ -69,3 +73,22 @@ def get_patch(commit_id):
     diff_code = patch_analyzer.get_diff_code()
     info = patch_analyzer.get_commit_info()
     return clean_desc, diff_code, info
+
+
+def get_line_info(file_path, func_name, stmt_info, modification):
+    file_path_old = file_path['old']
+    file_path_new = file_path['new']
+    line = stmt_info['line']
+    code = stmt_info['code']
+    line_info = " | ".join([file_path_old, file_path_new, func_name, str(line), modification])
+
+    return line_info, code
+
+
+def read_parsed(parsed_savepath):
+    if not os.path.exists(parsed_savepath):
+        parsed = {}
+        return parsed
+    with open(parsed_savepath, 'r') as f:
+        parsed = json.load(f)
+    return parsed

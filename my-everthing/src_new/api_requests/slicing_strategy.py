@@ -13,28 +13,11 @@ import api_requests.response_parser as response_parser
 import utils.get_path as get_path
 
 
-def get_SS_prompts_1(prompt_filepath, parsed_response, commit_diff_code):
-    with open(prompt_filepath, 'r') as f:
-        all_prompts = json.load(f)
-    
-    prompt_template = all_prompts['slicing_strategy']
-
-    messages = prompt_template
-    parsed_response = json.loads(parsed_response)
-
-    patch_info = parsed_response
-    patch_info['related_code'] = commit_diff_code
-
-    messages[-1]['content'] = messages[-1]['content'].format(patch_info)
-
-    return messages
-
-
 def get_SS_prompts(prompt_filepath, parsed_response, commit_id):
     with open(prompt_filepath, 'r') as f:
         all_prompts = json.load(f)
     
-    prompt_template = all_prompts['slicing_strategy_stmt']
+    prompt_template = all_prompts[config.PROMPT_SLICING_STRATEGY]
 
     patch_info = parsed_response
     _, commit_diff_code, _ = response_parser.get_patch(commit_id)
@@ -83,38 +66,50 @@ def save_SS_parse(response_dict, commit_id):
         json.dump(response_dict, f, indent=2)
 
 
+def save_SS_parsed(parsed_response, commit_id, stamp):
+    parsed_savepath = get_path.get_parsed_savepath_from_criterion(commit_id=commit_id, level='function', stamp=stamp)
+
+    stmt_info = parsed_response.get("statement_info", "")
+    statement = parsed_response.get("statement", "")
+    slicing_direction = parsed_response.get("slicing_direction", "")
+    slicing_graph = parsed_response.get("code_representation_graph", "")
+    reason = parsed_response.get("justification", "")
+
+    parsed_data = response_parser.read_parsed(parsed_savepath=parsed_savepath)
+
+    parsed_data["SS_statement_info"] = stmt_info
+    parsed_data["SS_statement"] = statement
+    parsed_data["SS_slicing_direction"] = slicing_direction
+    parsed_data["SS_code_representation_graph"] = slicing_graph
+    parsed_data["SS_reason"] = reason
+
+    response_parser.save_parsed(parsed_data=parsed_data, parsed_savepath=parsed_savepath)
+
+    return parsed_savepath
+
+
 def do_slicing_strategy(commit_id, filepath_PA, filepath_SE):
+    task = "SS"
+
+    # get prompts
     parsed_response = response_parser.read_parsed_response(filepath_PA)
     parsed_response_SE = response_parser.read_parsed_response(filepath_SE)
     parsed_response.update(parsed_response_SE)
 
     prompt_filepath = config.PROMPT_FILEPATH    
     messages = get_SS_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_id=commit_id)
-
+    
+    # get response
     response_info, request_content = do_SS_request(messages)
-    save_SS_response(response_info=response_info, commit_id=commit_id, request_content=request_content)
 
-    # filepath = "my-everthing/responses/original/SS/response_SS-a282a2f-20240617093141.json"
-    # response_info = read_file.read_response_info(response_filepath=filepath)
-    response_SS = parse_SS_response(response_info)
-    save_SS_parse(response_dict=response_SS, commit_id=commit_id)
+    # save response
+    timestamp = response_parser.get_response_timestamp(response_info=response_info)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
+    # save parsed response
+    parsed_response = parse_SS_response(response_info=response_info)
+    parsed_filepath = get_path.get_parsed_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_filepath)
 
-def test():
-    commit_id = config.COMMIT_ID
-    filepath_PA = config.PA_RESPONSE_FILEPATH
-    filepath_SE = config.SE_RESPONSE_FILEPATH
-    parsed_response = response_parser.read_parsed_response(filepath_PA)
-    parsed_response_SE = response_parser.read_parsed_response(filepath_SE)
-    parsed_response.update(parsed_response_SE)
-
-    prompt_filepath = config.PROMPT_FILEPATH    
-    messages = get_SS_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_id=commit_id)
-
-    response_info, request_content = do_SS_request(messages)
-    save_SS_response(response_info=response_info, commit_id=commit_id, request_content=request_content)
-
-    # filepath = "my-everthing/responses/original/SS/response_SS-a282a2f-20240617093141.json"
-    # response_info = read_file.read_response_info(response_filepath=filepath)
-    response_SS = parse_SS_response(response_info)
-    save_SS_parse(response_dict=response_SS, commit_id=commit_id)
+    return parsed_filepath

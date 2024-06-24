@@ -1,0 +1,232 @@
+{
+  "code": {
+    "messenger_v2.c": {
+      "503": {
+        "code": "\tif (crc != expected_crc) {\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "513": {
+        "code": "\tif (desc->fd_seg_cnt < 1 ||\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "527": {
+        "code": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "532": {
+        "code": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "536": {
+        "code": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "540": {
+        "code": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "541": {
+        "code": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      }
+    }
+  },
+  "nodes": {
+    "1577": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "532",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1596": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "536",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1615": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "540",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1623": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "pr_err(\"middle segment too big %d\\\\n\", desc->fd_lens[2])",
+      "COLUMN_NUMBER": "3",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "541",
+      "METHOD_FULL_NAME": "pr_err",
+      "NAME": "pr_err",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1624": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "\"middle segment too big %d\\\\n\"",
+      "COLUMN_NUMBER": "10",
+      "LINE_NUMBER": "541",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "char",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1625": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "desc->fd_lens[2]",
+      "COLUMN_NUMBER": "41",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "541",
+      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
+      "NAME": "<operator>.indirectIndexAccess",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1626": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_lens",
+      "COLUMN_NUMBER": "41",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "541",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1627": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "41",
+      "LINE_NUMBER": "541",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1628": {
+      "ARGUMENT_INDEX": "2",
+      "CANONICAL_NAME": "fd_lens",
+      "CODE": "fd_lens",
+      "COLUMN_NUMBER": "41",
+      "LINE_NUMBER": "541",
+      "ORDER": "2",
+      "filename": "messenger_v2.c",
+      "label": "FIELD_IDENTIFIER"
+    },
+    "1629": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "2",
+      "COLUMN_NUMBER": "55",
+      "LINE_NUMBER": "541",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1508": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "desc->fd_seg_cnt < 1 ||\n\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "513",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1560": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "!desc->fd_lens[desc->fd_seg_cnt - 1]",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "527",
+      "METHOD_FULL_NAME": "<operator>.logicalNot",
+      "NAME": "<operator>.logicalNot",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1476": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "crc != expected_crc",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "503",
+      "METHOD_FULL_NAME": "<operator>.notEquals",
+      "NAME": "<operator>.notEquals",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    }
+  },
+  "edges": {
+    "1577->1596": {
+      "label": "CDG"
+    },
+    "1596->1615": {
+      "label": "CDG"
+    },
+    "1615->1623": {
+      "label": "CDG"
+    },
+    "1615->1624": {
+      "label": "CDG"
+    },
+    "1615->1625": {
+      "label": "CDG"
+    },
+    "1615->1626": {
+      "label": "CDG"
+    },
+    "1615->1627": {
+      "label": "CDG"
+    },
+    "1615->1628": {
+      "label": "CDG"
+    },
+    "1615->1629": {
+      "label": "CDG"
+    },
+    "1508->1560": {
+      "label": "CDG"
+    },
+    "1560->1577": {
+      "label": "CDG"
+    },
+    "1476->1508": {
+      "label": "CDG"
+    }
+  }
+}

@@ -13,103 +13,51 @@ import api_requests.response_parser as response_parser
 import utils.get_path as get_path
 
 
-def get_SE_prompts_1(prompt_filepath, parsed_response, commit_info):
-    with open(prompt_filepath, 'r') as f:
-        all_prompts = json.load(f)
-    
-    prompt_template = all_prompts['stmt_extraction']
-
-    messages = prompt_template
-    # parsed_response = json.loads(response_PA)
-
-    stmt_info = []
-    # commit_info: version, files [file_path, file_code, functions(func_name, func_line, func_code, func_stmt<added, deleted>)]
-    for commit_id in commit_info:
-        files = commit_info[commit_id]['files']
-        for file in files:
-            file_path = file['file_path']
-            for function in file['functions']:
-                func_name = function['func_name']
-                func_stmt = function['func_stmt']
-                added_stmt = func_stmt['added']
-                deleted_stmt = func_stmt['deleted']
-                for stmt in deleted_stmt:
-                    line = stmt['line']
-                    code = stmt['code']
-                    stmt_info.append({
-                        'file_path': file_path,
-                        'function_name': func_name,
-                        'line_changes': line,
-                        'modification': 'DELETE',
-                        'statement': code
-                    })
-
-                for stmt in added_stmt:
-                    line = stmt['line']
-                    code = stmt['code']
-                    stmt_info.append({
-                        'file_path': file_path,
-                        'function_name': func_name,
-                        'line_changes': line,
-                        'modification': 'ADD',
-                        'statement': code
-                    })
-    
-    patch_info = parsed_response
-    patch_info['patch_statements'] = stmt_info
-        
-    messages[-1]['content'] = messages[-1]['content'].format(patch_info)
-    # print(messages[-1]['content'])
-    return messages
-
-
 def get_SE_prompts(prompt_filepath, parsed_response, commit_id):
     
     with open(prompt_filepath, 'r') as f:
         all_prompts = json.load(f)    
-    prompt_template = all_prompts['stmt_extraction']
+    prompt_template = all_prompts[config.PROMPT_STMT_EXTRACTION]
 
     desc_clean, diff_code, commit_info = response_parser.get_patch(commit_id)
 
     messages = prompt_template
     # parsed_response = json.loads(response_PA)
 
-    stmt_info = []
+    prompt_stmt = []
     # commit_info: version, files [file_path, file_code, functions(func_name, func_line, func_code, func_stmt<added, deleted>)]
     for commit_id in commit_info:
         files = commit_info[commit_id]['files']
-        for file in files:
-            file_path = file['file_path']
-            for function in file['functions']:
-                func_name = function['func_name']
-                func_stmt = function['func_stmt']
-                added_stmt = func_stmt['added']
-                deleted_stmt = func_stmt['deleted']
-                for stmt in deleted_stmt:
-                    line = stmt['line']
-                    code = stmt['code']
-                    line_info = " | ".join([file_path['old'], file_path['new'], func_name, str(line)])
-                    stmt_info.append({
+        for file_info in files:
+            file_path = file_info['file_path']
+            for func_info in file_info['functions']:
+                func_name = func_info['func_name']
+                func_stmt = func_info['func_stmt']
+                add_stmt = func_stmt['added']
+                del_stmt = func_stmt['deleted']
+                for stmt_info in del_stmt:
+                    modification = 'DELETE'
+                    line_info, code = response_parser.get_line_info(file_path, func_name, stmt_info, modification)
+                    prompt_stmt.append({
                         'statement_info': line_info,
-                        'modification': 'DELETE',
+                        'modification': modification,
                         'statement': code
                     })
 
-                # for stmt in added_stmt:
-                #     line = stmt['line']
-                #     code = stmt['code']
-                #     line_info = " | ".join([file_path['old'], file_path['new'], func_name, str(line)])
+                # for stmt_info in add_stmt:
+                #     modification = 'ADD'
+                #     line_info, code = response_parser.get_line_info(file_path, func_name, stmt_info, modification)
                 #     stmt_info.append({
                 #         'statement_info': line_info,
-                #         'modification': 'ADD',
+                #         'modification': modification,
                 #         'statement': code
                 #     })
     
     patch_info = parsed_response
-    patch_info['patch_statements'] = stmt_info
+    patch_info['patch_statements'] = prompt_stmt
         
     messages[-1]['content'] = messages[-1]['content'].format(patch_info)
-    # print(messages[-1]['content'])
+    
     return messages
 
 
@@ -125,55 +73,44 @@ def parse_SE_response(response_info):
     return response_dict
 
 
-def save_SE_response(response_info, request_content, commit_id):
-    response_dir = os.path.join(config.RESPONSE_DIR, 'SE')
-    response_filename = get_path.get_response_filename(task='SE', commit_id=commit_id, parsed=False)
-    response_filepath = os.path.join(response_dir, response_filename)
-    response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
+def save_SE_parsed(parsed_response, commit_id, stamp):
+    parsed_savepath = get_path.get_parsed_savepath_from_criterion(commit_id=commit_id, level='function', stamp=stamp)
 
+    stmt_info = parsed_response.get("statement_info", "")
+    modification = parsed_response.get("modification", "")
+    statement = parsed_response.get("statement", "")
+    reason = parsed_response.get("reason", "")
 
-def save_SE_parse(response_dict, commit_id):
-    parsed_dir = os.path.join(config.PARSED_DIR, 'SE')
-    if not os.path.exists(parsed_dir):
-        os.makedirs(parsed_dir)
-    parsed_filename = get_path.get_response_filename(task='SE', commit_id=commit_id, parsed=True)
-    parsed_filepath = os.path.join(parsed_dir, parsed_filename)
-    with open(parsed_filepath, 'w') as f:
-        json.dump(response_dict, f, indent=2)
+    parsed_data = response_parser.read_parsed(parsed_savepath=parsed_savepath)
+    parsed_data["SE_statement_info"] = stmt_info
+    parsed_data["SE_modification"] = modification
+    parsed_data["SE_statement"] = statement
+    parsed_data["SE_reason"] = reason
 
-    return parsed_filepath
+    response_parser.save_parsed(parsed_data=parsed_data, parsed_savepath=parsed_savepath)
+
+    return parsed_savepath
 
 
 def do_stmt_extraction(commit_id, filepath_PA):
+    task = "SE"
+
+    # get prompts
     prompt_filepath = config.PROMPT_FILEPATH
     parsed_response = response_parser.read_parsed_response(filepath_PA)
-
     messages = get_SE_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_id=commit_id)
 
+    # get response
     response_info, request_content = do_SE_request(messages)
 
-    save_SE_response(response_info=response_info, request_content=request_content, commit_id=commit_id)
-    
-    response_SE = parse_SE_response(response_info)
-    filepath_SE = save_SE_parse(response_dict=response_SE, commit_id=commit_id)
+    # save response
+    timestamp = response_parser.get_response_timestamp(response_info)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
-    return filepath_SE
+    # save parsed response
+    parsed_response = parse_SE_response(response_info=response_info)
+    parsed_filepath = get_path.get_parsed_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_filepath)
 
-
-def test():
-    commit_id = config.COMMIT_ID   
-    prompt_filepath = config.PROMPT_FILEPATH    
-    filepath = config.PA_RESPONSE_FILEPATH
-    parsed_response = response_parser.read_parsed_response(filepath)
-
-    messages = get_SE_prompts(prompt_filepath=prompt_filepath, parsed_response=parsed_response, commit_id=commit_id)
-
-    response_info, request_content = do_SE_request(messages)
-    
-    timestamp = response_parser.get_response_timestamp(response_info=response_info)
-    save_SE_response(response_info=response_info, request_content=request_content, commit_id=commit_id, timestamp=timestamp)
-
-    # filepath = "my-everthing/responses/original/SE/response_SE-a282a2f-20240617062716.json"
-    # response_info = read_file.read_response_info(response_filepath=filepath)
-    response_SE = parse_SE_response(response_info)
-    save_SE_parse(response_dict=response_SE, commit_id=commit_id, timestamp=timestamp)
+    return parsed_filepath
