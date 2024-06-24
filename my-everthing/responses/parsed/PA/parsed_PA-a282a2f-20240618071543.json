@@ -1,0 +1,5 @@
+{
+  "patch_summary": "Fixes a vulnerability in libceph related to incorrect segment length checks that could lead to a buffer overrun.",
+  "vulnerability_type": "Buffer Overrun",
+  "vulnerability_summary": "Incorrect segment length checks could allow a buffer overrun in prepare_read_control()."
+}

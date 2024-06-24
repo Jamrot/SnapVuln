@@ -13,18 +13,23 @@ class GraphBuilder:
 
     def joern_parse(self, source_path, bin_file = "tmp.bin"):
         logger.info(f"Start parsing {source_path} to {bin_file}")
+        if os.path.exists(bin_file):
+            logger.warning(f"removing bin file: {bin_file}")
+            os.remove(bin_file)
         cmd = f'joern-parse  {source_path} -o {bin_file}'
         self.execute_command(cmd)
+
         logger.info(f"Parse {source_path} to {bin_file}")
 
-    def joern_dump_graph(self, graph_dir="out_tmp", bin_file="tmp.bin",  graph_type='cpg', overwrite=config.GRAPH_OVERWRITE):
+    def joern_dump_graph(self, graph_dir="out_tmp", bin_file="tmp.bin",  graph_type='cpg'):
         logger.info(f"Start dumping graph to {graph_dir}")
-        if os.path.exists(graph_dir) and not overwrite:
-            return
+
         if os.path.exists(graph_dir):
             os.system(f'rm -rf {graph_dir}')
+        
         cmd = f'joern-export --repr {graph_type} {bin_file} --out {graph_dir}'
         self.execute_command(cmd)
+
         logger.info(f"Dump graph to {graph_dir}")
     
     def execute_command(self, cmd):

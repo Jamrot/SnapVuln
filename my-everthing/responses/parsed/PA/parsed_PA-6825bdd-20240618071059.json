@@ -1,0 +1,5 @@
+{
+  "patch_summary": "Fixes a possible memory leak in nvmet-tcp controller teardown by ensuring all command buffers are deallocated.",
+  "vulnerability_type": "Memory leak",
+  "vulnerability_summary": "Memory leak due to missing deallocation of command buffers when commands have failed before executing and are queued for sending a response."
+}

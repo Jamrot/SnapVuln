@@ -14,7 +14,7 @@ def get_PA_prompt(prompt_filepath, commit_id):
     # get prompt template
     with open(prompt_filepath, 'r') as f:
         all_prompts = json.load(f)
-    prompt_template = all_prompts['patch_analysis']
+    prompt_template = all_prompts[config.PROMPT_PATCH_ANALYSIS]
 
     # get patch to fill the prompt template
     patch_desc, patch_diff_code, patch_info = response_parser.get_patch(commit_id)
@@ -56,51 +56,43 @@ def parse_PA_response(response_info):
     return response_dict
 
 
-def save_PA_response(response_info, commit_id, request_content="", timestamp=None):
-    task = "PA"
-    response_dir = os.path.join(config.RESPONSE_DIR, task)
-    response_filename = get_path.get_response_filename(task=task, commit_id=commit_id, parsed=False, timestamp=timestamp)
-    response_filepath = os.path.join(response_dir, response_filename)
+def save_PA_parsed(parsed_response, commit_id, stamp):
+    parsed_savepath = get_path.get_parsed_savepath_from_criterion(commit_id=commit_id, level='function', stamp=stamp)
+
+    patch_summary = parsed_response.get("patch_summary", "")
+    vulnerability_type = parsed_response.get("vulnerability_type", "")
+    vulnerability_summary = parsed_response.get("vulnerability_summary", "")
+
+    parsed_data = response_parser.read_parsed(parsed_savepath=parsed_savepath)
+    parsed_data["patch_summary"] = patch_summary
+    parsed_data["vulnerability_type"] = vulnerability_type
+    parsed_data["vulnerability_summary"] = vulnerability_summary
+
+    response_parser.save_parsed(parsed_data=parsed_data, parsed_savepath=parsed_savepath)
+
+    return parsed_savepath
+
+
+def do_patch_analysis(commit_id, stamp=None):
+    task = "PA"  
+
+    # get prompts
+    prompt_filepath = config.PROMPT_FILEPATH    
+    messages = get_PA_prompt(prompt_filepath=prompt_filepath, commit_id=commit_id)
+
+    # get response
+    response_info, request_content = do_PA_request(messages)
+
+    # save response
+    timestamp = response_parser.get_response_timestamp(response_info=response_info)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
     response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
+    # save parsed response
+    parsed_response = parse_PA_response(response_info=response_info)
+    parsed_response_path = get_path.get_parsed_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_response_path)
 
-def save_PA_parsed_response(response_dict, commit_id, timestamp=None):
-    task = "PA"
-    parsed_dir = os.path.join(config.PARSED_DIR, task)
-    if not os.path.exists(parsed_dir):
-        os.makedirs(parsed_dir)
-    parsed_filename = get_path.get_response_filename(task=task, commit_id=commit_id, parsed=True, timestamp=timestamp)
-    parsed_filepath = os.path.join(parsed_dir, parsed_filename)
-    with open(parsed_filepath, 'w') as f:
-        json.dump(response_dict, f, indent=2)
+    parsed_save_path = save_PA_parsed(parsed_response=parsed_response, commit_id=commit_id, stamp=stamp)
 
-    return parsed_filepath
-
-
-def do_patch_analysis(commit_id):
-    prompt_filepath = config.PROMPT_FILEPATH
-
-    messages = get_PA_prompt(prompt_filepath=prompt_filepath, commit_id=commit_id)
-
-    response_info, request_content = do_PA_request(messages)
-    save_PA_response(response_info=response_info, commit_id=commit_id, request_content=request_content)
-
-    response_dict = parse_PA_response(response_info=response_info)
-    filepath_PA = save_PA_parsed_response(response_dict, commit_id=commit_id)
-
-    return filepath_PA
-
-
-def test():
-    commit_id = config.COMMIT_ID
-    
-    prompt_filepath = config.PROMPT_FILEPATH
-    
-    messages = get_PA_prompt(prompt_filepath=prompt_filepath, commit_id=commit_id)
-
-    response_info, request_content = do_PA_request(messages)
-    timestamp = response_parser.get_response_timestamp(response_info=response_info)
-    save_PA_response(response_info=response_info, commit_id=commit_id, request_content=request_content, timestamp=timestamp)
-
-    response_dict = parse_PA_response(response_info=response_info, timestamp=timestamp)
-    save_PA_parsed_response(response_dict, commit_id=commit_id)
+    return parsed_save_path

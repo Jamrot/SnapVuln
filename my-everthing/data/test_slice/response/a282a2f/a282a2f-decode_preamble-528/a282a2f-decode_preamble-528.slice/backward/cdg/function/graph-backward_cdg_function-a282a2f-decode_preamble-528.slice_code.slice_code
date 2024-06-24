@@ -1,0 +1,6 @@
+file: /* messenger_v2.c */
+function: /* static int decode_preamble(void *p, struct ceph_frame_desc *desc) */
+503: 	if (crc != expected_crc) {
+513: 	if (desc->fd_seg_cnt < 1 ||
+527: 	if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {
+528: 		pr_err("last segment empty\n");

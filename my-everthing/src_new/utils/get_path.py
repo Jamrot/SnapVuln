@@ -7,7 +7,8 @@ logger = logging.getLogger(__name__)
 def get_save_root(commit_id):
     commit_id_short = get_commit_id_short(commit_id=commit_id)
     save_root = os.path.join(config.DATA_ROOT, commit_id_short)
-
+    if not os.path.exists(save_root):
+        os.makedirs(save_root)
     return save_root
 
 def get_criterion_savepath(commit_id, criterion):
@@ -24,20 +25,27 @@ def get_criterion_savepath(commit_id, criterion):
     file_path_old = criterion['file_path']['old']
     file_path_new = criterion['file_path']['new']
 
-    criterion_dir = "-".join([commit_id_short, func_name, str(criterion_line)])
-    # code file
-    code_filename = "-".join([config.CODE_FILENAME_START, criterion_dir])+'.c'
-    code_filepath = os.path.join(save_root, criterion_dir, code_filename)
+    basename = "-".join([commit_id_short, func_name, str(criterion_line)])
+    criterion_dir_path = os.path.join(save_root, basename)
+    if not os.path.exists(criterion_dir_path):
+        os.makedirs(criterion_dir_path)
     # module dir
+    # module_dir = os.path.dirname(file_path_old)
+    # module_dirname = "-".join([config.MODULE_DIRNAME_START, commit_id_short, "_".join(module_dir.split("/"))])
+    # module_dirpath = os.path.join(save_root, module_dirname)
     module_dir = os.path.dirname(file_path_old)
-    module_dirname = "-".join([config.MODULE_DIRNAME_START, commit_id_short, "_".join(module_dir.split("/"))])
-    module_dirpath = os.path.join(save_root, module_dirname)
+    # module_dirname = "-".join([config.MODULE_DIRNAME_START, commit_id_short, "_".join(module_dir.split("/"))])
+    module_dirpath = os.path.join(save_root, config.CODE_DIRNAME, module_dir)
+    # code file
+    # code_filename = "-".join([config.CODE_FILENAME_START, basename])+'.c'
+    # code_filepath = os.path.join(criterion_dir_path, code_filename)
+    code_filename = os.path.basename(file_path_old)
+    code_filepath = os.path.join(module_dirpath, code_filename)
     # meta file
-    meta_filename = "-".join([config.META_FILENAME_START, criterion_dir])+'.json'
-    meta_filepath = os.path.join(save_root, criterion_dir, meta_filename)
+    meta_filename = "-".join([config.META_FILENAME_START, basename])+'.json'
+    meta_filepath = os.path.join(criterion_dir_path, meta_filename)
 
-    return save_root, criterion_dir, code_filepath, module_dirpath, meta_filepath
-
+    return save_root, basename, code_filepath, module_dirpath, meta_filepath
 
 
 def get_commit_id_short(commit_id):
@@ -49,14 +57,18 @@ def get_graph_dir_from_criterion(criterion, level):
     save_root = criterion.get('save_root')
     module_path = criterion.get('save_module_dirpath')
     module_dirname = os.path.basename(module_path)
-    if level=="module":
-        graph_dir = os.path.join(save_root, module_dirname+config.GRAPH_DIR_END)
-    else:
-        graph_dir = os.path.join(save_root, filename_base, filename_base+config.GRAPH_DIR_END)  
+    # if level=="module":
+    #     graph_dir = os.path.join(save_root, module_dirname+config.GRAPH_DIR_END)        
+    # else:
+    #     graph_dir = os.path.join(save_root, filename_base, filename_base+config.GRAPH_DIR_END)  
+
+    file_path_old = criterion['file_path']['old']
+    module_dir = os.path.dirname(file_path_old)
+    graph_dir = os.path.join(save_root, config.GRAPH_DIRNAME, module_dir)
     return graph_dir
 
 
-def get_parse_path_from_criterion(criterion, level):
+def get_joern_parse_path_from_criterion(criterion, level):
     # get module and code filepath
     module_path = criterion.get('save_module_dirpath')
     code_filepath = criterion.get('save_file_code_old_filepath')
@@ -80,31 +92,40 @@ def get_parse_path_from_criterion(criterion, level):
     return parse_path
 
 
-def get_and_check_bin_filepath(criterion, level, overwrite=False):
+def get_bin_filepath(criterion, level):
     graph_dir = get_graph_dir_from_criterion(criterion=criterion, level=level)
     filename_base = criterion.get('save_filename_base')
     module_path = criterion.get('save_module_dirpath')
     module_dirname = os.path.basename(module_path)
+    code_filename = os.path.basename(criterion.get('save_file_code_old_filepath'))
     if level=='module':
         bin_filepath = os.path.join(graph_dir, f"{level}-{module_dirname}.bin")
     else:
-        bin_filepath = os.path.join(graph_dir, f"{level}-{filename_base}.bin")
-    if os.path.exists(bin_filepath) and overwrite:
-        logger.warning(f"removing bin file: {bin_filepath}")
-        os.remove(bin_filepath)
+        bin_filepath = os.path.join(graph_dir, f"{level}-{code_filename}.bin")
+
     return bin_filepath
 
 
-def get_graph_dump_dir(graph_dump_dir, graph_dump_type):
-    graph_dump_dir = os.path.join(graph_dump_dir, "-".join([config.GRAPH_START, graph_dump_type]))
+def get_graph_dump_dir(graph_dump_dir, bin_filepath, graph_dump_type):
+    bin_filename = os.path.basename(bin_filepath)
+    graph_dump_dir = os.path.join(graph_dump_dir, "-".join([config.GRAPH_START, bin_filename, graph_dump_type]))
     return graph_dump_dir
 
 
-def get_graph_save_filepath(criterion, graph_type, level):
+def get_graph_savepath(criterion, graph_type, level):
     graph_dir = get_graph_dir_from_criterion(criterion=criterion, level=level)
     filename_base = criterion.get('save_filename_base')
-    graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, filename_base, graph_type+config.GRAPH_FILE_END]))
+    # graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, filename_base, graph_type+config.GRAPH_FILE_END]))
+    module_path = criterion.get('save_module_dirpath')
+    module_dirname = os.path.basename(module_path)
+    code_filename = os.path.basename(criterion.get('save_file_code_old_filepath'))
+    if level=='module':
+        graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, module_dirname, graph_type+config.GRAPH_FILE_END]))
+    else:
+        graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, code_filename, graph_type+config.GRAPH_FILE_END]))
+    
     return graph_save_path
+
 
 def get_slice_save_filepath(criterion, direction, graph_type, depth):
     save_root = criterion.get('save_root')
@@ -115,20 +136,69 @@ def get_slice_save_filepath(criterion, direction, graph_type, depth):
     return slice_save_path
 
 
+def get_collate_slice_save_dirpath(commit_id):
+    save_root = get_save_root(commit_id=commit_id)
+    collate_save_dir = os.path.join(save_root,"collate"+config.SLICE_DIR_END)
+    if not os.path.exists(collate_save_dir):
+        os.makedirs(collate_save_dir)
+    return collate_save_dir
+
+
+def get_code_filepath_list_from_criterion(criterion, level='function')->list:
+    code_filepath = criterion.get('save_file_code_old_filepath')
+    filepath_list = [code_filepath]   
+    
+    if level == 'module':
+        module_dirpath = criterion.get('save_module_dirpath')
+        filename_list = os.listdir(module_dirpath)
+        module_filepath_list = []
+        for filename in filename_list:
+            filepath = os.path.join(module_dirpath, filename)
+            module_filepath_list.append(filepath)
+        filepath_list = module_filepath_list
+
+    return filepath_list
+
 from datetime import datetime
 
 CURRENT_TIME = datetime.now().strftime("N%Y%m%d%H%M%S")
 
-def get_response_filepath(task, commit_id="", parsed=False, timestamp=CURRENT_TIME):
+def get_response_filepath(task, commit_id="", timestamp=CURRENT_TIME):
     if not timestamp:
         timestamp = CURRENT_TIME
+
     commit_id = get_commit_id_short(commit_id)
-    if parsed:
-        response_filename = f"parsed_{task}-{commit_id}-{timestamp}.json"
-    else:
-        response_filename = f"response_{task}-{commit_id}-{timestamp}.json"
+    response_filename = f"response_{task}-{commit_id}-{timestamp}.json"
     
     response_dir = os.path.join(config.RESPONSE_DIR, task)
+    if not os.path.exists(response_dir):
+        os.makedirs(response_dir)
     response_filepath = os.path.join(response_dir, response_filename)
 
     return response_filepath
+
+
+def get_parsed_filepath(task, commit_id, timestamp=CURRENT_TIME):
+    if not timestamp:
+        timestamp = CURRENT_TIME
+
+    commit_id = get_commit_id_short(commit_id)
+    response_filename = f"parsed_{task}-{commit_id}-{timestamp}.json"
+    
+    parsed_dir = os.path.join(config.PARSED_DIR, commit_id, task)
+    if not os.path.exists(parsed_dir):
+        os.makedirs(parsed_dir)
+    response_filepath = os.path.join(parsed_dir, response_filename)
+
+    return response_filepath
+
+
+def get_parsed_savepath_from_criterion(commit_id, level, stamp):
+    save_root = get_save_root(commit_id)
+    commit_id_short = get_commit_id_short(commit_id)
+
+    parsed_dirpath = os.path.join(save_root, level+config.PARSED_DIR_END)
+    parsed_filename = "-".join([config.PARSED_START, commit_id_short, level, stamp])+config.PARSED_FILE_END
+    parsed_filepath = os.path.join(parsed_dirpath, parsed_filename)
+
+    return parsed_filepath
