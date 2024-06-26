@@ -1,0 +1,34 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement is relevant because it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement is relevant because it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement is relevant because it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement is relevant because it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement is relevant because it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement is relevant because it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability."
+    }
+  ]
+}

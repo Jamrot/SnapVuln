@@ -1,0 +1,29 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 527 | modify_type: DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement is relevant because it checks if the last segment is empty, which is a condition that could lead to a buffer overflow if not properly handled."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 532 | modify_type: DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement is relevant because it checks if the control segment is too big, which is a condition that could lead to a buffer overflow if not properly handled."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 536 | modify_type: DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement is relevant because it checks if the front segment is too big, which is a condition that could lead to a buffer overflow if not properly handled."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 540 | modify_type: DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement is relevant because it checks if the middle segment is too big, which is a condition that could lead to a buffer overflow if not properly handled."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 544 | modify_type: DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement is relevant because it checks if the data segment is too big, which is a condition that could lead to a buffer overflow if not properly handled."
+    }
+  ]
+}

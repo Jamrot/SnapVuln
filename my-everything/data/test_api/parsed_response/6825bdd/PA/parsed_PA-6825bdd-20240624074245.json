@@ -1,0 +1,5 @@
+{
+  "patch_summary": "The patch fixes a potential memory leak in the nvmet-tcp module of the Linux kernel that occurs when tearing down a controller.",
+  "vulnerability_type": "Memory Leak",
+  "vulnerability_summary": "The vulnerability allows for a memory leak to occur when a controller is torn down, potentially failing to deallocate command buffers."
+}

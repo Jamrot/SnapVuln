@@ -1,0 +1,40 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement adds a check for negative control lengths, which is directly related to the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement adds a check for negative control lengths, which is directly related to the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement adds a check for negative control lengths, which is directly related to the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement adds a check for negative control lengths, which is directly related to the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement adds a check for negative control lengths, which is directly related to the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement adds a check for negative control lengths, which is directly related to the buffer overflow vulnerability."
+    }
+  ]
+}

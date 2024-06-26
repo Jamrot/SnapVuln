@@ -1,0 +1,39 @@
+{
+  "patch_summary": "The patch hardens the checks for segment lengths in the libceph library, preventing potential buffer overruns due to negative control lengths.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows for buffer overruns in the prepare_read_control() function due to negative control lengths, potentially leading to system instability or unauthorized access.",
+  "slicing_statements": {
+    "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement is relevant as it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a bug check on the control length. A backward slice from this point will help identify the data dependencies that lead to the control length value, which is crucial in understanding the buffer overflow vulnerability."
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement is relevant as it removes a check that could potentially allow for negative control lengths, leading to the buffer overflow vulnerability.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is a condition check on the last segment length. A backward slice from this point will help identify the control flow that leads to this condition, which is important in understanding the buffer overflow vulnerability."
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a condition check on the first segment length. A backward slice from this point will help identify the data dependencies that lead to the first segment length value, which is crucial in understanding the buffer overflow vulnerability."
+    },
+    "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement is relevant as it adds a check for negative control lengths, which is the cause of the buffer overflow vulnerability.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a bug check on the front length. A backward slice from this point will help identify the data dependencies that lead to the front length value, which is crucial in understanding the buffer overflow vulnerability."
+    }
+  }
+}

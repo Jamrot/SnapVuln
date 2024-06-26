@@ -1,0 +1,139 @@
+{
+  "patch_summary": "The patch strengthens the length checks for frame segments in the Ceph messenger protocol to prevent buffer overruns.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun due to improper handling of negative segment lengths in the Ceph messenger protocol.",
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement checks if the last segment is empty, which is related to segment length validation."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"last segment empty\\n\");",
+      "reason": "This statement logs an error if the last segment is empty, indicating a potential issue with segment length."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement checks if the control segment length exceeds the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length is too large, indicating a potential buffer overflow risk."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement checks if the front segment length exceeds the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length is too large, indicating a potential buffer overflow risk."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement checks if the middle segment length exceeds the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length is too large, indicating a potential buffer overflow risk."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement checks if the data segment length exceeds the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length is too large, indicating a potential buffer overflow risk."
+    }
+  ],
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "To understand the conditions under which the last segment length is zero, we need to trace back to where `desc->fd_lens` and `desc->fd_seg_cnt` are set. The Control Dependency Graph will help us identify the control structures that influence this condition."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE",
+      "statement": "\t\tpr_err(\"last segment empty\\n\");",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "To understand the context in which this error message is printed, we need to trace back to the conditions that lead to this print statement. The Control Flow Graph will help us follow the execution path leading to this point."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To understand why the control segment length might exceed the maximum allowed length, we need to trace back to where `desc->fd_lens[0]` is set. The Data Dependency Graph will help us identify the data flow leading to this condition."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "To understand the context in which this error message is printed, we need to trace back to the conditions that lead to this print statement. The Control Flow Graph will help us follow the execution path leading to this point."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To understand why the front segment length might exceed the maximum allowed length, we need to trace back to where `desc->fd_lens[1]` is set. The Data Dependency Graph will help us identify the data flow leading to this condition."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "To understand the context in which this error message is printed, we need to trace back to the conditions that lead to this print statement. The Control Flow Graph will help us follow the execution path leading to this point."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To understand why the middle segment length might exceed the maximum allowed length, we need to trace back to where `desc->fd_lens[2]` is set. The Data Dependency Graph will help us identify the data flow leading to this condition."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "To understand the context in which this error message is printed, we need to trace back to the conditions that lead to this print statement. The Control Flow Graph will help us follow the execution path leading to this point."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "To understand why the data segment length might exceed the maximum allowed length, we need to trace back to where `desc->fd_lens[3]` is set. The Data Dependency Graph will help us identify the data flow leading to this condition."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "To understand the context in which this error message is printed, we need to trace back to the conditions that lead to this print statement. The Control Flow Graph will help us follow the execution path leading to this point."
+    }
+  ]
+}

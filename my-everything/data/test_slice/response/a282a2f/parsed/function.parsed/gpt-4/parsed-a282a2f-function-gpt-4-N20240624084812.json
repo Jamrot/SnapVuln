@@ -1,0 +1,97 @@
+{
+  "patch_summary": "The patch hardens the checks for segment lengths in the libceph library, preventing potential buffer overruns due to negative control lengths.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows for buffer overruns in the prepare_read_control() function due to negative control lengths, potentially leading to arbitrary code execution.",
+  "relevant_statements": [
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 413 | modification_type: ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement is relevant as it adds a check for negative or excessive front_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 414 | modification_type: ADD",
+      "statement": "\tmiddle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||",
+      "reason": "This statement is relevant as it adds a check for negative or excessive middle_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 415 | modification_type: ADD",
+      "statement": "\tdata_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "reason": "This statement is relevant as it adds a check for negative or excessive data_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: head_onwire_len | line_num: 393 | modification_type: ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement is relevant as it adds a check for negative or excessive ctrl_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 529 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative control segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 530 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive control segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 534 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative front segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 535 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive front segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 539 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative middle segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 540 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive middle segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 544 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative data segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 545 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive data segment length, which could lead to buffer overflows."
+    }
+  ],
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 413 | modification_type: ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a condition checking the value of 'front_len'. A backward slice from this statement will help identify all the statements that influence the value of 'front_len', which is crucial in understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: head_onwire_len | line_num: 393 | modification_type: ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a condition checking the value of 'ctrl_len'. A backward slice from this statement will help identify all the statements that influence the value of 'ctrl_len', which is crucial in understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 529 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a condition checking the value of 'desc->fd_lens[0]'. A backward slice from this statement will help identify all the statements that influence the value of 'desc->fd_lens[0]', which is crucial in understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 534 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a condition checking the value of 'desc->fd_lens[1]'. A backward slice from this statement will help identify all the statements that influence the value of 'desc->fd_lens[1]', which is crucial in understanding the buffer overflow vulnerability."
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "patch_summary": "This patch addresses a vulnerability in the libceph module that could lead to a buffer overrun due to incorrect segment length checks.",
+  "vulnerability_type": "Buffer Overrun",
+  "vulnerability_summary": "Incorrect segment length checks could allow a buffer overrun in prepare_read_control() due to negative values producing a positive head_len.",
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement is relevant because it checks if the control segment length is greater than a maximum value."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement is relevant because it prints an error message if the control segment length is too big."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement is relevant because it checks if the front segment length is greater than a maximum value."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement is relevant because it prints an error message if the front segment length is too big."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement is relevant because it checks if the middle segment length is greater than a maximum value."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement is relevant because it prints an error message if the middle segment length is too big."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement is relevant because it checks if the data segment length is greater than a maximum value."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement is relevant because it prints an error message if the data segment length is too big."
+    }
+  ],
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "Forward slicing is suitable to trace how the condition is used to control program flow. Control Flow Graph helps visualize the flow of control between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing is appropriate to identify the data dependencies leading to the error message. Data Dependency Graph captures how data flows between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "Forward slicing is suitable to trace how the condition is used to control program flow. Control Flow Graph helps visualize the flow of control between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing is appropriate to identify the data dependencies leading to the error message. Data Dependency Graph captures how data flows between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "Forward slicing is suitable to trace how the condition is used to control program flow. Control Flow Graph helps visualize the flow of control between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing is appropriate to identify the data dependencies leading to the error message. Data Dependency Graph captures how data flows between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "Forward slicing is suitable to trace how the condition is used to control program flow. Control Flow Graph helps visualize the flow of control between statements."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing is appropriate to identify the data dependencies leading to the error message. Data Dependency Graph captures how data flows between statements."
+    }
+  ]
+}

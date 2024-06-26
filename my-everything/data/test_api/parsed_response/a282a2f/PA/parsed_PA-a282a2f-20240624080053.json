@@ -1,0 +1,5 @@
+{
+  "patch_summary": "The patch strengthens the length checks for message segments in the Ceph Messenger v2.1 to prevent buffer overruns.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun due to improper handling of negative segment lengths, potentially leading to memory corruption."
+}

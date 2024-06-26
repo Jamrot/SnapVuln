@@ -1,0 +1,47 @@
+{
+  "request": {
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a patch analysis expert. Your task is to analyze the provided patch for the Linux kernel, summarize the vulnerability in a single sentence, and then determine the specific vulnerability it targets using no more than five words and summarize the vulnerability in a single sentence. Remember, your response should be structured in the provided response format.\n\nResponse format:\n{\n  \"patch_summary\": \"[one-sentence summary of the patch]\",\n  \"vulnerability_type\": \"[identified vulnerability type]\",\n  \"vulnerability_summary\": \"[one-sentence summary of the vulnerability]\"\n}"
+      },
+      {
+        "role": "user",
+        "content": "{\n  \"patch\": \"libceph: harden msgr2.1 frame segment length checks\\n\\nceph_frame_desc::fd_lens is an int array.  decode_preamble() thus\\neffectively casts u32 -> int but the checks for segment lengths are\\nwritten as if on unsigned values.  While reading in HELLO or one of the\\nAUTH frames (before authentication is completed), arithmetic in\\nhead_onwire_len() can get duped by negative ctrl_len and produce\\nhead_len which is less than CEPH_PREAMBLE_LEN but still positive.\\nThis would lead to a buffer overrun in prepare_read_control() as the\\npreamble gets copied to the newly allocated buffer of size head_len.\\n\\ndiff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c\\n--- a/net/ceph/messenger_v2.c\\n+++ b/net/ceph/messenger_v2.c\\n@@ -390,6 +390,8 @@ static int head_onwire_len(int ctrl_len, bool secure)\\n \\tint head_len;\\n \\tint rem_len;\\n \\n+\\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\\n+\\n \\tif (secure) {\\n \\t\\thead_len = CEPH_PREAMBLE_SECURE_LEN;\\n \\t\\tif (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {\\n@@ -408,6 +410,10 @@ static int head_onwire_len(int ctrl_len, bool secure)\\n static int __tail_onwire_len(int front_len, int middle_len, int data_len,\\n \\t\\t\\t     bool secure)\\n {\\n+\\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\\n+\\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\\n+\\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);\\n+\\n \\tif (!front_len && !middle_len && !data_len)\\n \\t\\treturn 0;\\n \\n@@ -520,29 +526,34 @@ static int decode_preamble(void *p, struct ceph_frame_desc *desc)\\n \\t\\tdesc->fd_aligns[i] = ceph_decode_16(&p);\\n \\t}\\n \\n-\\t/*\\n-\\t * This would fire for FRAME_TAG_WAIT (it has one empty\\n-\\t * segment), but we should never get it as client.\\n-\\t */\\n-\\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\\n-\\t\\tpr_err(\\\"last segment empty\\\\n\\\");\\n+\\tif (desc->fd_lens[0] < 0 ||\\n+\\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\\n+\\t\\tpr_err(\\\"bad control segment length %d\\\\n\\\", desc->fd_lens[0]);\\n \\t\\treturn -EINVAL;\\n \\t}\\n-\\n-\\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\\n-\\t\\tpr_err(\\\"control segment too big %d\\\\n\\\", desc->fd_lens[0]);\\n+\\tif (desc->fd_lens[1] < 0 ||\\n+\\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\\n+\\t\\tpr_err(\\\"bad front segment length %d\\\\n\\\", desc->fd_lens[1]);\\n \\t\\treturn -EINVAL;\\n \\t}\\n-\\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\\n-\\t\\tpr_err(\\\"front segment too big %d\\\\n\\\", desc->fd_lens[1]);\\n+\\tif (desc->fd_lens[2] < 0 ||\\n+\\t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\\n+\\t\\tpr_err(\\\"bad middle segment length %d\\\\n\\\", desc->fd_lens[2]);\\n \\t\\treturn -EINVAL;\\n \\t}\\n-\\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\\n-\\t\\tpr_err(\\\"middle segment too big %d\\\\n\\\", desc->fd_lens[2]);\\n+\\tif (desc->fd_lens[3] < 0 ||\\n+\\t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\\n+\\t\\tpr_err(\\\"bad data segment length %d\\\\n\\\", desc->fd_lens[3]);\\n \\t\\treturn -EINVAL;\\n \\t}\\n-\\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\\n-\\t\\tpr_err(\\\"data segment too big %d\\\\n\\\", desc->fd_lens[3]);\\n+\\n+\\t/*\\n+\\t * This would fire for FRAME_TAG_WAIT (it has one empty\\n+\\t * segment), but we should never get it as client.\\n+\\t */\\n+\\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\\n+\\t\\tpr_err(\\\"last segment empty, segment count %d\\\\n\\\",\\n+\\t\\t       desc->fd_seg_cnt);\\n \\t\\treturn -EINVAL;\\n \\t}\\n \\n\\n\"\n}"
+      }
+    ],
+    "temperature": 0,
+    "top_p": 1,
+    "n": 1,
+    "stream": false,
+    "stop": "",
+    "logit_bias": {},
+    "presence_penalty": 0,
+    "frequency_penalty": 0,
+    "seed": 0
+  },
+  "response": {
+    "id": "chatcmpl-9dXl7fhH3aJ70vxLKntrthlhdNKe8",
+    "object": "chat.completion",
+    "created": 1719211589,
+    "model": "gpt-4o-2024-05-13",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"patch_summary\": \"The patch strengthens the length checks for frame segments in the Ceph messenger protocol to prevent buffer overruns.\",\n  \"vulnerability_type\": \"Buffer Overflow\",\n  \"vulnerability_summary\": \"The vulnerability allows a buffer overrun due to improper handling of negative segment lengths in the Ceph messenger protocol.\"\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1312,
+      "completion_tokens": 68,
+      "total_tokens": 1380
+    },
+    "system_fingerprint": "fp_3e7d703517"
+  }
+}
