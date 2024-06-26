@@ -1,0 +1,52 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement is relevant as it checks the length of the control segment, which is crucial for preventing buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement is relevant as it prints an error message when the control segment length exceeds a certain limit, indicating a potential buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement is relevant as it checks the length of the front segment, which is crucial for preventing buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement is relevant as it prints an error message when the front segment length exceeds a certain limit, indicating a potential buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement is relevant as it checks the length of the middle segment, which is crucial for preventing buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement is relevant as it prints an error message when the middle segment length exceeds a certain limit, indicating a potential buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement is relevant as it checks the length of the data segment, which is crucial for preventing buffer overrun."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement is relevant as it prints an error message when the data segment length exceeds a certain limit, indicating a potential buffer overrun."
+    }
+  ]
+}

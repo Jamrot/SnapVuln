@@ -1,0 +1,23 @@
+{
+  "patch_summary": "This patch hardens the msgr2.1 frame segment length checks in the Linux kernel's libceph module.",
+  "vulnerability_type": "Buffer Overrun",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun in prepare_read_control() due to incorrect handling of negative ctrl_len values.",
+  "slicing_statements": {
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement is relevant to the vulnerability because it checks if the control segment length is greater than the maximum allowed length, which can lead to a buffer overrun.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Program Dependence Graph",
+      "justification": "A backward slicing approach is suitable for this statement as it checks the control segment length, which is a condition that depends on previous computations. A Program Dependence Graph is appropriate as it combines both control and data dependencies, allowing us to trace the origin of the incorrect control segment length."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement is relevant to the vulnerability because it logs an error message when the control segment length is greater than the maximum allowed length, indicating a potential buffer overrun.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Program Dependence Graph",
+      "justification": "A backward slicing approach is suitable for this statement as it is an error message that depends on the previous condition check. A Program Dependence Graph is appropriate as it combines both control and data dependencies, allowing us to trace the origin of the incorrect control segment length and the conditions that lead to this error message."
+    }
+  }
+}

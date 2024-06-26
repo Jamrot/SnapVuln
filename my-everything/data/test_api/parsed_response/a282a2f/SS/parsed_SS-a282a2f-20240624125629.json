@@ -1,0 +1,32 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a bug check on the control length. A backward slice from this point will help identify the data dependencies that lead to the control length value, which is crucial in understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is a condition check on the last segment length. A backward slice from this point will help identify the control flow that leads to this condition, which is important in understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a condition check on the first segment length. A backward slice from this point will help identify the data dependencies that lead to the first segment length value, which is crucial in understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is a bug check on the front length. A backward slice from this point will help identify the data dependencies that lead to the front length value, which is crucial in understanding the buffer overflow vulnerability."
+    }
+  ]
+}

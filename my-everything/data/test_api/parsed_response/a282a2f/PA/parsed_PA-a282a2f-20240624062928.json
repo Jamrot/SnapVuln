@@ -1,0 +1,5 @@
+{
+  "patch_summary": "Fixes vulnerability in libceph where negative segment lengths could lead to buffer overrun.",
+  "vulnerability_type": "Buffer Overrun",
+  "vulnerability_summary": "Improper handling of negative segment lengths could result in buffer overrun."
+}

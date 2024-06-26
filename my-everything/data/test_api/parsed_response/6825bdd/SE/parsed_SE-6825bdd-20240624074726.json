@@ -1,0 +1,22 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "reason": "This statement is relevant to the vulnerability because it initiates a loop that iterates over all commands in the queue, which could potentially include commands that have failed and are causing a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "This statement is relevant to the vulnerability because it checks if the command needs data in, which could potentially include commands that have failed and are causing a memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is relevant to the vulnerability because it attempts to free the command buffers, which could potentially include buffers that have not been deallocated due to failed commands, thus causing a memory leak."
+    }
+  ]
+}

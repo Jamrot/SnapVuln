@@ -1,0 +1,34 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1584 | DELETE",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {",
+      "reason": "This statement is relevant because it is part of the loop that iterates over the command queue, which is where the memory leak occurs."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585 | DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "reason": "This statement is relevant because it checks if the command needs data in, which is a condition that could lead to the memory leak."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586 | DELETE",
+      "statement": "\t\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is relevant because it is the function call that frees the command buffers, which is where the memory leak occurs."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585 | ADD",
+      "statement": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++)",
+      "reason": "This statement is relevant because it is part of the loop that iterates over the command queue, which is where the memory leak occurs."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1586 | ADD",
+      "statement": "\t\tnvmet_tcp_free_cmd_buffers(cmd);",
+      "reason": "This statement is relevant because it is the function call that frees the command buffers, which is where the memory leak occurs."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1587 | ADD",
+      "statement": "\tnvmet_tcp_free_cmd_buffers(&queue->connect);",
+      "reason": "This statement is relevant because it is the function call that frees the command buffers, which is where the memory leak occurs."
+    }
+  ]
+}

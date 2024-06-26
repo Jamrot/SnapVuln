@@ -1,0 +1,18 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Program Dependence Graph",
+      "justification": "A backward slicing approach is suitable for this statement as it checks the control segment length, which is a condition that depends on previous computations. A Program Dependence Graph is appropriate as it combines both control and data dependencies, allowing us to trace the origin of the incorrect control segment length."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Program Dependence Graph",
+      "justification": "A backward slicing approach is suitable for this statement as it is an error message that depends on the previous condition check. A Program Dependence Graph is appropriate as it combines both control and data dependencies, allowing us to trace the origin of the incorrect control segment length and the conditions that lead to this error message."
+    }
+  ]
+}

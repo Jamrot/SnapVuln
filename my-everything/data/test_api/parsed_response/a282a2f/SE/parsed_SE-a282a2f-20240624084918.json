@@ -1,0 +1,64 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 413 | modification_type: ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement is relevant as it adds a check for negative or excessive front_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 414 | modification_type: ADD",
+      "statement": "\tmiddle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||",
+      "reason": "This statement is relevant as it adds a check for negative or excessive middle_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: __tail_onwire_len | line_num: 415 | modification_type: ADD",
+      "statement": "\tdata_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "reason": "This statement is relevant as it adds a check for negative or excessive data_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: head_onwire_len | line_num: 393 | modification_type: ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement is relevant as it adds a check for negative or excessive ctrl_len, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 529 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative control segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 530 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive control segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 534 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative front segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 535 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive front segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 539 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative middle segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 540 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive middle segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 544 | modification_type: ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement is relevant as it adds a check for negative data segment length, which could lead to buffer overflows."
+    },
+    {
+      "statement_info": "old_path: net/ceph/messenger_v2.c | new_path: net/ceph/messenger_v2.c | function: decode_preamble | line_num: 545 | modification_type: ADD",
+      "statement": "\t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement is relevant as it adds a check for excessive data segment length, which could lead to buffer overflows."
+    }
+  ]
+}

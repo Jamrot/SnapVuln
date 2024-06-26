@@ -1,0 +1,46 @@
+file: /* messenger_v2.c */
+function: /* static int handle_preamble(struct ceph_connection *con) */
+2727: static int handle_preamble(struct ceph_connection *con)
+2729: 	struct ceph_frame_desc *desc = &con->v2.in_desc;
+2732: 	if (con_secure(con)) {
+2733: 		ret = decrypt_preamble(con);
+2734: 		if (ret) {
+2741: 	ret = decode_preamble(con->v2.in_buf, desc);
+function: /* static int populate_in_iter(struct ceph_connection *con) */
+2854: static int populate_in_iter(struct ceph_connection *con)
+2858: 	dout("%s con %p state %d in_state %d\n", __func__, con, con->state,
+2859: 	     con->v2.in_state);
+2860: 	WARN_ON(iov_iter_count(&con->v2.in_iter));
+2862: 	if (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {
+2864: 	} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {
+2866: 	} else if ((con->state >= CEPH_CON_S_V2_HELLO &&
+2867: 		    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||
+2868: 		   con->state == CEPH_CON_S_OPEN) {
+2869: 		switch (con->v2.in_state) {
+2870: 		case IN_S_HANDLE_PREAMBLE:
+2871: 			ret = handle_preamble(con);
+function: /* int ceph_con_v2_try_read(struct ceph_connection *con) */
+2917: int ceph_con_v2_try_read(struct ceph_connection *con)
+2921: 	dout("%s con %p state %d need %zu\n", __func__, con, con->state,
+2922: 	     iov_iter_count(&con->v2.in_iter));
+2924: 	if (con->state == CEPH_CON_S_PREOPEN)
+2932: 	if (WARN_ON(!iov_iter_count(&con->v2.in_iter)))
+2936: 		ret = ceph_tcp_recv(con);
+2937: 		if (ret <= 0)
+2940: 		ret = populate_in_iter(con);
+2941: 		if (ret <= 0) {
+function: /* static int decode_preamble(void *p, struct ceph_frame_desc *desc) */
+495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)
+497: 	void *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;
+501: 	crc = crc32c(0, p, crcp - p);
+502: 	expected_crc = get_unaligned_le32(crcp);
+503: 	if (crc != expected_crc) {
+509: 	memset(desc, 0, sizeof(*desc));
+511: 	desc->fd_tag = ceph_decode_8(&p);
+512: 	desc->fd_seg_cnt = ceph_decode_8(&p);
+513: 	if (desc->fd_seg_cnt < 1 ||
+514: 	    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {
+518: 	for (i = 0; i < desc->fd_seg_cnt; i++) {
+519: 		desc->fd_lens[i] = ceph_decode_32(&p);
+520: 		desc->fd_aligns[i] = ceph_decode_16(&p);
+527: 	if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {

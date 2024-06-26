@@ -1,0 +1,39 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement checks if the last segment is empty. A backward slice from this statement will help identify the code that influences the value of 'desc->fd_lens[desc->fd_seg_cnt - 1]'. A Control Flow Graph is suitable as it will help visualize the paths leading to this statement."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the control segment length exceeds the maximum limit. A backward slice from this statement will help identify the code that influences the value of 'desc->fd_lens[0]'. A Data Dependency Graph is suitable as it will help visualize the data dependencies leading to this statement."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the front segment length exceeds the maximum limit. A backward slice from this statement will help identify the code that influences the value of 'desc->fd_lens[1]'. A Data Dependency Graph is suitable as it will help visualize the data dependencies leading to this statement."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the middle segment length exceeds the maximum limit. A backward slice from this statement will help identify the code that influences the value of 'desc->fd_lens[2]'. A Data Dependency Graph is suitable as it will help visualize the data dependencies leading to this statement."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the data segment length exceeds the maximum limit. A backward slice from this statement will help identify the code that influences the value of 'desc->fd_lens[3]'. A Data Dependency Graph is suitable as it will help visualize the data dependencies leading to this statement."
+    }
+  ]
+}

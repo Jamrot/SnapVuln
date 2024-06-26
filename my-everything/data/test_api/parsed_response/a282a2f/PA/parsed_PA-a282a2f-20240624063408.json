@@ -1,0 +1,5 @@
+{
+  "patch_summary": "This patch hardens the msgr2.1 frame segment length checks in the Linux kernel's libceph module.",
+  "vulnerability_type": "Buffer Overrun",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun in prepare_read_control() due to incorrect handling of negative ctrl_len values."
+}

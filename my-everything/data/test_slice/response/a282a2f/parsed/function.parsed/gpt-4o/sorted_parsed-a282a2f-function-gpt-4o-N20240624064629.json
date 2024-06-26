@@ -1,0 +1,87 @@
+{
+  "patch_summary": "The patch strengthens the length checks for frame segments in the Ceph messenger protocol to prevent buffer overruns.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun due to improper handling of negative segment lengths in the Ceph messenger protocol.",
+  "slicing_statements": {
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement checks if the last segment is empty, which is related to segment length validation.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement checks the last segment length, which is crucial for understanding the control flow leading to the vulnerability. A backward slice will help trace the origin of `desc->fd_lens` and `desc->fd_seg_cnt` to ensure they are correctly initialized and manipulated. The Control Flow Graph will help visualize the execution paths leading to this check."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE",
+      "statement": "\t\tpr_err(\"last segment empty\\n\");",
+      "reason": "This statement logs an error if the last segment is empty, indicating a potential issue with segment length.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This error message is printed when the last segment is empty. A backward slice will help identify the conditions and data manipulations leading to this error. The Control Flow Graph will help understand the context in which this error message is triggered."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement checks if the control segment length exceeds the maximum allowed length, which is a boundary check.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the control segment length exceeds the maximum allowed length. A backward slice will help trace the origin and manipulation of `desc->fd_lens[0]`. The Data Dependency Graph will help understand how data flows and dependencies affect this check."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length is too large, indicating a boundary check failure.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This error message is printed when the control segment length is too large. A backward slice will help identify the data flow leading to this condition. The Data Dependency Graph will help understand the dependencies and data manipulations that result in this error."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement checks if the front segment length exceeds the maximum allowed length, which is a boundary check.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the front segment length exceeds the maximum allowed length. A backward slice will help trace the origin and manipulation of `desc->fd_lens[1]`. The Data Dependency Graph will help understand how data flows and dependencies affect this check."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length is too large, indicating a boundary check failure.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This error message is printed when the front segment length is too large. A backward slice will help identify the data flow leading to this condition. The Data Dependency Graph will help understand the dependencies and data manipulations that result in this error."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement checks if the middle segment length exceeds the maximum allowed length, which is a boundary check.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the middle segment length exceeds the maximum allowed length. A backward slice will help trace the origin and manipulation of `desc->fd_lens[2]`. The Data Dependency Graph will help understand how data flows and dependencies affect this check."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length is too large, indicating a boundary check failure.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This error message is printed when the middle segment length is too large. A backward slice will help identify the data flow leading to this condition. The Data Dependency Graph will help understand the dependencies and data manipulations that result in this error."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement checks if the data segment length exceeds the maximum allowed length, which is a boundary check.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement checks if the data segment length exceeds the maximum allowed length. A backward slice will help trace the origin and manipulation of `desc->fd_lens[3]`. The Data Dependency Graph will help understand how data flows and dependencies affect this check."
+    },
+    "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length is too large, indicating a boundary check failure.",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This error message is printed when the data segment length is too large. A backward slice will help identify the data flow leading to this condition. The Data Dependency Graph will help understand the dependencies and data manipulations that result in this error."
+    }
+  }
+}

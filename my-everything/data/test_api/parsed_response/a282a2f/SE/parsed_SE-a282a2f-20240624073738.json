@@ -1,0 +1,28 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This deleted statement was responsible for checking if the control segment length exceeds the maximum allowed length, which is crucial to prevent buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This deleted statement was responsible for checking if the front segment length exceeds the maximum allowed length, which is crucial to prevent buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This deleted statement was responsible for checking if the middle segment length exceeds the maximum allowed length, which is crucial to prevent buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This deleted statement was responsible for checking if the data segment length exceeds the maximum allowed length, which is crucial to prevent buffer overruns."
+    }
+  ]
+}

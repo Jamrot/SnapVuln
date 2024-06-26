@@ -1,0 +1,100 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement introduces a check for negative lengths, which is directly related to preventing buffer overflows due to negative segment lengths."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 530 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement continues the check for segment length, ensuring it does not exceed the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 531 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad control segment length %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length is invalid, which helps in identifying and preventing buffer overflow issues."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement introduces a check for negative lengths for the front segment, which is directly related to preventing buffer overflows due to negative segment lengths."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 535 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement continues the check for the front segment length, ensuring it does not exceed the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 536 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad front segment length %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length is invalid, which helps in identifying and preventing buffer overflow issues."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement introduces a check for negative lengths for the middle segment, which is directly related to preventing buffer overflows due to negative segment lengths."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 540 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement continues the check for the middle segment length, ensuring it does not exceed the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 541 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad middle segment length %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length is invalid, which helps in identifying and preventing buffer overflow issues."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement introduces a check for negative lengths for the data segment, which is directly related to preventing buffer overflows due to negative segment lengths."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 545 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement continues the check for the data segment length, ensuring it does not exceed the maximum allowed length, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | decode_preamble | 546 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad data segment length %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length is invalid, which helps in identifying and preventing buffer overflow issues."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement adds a check for the control length, ensuring it is within valid bounds, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement adds a check for the front length, ensuring it is within valid bounds, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | __tail_onwire_len | 414 | ADD",
+      "modification": "ADD",
+      "statement": "\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||",
+      "reason": "This statement adds a check for the middle length, ensuring it is within valid bounds, which is crucial for preventing buffer overflows."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | net/ceph/messenger_v2.c | __tail_onwire_len | 415 | ADD",
+      "modification": "ADD",
+      "statement": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "reason": "This statement adds a check for the data length, ensuring it is within valid bounds, which is crucial for preventing buffer overflows."
+    }
+  ]
+}
