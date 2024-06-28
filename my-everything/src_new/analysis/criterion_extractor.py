@@ -4,6 +4,7 @@ import os
 import json
 import logging
 import utils.get_path as get_path
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -111,12 +112,12 @@ class CriterionExtractor:
 
             if save_file:
                 if not os.path.exists(code_filepath):
-                    logger.warning(f"Code file {code_filepath} does not exist")
+                    logger.warning(f"Code file not exist: {code_filepath}")
                     if modification=='DELETE':
                         self._save_file(file_code_old, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
                     elif modification=='ADD':
                         self._save_file(file_code_new, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
-                criterion['save_file_code_old_filepath'] = code_filepath
+                criterion['save_file_code_filepath'] = code_filepath
 
             if save_module:
                 self._save_module(criterion=criterion, module_dirpath=module_dirpath, overwrite=config.MODULE_OVERWRITE)
@@ -128,21 +129,27 @@ class CriterionExtractor:
     
     def _save_module(self, criterion, module_dirpath, overwrite=False):
         """copy local_module_path to module_dirpath, default to overwrite."""
-        file_path_new = criterion['file_path']['new']
-        old_version = criterion['version']['old']
-        local_module_path = self._get_module_path(file_path_new)
-        if not os.path.exists(local_module_path):
-            logger.error(f"Local module path {local_module_path} does not exist")
-            exit() 
-        
+        modification = criterion['modification']
+        if modification=='DELETE':
+            file_path = criterion['file_path']['old']
+            version = criterion['version']['old']
+        elif modification=='ADD':
+            file_path = criterion['file_path']['new']
+            version = criterion['version']['new']
+
         # checkout the version
-        os.system(f"git -C {config.LINUX} checkout {old_version} -- {file_path_new}")
+        os.system(f"git -C {config.LINUX} checkout {version} -- {file_path}")
+
+        local_module_path = self._get_module_path(file_path)
+        if not os.path.exists(local_module_path):
+            logger.error(f"Cannot find local_module_path: {local_module_path}")
+            exit() 
 
         if os.path.exists(module_dirpath) and overwrite:
             if not len(os.listdir(module_dirpath)) == 0:
-                logger.warning(f"Module directory {module_dirpath} already exists and is not empty")
+                logger.warning(f"[Remove module directory] Module directory exists (not empty):{module_dirpath}")
                 
-            logger.warning(f"Overwriting module directory {module_dirpath}")
+            # logger.warning(f"Remove module directory: {module_dirpath}")
             os.system(f"rm -rf {module_dirpath}")
 
         os.system(f"cp -r {local_module_path} {module_dirpath}")
@@ -168,6 +175,7 @@ class CriterionExtractor:
                 - file_code: {'old': str, 'new': str}
         """
         meta = []
+        criterions = copy.deepcopy(criterions)
         for criterion in criterions:
             del criterion['file_code']
             del criterion['func_code']
@@ -182,17 +190,16 @@ class CriterionExtractor:
             # })
             
         with open(meta_filepath, 'w') as f:
-            f.write(json.dumps(meta, indent=4))
+            f.write(json.dumps(meta, indent=2))
 
         logger.info(f"Meta file saved to {meta_filepath}")
 
     def _save_file(self, file_content, file_path, overwrite=False):
         if os.path.exists(file_path):
             if overwrite:
-                logger.warning(f"File {file_path} already exists")
-                logger.warning(f"Overwriting file {file_path}")
+                logger.warning(f"Overwrite file: {file_path}")
             else:
-                logger.warning(f"File {file_path} already exists, and not overwriting")
+                logger.warning(f"No overwrite file: {file_path}")
                 return
 
         if not os.path.exists(os.path.dirname(file_path)):
@@ -201,7 +208,7 @@ class CriterionExtractor:
         with open(file_path, 'w') as f:
             f.write(file_content)
 
-        logger.info(f"Code file saved to {file_path}")
+        logger.info(f"File saved to {file_path}")
 
 def test():
     url = config.LINUX

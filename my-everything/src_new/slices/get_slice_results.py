@@ -30,7 +30,7 @@ def execute_command(command,cwd):
 		out = content.decode("utf8","ignore")
 		return out
 	except Exception as e:
-		print(command)
+		logger.error(f"[Command execution failed] Execution error: {e.stderr}")
 		return ''
     
 
@@ -45,7 +45,7 @@ def get_line_map_funcs_in_file(file_path):
         if not file_str:
             return file_func_dict
         else:
-            print("Empty Ctags Result [%s]" % (file_path))
+            logger.error(f"Empty Ctags Result [{file_path}]")
             return file_func_dict
             
     lines = res.splitlines()
@@ -53,21 +53,14 @@ def get_line_map_funcs_in_file(file_path):
     for line in lines:
         fields = line.split()
         if 'f' in fields:            
-            # func_dict = {}
-            # func_name = fields[0]
             start_num = get_num(fields, 'line:')
             end_num = get_num(fields, 'end:')
             func_code = extract_function(file_path, start_num, end_num)
-            # func_dict['func'] = func_code
-            # func_dict['start_line'] = start_num
-            # func_dict['end_line'] = end_num
-            # func_dict['name'] = func_name
-            # sometimes the ctag results are incomplete, we have to make do here
             if start_num is None or end_num is None:
                 continue
             for line in range(start_num, end_num + 1):
                 if line in file_func_dict:
-                    logger.error(f"Function already exists in file_func_dict: {file_path} {line}")
+                    logger.warning(f"Function already exists in file_func_dict: {file_path} {line}")
                     continue
 
                 func_first_line = func_code[0]
@@ -77,13 +70,10 @@ def get_line_map_funcs_in_file(file_path):
 
 
 def get_num(fields, tag):
-    try:
-        for item in fields:
-            if tag in item:
-                tag_list = item.split(":")
-                return int(tag_list[-1])
-    except:
-        print(fields, tag)
+    for item in fields:
+        if tag in item:
+            tag_list = item.split(":")
+            return int(tag_list[-1])
         
 
 def extract_function(file_path, start_num, end_num):
@@ -103,17 +93,20 @@ def get_slice_info_from_dot_criterion(criterion, myslice_filepath="", level='fun
     all_filenames = []
     func_line_map_dict = {}
     for file_filepath in code_filepath_list:
+        save_root = criterion.get('save_root')
         filename = os.path.basename(file_filepath)
-        all_filenames.append(filename)
-        module_code[filename] = read_file(file_filepath)
-        slice_codes_dict[filename] = {}
-        func_line_map_dict[filename] = get_line_map_funcs_in_file(file_filepath)
+        # make filename the relative path
+        file_relpath = os.path.relpath(file_filepath, save_root)
+        all_filenames.append(file_relpath)
+        module_code[file_relpath] = read_file(file_filepath)
+        slice_codes_dict[file_relpath] = {}
+        func_line_map_dict[file_relpath] = get_line_map_funcs_in_file(file_filepath)
 
     # get slice graph
     if not G_slice:
         if not os.path.exists(myslice_filepath):
-            logger.error(f"Slice DOT File not found: {myslice_filepath}")
-            return
+            logger.error(f"[Get slice info failed] Cannot find slice dot file: {myslice_filepath}")
+            return None
         else:
             G_slice = nx.drawing.nx_agraph.read_dot(myslice_filepath)
     
@@ -121,26 +114,27 @@ def get_slice_info_from_dot_criterion(criterion, myslice_filepath="", level='fun
     for node in G_slice.nodes(data=True):
         node_location = node[1].get('LINE_NUMBER')
         if not node_location:
-            logger.error(f"Node {node[0]} has no location")
+            logger.warning(f"Cannot find node location: {node[0]}")
             continue
         node_location_index = int(node_location) - 1
         node_filename = node[1].get('filename')
-        if not node_filename:
-            logger.error(f"Node {node[0]} has no filename")
+        node_relpath = node[1].get('relpath')
+        if not node_relpath:
+            logger.warning(f"Cannot find node filename: {node[0]}")
             continue
-        node_file_code = module_code[node_filename][node_location_index]
-        if node_location not in slice_codes_dict[node_filename]:
+        node_file_code = module_code[node_relpath][node_location_index]
+        if node_location not in slice_codes_dict[node_relpath]:
             # get node function
-            node_func = func_line_map_dict[node_filename].get(int(node_location), None)
-            slice_codes_dict[node_filename][node_location] = {
+            node_func = func_line_map_dict[node_relpath].get(int(node_location), None)
+            slice_codes_dict[node_relpath][node_location] = {
                 'code': node_file_code,
                 'function': node_func
             }
 
 
     # sort slice_codes_dict by location
-    for filename, file_slice_codes_dict in slice_codes_dict.items():
-        slice_codes_dict[filename] = dict(sorted(file_slice_codes_dict.items(), key=lambda x: x[0]))
+    for file_relpath, file_slice_codes_dict in slice_codes_dict.items():
+        slice_codes_dict[file_relpath] = dict(sorted(file_slice_codes_dict.items(), key=lambda x: x[0]))
 
     all_nodes_list = {node[0]:node[1] for node in G_slice.nodes(data=True)} # node[0]: node id
     all_edges_list = {f"{edge[0]}->{edge[1]}":edge[-1] for edge in G_slice.edges(data=True)}
@@ -160,6 +154,7 @@ def get_slice_info_from_dot_criterion(criterion, myslice_filepath="", level='fun
 
 
 def get_slice_info_from_dot_criterion_filename(criterion, myslice_filepath="", level='function', G_slice=None):
+    """dispateched version of get_slice_info_from_dot_criterion"""
     # read code in code filepath list
     code_filepath_list = get_path.get_code_filepath_list_from_criterion(criterion, level=level)
     module_code = {}
@@ -173,8 +168,8 @@ def get_slice_info_from_dot_criterion_filename(criterion, myslice_filepath="", l
     # get slice graph
     if not G_slice:
         if not os.path.exists(myslice_filepath):
-            logger.error(f"Slice DOT File not found: {myslice_filepath}")
-            return
+            logger.error(f"[Get slice info failed] Cannot find slice dot file: {myslice_filepath}")
+            return None
         else:
             G_slice = nx.drawing.nx_agraph.read_dot(myslice_filepath)
     
@@ -182,12 +177,12 @@ def get_slice_info_from_dot_criterion_filename(criterion, myslice_filepath="", l
     for node in G_slice.nodes(data=True):
         node_location = node[1].get('LINE_NUMBER')
         if not node_location:
-            logger.error(f"Node {node[0]} has no location")
+            logger.warning(f"Cannot find node location: node_id - {node[0]}")
             continue
         node_location_index = int(node_location) - 1
         node_filename = node[1].get('filename')
         if not node_filename:
-            logger.error(f"Node {node[0]} has no filename")
+            logger.warning(f"Cannot find node filename: node_id - {node[0]}")
             continue
         node_file_code = module_code[node_filename][node_location_index]
         if node_location not in slice_codes_dict[node_filename]:

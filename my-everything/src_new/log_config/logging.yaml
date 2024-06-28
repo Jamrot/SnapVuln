@@ -23,7 +23,7 @@ handlers:
   console:
     class: logging.StreamHandler
     formatter: standard
-    level: ERROR
+    level: WARNING
 
 loggers:
   '':

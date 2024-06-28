@@ -2,16 +2,9 @@ import os
 LINUX = '/mnt/wsl2/home/jamrot/linux'
 
 DATA_ROOT = '/app/slicing-snapvuln/my-everything/data/test_slice/response'
-# GRAPH_ROOT = os.path.join(DATA_ROOT, 'graph')
-# CODE_ROOT = os.path.join(DATA_ROOT, 'code')
-# GRAPH_ROOT = os.path.join(DATA_ROOT, 'test')
-# CODE_ROOT = os.path.join(DATA_ROOT, 'test')
-# SLICE_ROOT = os.path.join(DATA_ROOT, 'test')
-# META_ROOT = os.path.join(DATA_ROOT, 'test')
 
-SLICE_ROOT = META_ROOT = DATA_ROOT
-
-CODE_DIRNAME = 'code'
+OLD_CODE_DIRNAME = 'code_old'
+NEW_CODE_DIRNAME = 'code_new'
 GRAPH_DIRNAME = 'graph'
 
 desc_tags_prefixes = [
@@ -38,10 +31,10 @@ META_FILENAME_START = 'meta'
 MODULE_DIRNAME_START = 'module'
 
 CODE_FILE_OVERWRITE = True
-MODULE_OVERWRITE = True
+MODULE_OVERWRITE = False
 BIN_OVERWRITE = False
 GRAPH_OVERWRITE = False
-GRAPH_ALL_OVERWRITE = False
+GRAPH_ALL_OVERWRITE = True
 
 # patch
 COMMIT_ID = "a282a2f10539dce2aa619e71e1817570d557fc97"
@@ -65,7 +58,7 @@ PA_RESPONSE_FILEPATH = "my-everything/responses/parsed/PA/parsed_PA-a282a2f-2024
 SE_RESPONSE_FILEPATH = "my-everything/responses/parsed/SE/parsed_SE-a282a2f-20240617073944.json"
 
 # slicing
-PARSED_FILEPATH = "my-everything/data/test_slice/response/a282a2f/parsed/function.parsed/gpt-4-0613/sorted_parsed-a282a2f-function-gpt-4-0613-N20240624092357.json"
+PARSED_FILEPATH = "my-everything/data/test_slice/response/a282a2f-2/parsed/function.parsed/gpt-4-0613/sorted_parsed-a282a2f-function-gpt-4-0613-N20240624092357.json"
 
 
 # time

@@ -14,7 +14,7 @@ class GraphBuilder:
     def joern_parse(self, source_path, bin_file = "tmp.bin"):
         logger.info(f"Start parsing {source_path} to {bin_file}")
         if os.path.exists(bin_file):
-            logger.warning(f"removing bin file: {bin_file}")
+            logger.warning(f"Remove bin file: {bin_file}")
             os.remove(bin_file)
         cmd = f'joern-parse  {source_path} -o {bin_file}'
         self.execute_command(cmd)
@@ -40,7 +40,7 @@ class GraphBuilder:
             if result.stderr:
                 logger.error("Command error: %s", result.stderr)
         except subprocess.CalledProcessError as e:
-            logger.error("Command failed with error: %s", e.stderr)
+            logger.error("Command error: %s", e.stderr)
     
     def read_graph(self, graph_path):
         logger.info(f"Start reading graph {graph_path}")
@@ -62,7 +62,7 @@ class GraphBuilder:
         return G_combine
     
     def save_graph(self, save_path, G):
-        logger.info(f"Start saving graph...")
+        logger.info(f"Start saving graph: {save_path}")
         nx.drawing.nx_agraph.write_dot(G, save_path)
         logger.info(f"Save graph to {save_path}")
 

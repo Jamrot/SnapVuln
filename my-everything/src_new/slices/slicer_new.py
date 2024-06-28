@@ -22,10 +22,7 @@ class Slicer:
             if node_location and int(node_location) == int(criterion_linenum):
                 criterion_nodes.append(node)
         
-        if len(criterion_nodes) == 0:
-            logger.error("No criterion node: %s", criterion_linenum)
-        
-        logger.info("[Slicer] criterions: %s", criterion_nodes)
+        logger.debug("criterions: %s", criterion_nodes)
         return criterion_nodes
 
     
@@ -35,22 +32,19 @@ class Slicer:
         G_type_graph = self.get_type_graph(G_graph=self.G_graph, g_type=g_type, depth=depth)
         G_slice = nx.DiGraph()
 
-        # for criterion_node in criterion_nodes:
-        # if not G_type_graph.has_node(criterion_node[0]):
-            # logger.warning(f"Criterion node {criterion_node[0]} not in G_type_graph")
-            # continue
-
-        # criterion_slice = {'criterion':criterion_node, 'nodes':[], 'edges':[]}
+        if len(criterion_nodes) == 0:
+            logger.error(f"[Slice failed] Cannot find criterion node, No node in criterion_linenum: {criterion_linenum}")
+            return G_slice
 
         if direction=='forward':
             G_slice_node = self.forward_slice(G_graph=G_type_graph, criterion_node=criterion_nodes)
         elif direction=='backward':
             G_slice_node = self.backward_slice(G_graph=G_type_graph, criterion_node=criterion_nodes)
-        elif direction=='bid':
+        elif direction=='bidirectional':
             G_slice_node = self.bid_slice(G_graph=G_type_graph, criterion_node=criterion_nodes)
         else:
-            logger.warning("No such direction: %s", direction)
-            raise Exception("No such direction: %s"%direction)
+            logger.error(f"[Slice failed] Invalid direction: {direction}")
+            return G_slice
         
         G_slice.add_edges_from(G_slice_node.edges(data=True))
         G_slice.add_nodes_from(G_slice_node.nodes(data=True))
@@ -116,7 +110,7 @@ class Slicer:
             current_node_id = q.get()
 
             if not G_graph.has_node(current_node_id):
-                logger.warning(f"Node {current_node_id} not in graph")
+                logger.warning(f"Node not in graph: {current_node_id}")
                 continue
 
             if current_node_id not in slice_nodes:
@@ -142,7 +136,7 @@ class Slicer:
             current_node_id = q.get()
 
             if not G_graph.has_node(current_node_id):
-                logger.warning(f"Node {current_node_id} not in graph")
+                logger.warning(f"Node not in graph: {current_node_id}")
                 continue
 
             if current_node_id not in slice_nodes:

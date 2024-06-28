@@ -1,0 +1,2 @@
+- get related node from lineNumber: cpg.file.name("messenger_v2.c").ast.lineNumber(529).id.l
+    - filename: relative path to import code 

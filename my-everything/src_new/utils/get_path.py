@@ -29,14 +29,16 @@ def get_criterion_savepath(commit_id, criterion):
     func_name = criterion['func_name']
     file_path_old = criterion['file_path']['old']
     file_path_new = criterion['file_path']['new']
+    modification = criterion['modification']
 
-    basename = "-".join([commit_id_short, func_name, str(criterion_line)])
+    basename = "-".join([commit_id_short, func_name, str(criterion_line), modification])
     criterion_dir_path = os.path.join(save_root, basename)
     if not os.path.exists(criterion_dir_path):
         os.makedirs(criterion_dir_path)
+    
+    code_root = get_code_root(modification=modification, commit_id=commit_id)
     # module dir
-    module_dir = os.path.dirname(file_path_old)
-    module_dirpath = os.path.join(save_root, config.CODE_DIRNAME, module_dir)
+    module_relpath, module_dirpath = get_module_dirpath_from_criterion(criterion)
     # code file
     code_filename = os.path.basename(file_path_old)
     code_filepath = os.path.join(module_dirpath, code_filename)
@@ -47,32 +49,53 @@ def get_criterion_savepath(commit_id, criterion):
     return save_root, basename, code_filepath, module_dirpath, meta_filepath
 
 
+def get_code_root(modification, commit_id):
+    save_root = get_save_root(commit_id=commit_id)
+    if modification=='DELETE':
+        code_root = os.path.join(save_root, config.OLD_CODE_DIRNAME)
+    elif modification=='ADD':
+        code_root = os.path.join(save_root, config.NEW_CODE_DIRNAME)
+    return code_root
+
+
+def get_module_dirpath_from_criterion(criterion):
+    commit_id = criterion['commit_id']
+    modification = criterion['modification']
+    file_path_old = criterion['file_path']['old']
+    code_root = get_code_root(modification=modification, commit_id=commit_id)
+    module_relpath = os.path.dirname(file_path_old)
+    module_dirpath = os.path.join(code_root, module_relpath)
+    return module_dirpath, module_relpath
+
+
+def get_root_meta_filepath(commit_id):
+    save_root = get_save_root(commit_id=commit_id)
+    commit_id_short = get_commit_id_short(commit_id=commit_id)
+    root_meta_filename = "-".join(["root_"+config.META_FILENAME_START, commit_id_short])+'.json'
+    root_meta_filepath = os.path.join(save_root, root_meta_filename)
+
+    return root_meta_filepath
+
+
 def get_graph_dir_from_criterion(criterion, level):
     filename_base = criterion.get('save_filename_base')
     save_root = criterion.get('save_root')
     module_path = criterion.get('save_module_dirpath')
-    module_dirname = os.path.basename(module_path)
-    # if level=="module":
-    #     graph_dir = os.path.join(save_root, module_dirname+config.GRAPH_DIR_END)        
-    # else:
-    #     graph_dir = os.path.join(save_root, filename_base, filename_base+config.GRAPH_DIR_END)  
-
-    file_path_old = criterion['file_path']['old']
-    module_dir = os.path.dirname(file_path_old)
-    graph_dir = os.path.join(save_root, config.GRAPH_DIRNAME, module_dir)
+    module_relative_path = os.path.relpath(module_path, save_root)
+    graph_dir = os.path.join(save_root, config.GRAPH_DIRNAME, module_relative_path)
     return graph_dir
 
 
 def get_joern_parse_path_from_criterion(criterion, level):
     # get module and code filepath
     module_path = criterion.get('save_module_dirpath')
-    code_filepath = criterion.get('save_file_code_old_filepath')
+    code_filepath = criterion.get('save_file_code_filepath')
 
     if not os.path.exists(module_path):
-        logger.error(f"Module file not found: {module_path}")
+        logger.error(f"[Joern parse failed] Cannot find module dir: {module_path}")
         return None
     if not os.path.exists(code_filepath):
-        logger.error(f"Code file not found: {code_filepath}")
+        logger.error(f"[Joern parse failed] Cannot find code file: {code_filepath}")
         return None
 
     # choose parse path based on level
@@ -81,7 +104,7 @@ def get_joern_parse_path_from_criterion(criterion, level):
     elif level == "module":
         parse_path = module_path
     else:
-        logger.error(f"Invalid parse level: {level}")
+        logger.error(f"[Joern parse failed] Invalid parse level: {level}")
         return None
     
     return parse_path
@@ -92,7 +115,7 @@ def get_bin_filepath_from_criterion(criterion, level):
     filename_base = criterion.get('save_filename_base')
     module_path = criterion.get('save_module_dirpath')
     module_dirname = os.path.basename(module_path)
-    code_filename = os.path.basename(criterion.get('save_file_code_old_filepath'))
+    code_filename = os.path.basename(criterion.get('save_file_code_filepath'))
     if level=='module':
         bin_filepath = os.path.join(graph_dir, f"{level}-{module_dirname}.bin")
     else:
@@ -113,7 +136,7 @@ def get_graph_savepath_from_criterion(criterion, graph_type, level):
     # graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, filename_base, graph_type+config.GRAPH_FILE_END]))
     module_path = criterion.get('save_module_dirpath')
     module_dirname = os.path.basename(module_path)
-    code_filename = os.path.basename(criterion.get('save_file_code_old_filepath'))
+    code_filename = os.path.basename(criterion.get('save_file_code_filepath'))
     if level=='module':
         graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, module_dirname, graph_type+config.GRAPH_FILE_END]))
     else:
@@ -140,7 +163,7 @@ def get_collate_slice_savedir(commit_id):
 
 
 def get_code_filepath_list_from_criterion(criterion, level='function')->list:
-    code_filepath = criterion.get('save_file_code_old_filepath')
+    code_filepath = criterion.get('save_file_code_filepath')
     filepath_list = [code_filepath]   
     
     if level == 'module':

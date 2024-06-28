@@ -24,26 +24,29 @@ def build_level_graph(root_dir, graph_type="all", level='function'):
     
     for meta_filepath in meta_filepath_list:
         criterion = read_criterion_from_meta(meta_filepath=meta_filepath)
-        graph_dir = get_path.get_graph_dir_from_criterion(criterion=criterion, level=level)
+        if not criterion:
+            logger.warning(f"Invalid criterion from meta file: {meta_filepath}")
+            continue
+        graph_dump_dir = get_path.get_graph_dir_from_criterion(criterion=criterion, level=level)
         joern_parse_path = get_path.get_joern_parse_path_from_criterion(criterion=criterion, level=level)
         # check path validation
-        if not graph_dir or not joern_parse_path:
-            logger.error(f"Invalid graph_dir or parse_path: {graph_dir}, {joern_parse_path}")
+        if not joern_parse_path:
+            logger.error(f"[Build graph failed] Cannot get joern_parse_path: {joern_parse_path}")
             continue
-        if not os.path.exists(graph_dir):
-            os.makedirs(graph_dir)
+        if not os.path.exists(graph_dump_dir):
+            os.makedirs(graph_dump_dir)
 
         bin_filepath = get_path.get_bin_filepath_from_criterion(criterion=criterion, level=level)
         if config.BIN_OVERWRITE or not os.path.exists(bin_filepath):
             graph_builder.joern_parse(source_path=joern_parse_path, bin_file=bin_filepath)
         
-        graph_dump_dir = get_path.get_graph_dump_dir(graph_dump_dir=graph_dir, bin_filepath=bin_filepath, graph_dump_type=graph_type)
+        graph_dump_dir = get_path.get_graph_dump_dir(graph_dump_dir=graph_dump_dir, bin_filepath=bin_filepath, graph_dump_type=graph_type)
         if config.GRAPH_OVERWRITE or not os.path.exists(graph_dump_dir):
             graph_builder.joern_dump_graph(graph_dir=graph_dump_dir, bin_file=bin_filepath, graph_type=graph_type)
 
         # save_graph_file(graph_dump_dir=graph_dump_dir, criterion=criterion, graph_type=graph_type)
     
-    return graph_dir
+    return graph_dump_dir
 
 """
 build graph from meta file
@@ -56,13 +59,13 @@ def read_criterion_from_meta(meta_filepath):
     with open(meta_filepath, 'r') as f:
         criterion = json.load(f)
     if not len(criterion)==1:
-        logger.error(f"Invalid criterion from meta file: {meta_filepath}")
+        logger.error(f"[Read criterion failed] Too many criterion from meta file: {meta_filepath}")
         return None
     criterion = criterion[0]
     return criterion
 
 
-def save_graph_file(graph_dump_dir, criterion, graph_type, level):
+def copy_graph_file(graph_dump_dir, criterion, graph_type, level):
     graph_dir = get_path.get_graph_dir_from_criterion(criterion=criterion, level=level)
     filename_base = criterion.get('save_filename_base')
 
@@ -73,7 +76,7 @@ def save_graph_file(graph_dump_dir, criterion, graph_type, level):
             os.system(f"cp {graph_filepath} {graph_save_path}")
             logger.info(f"Graph saved to {graph_save_path}")
         else:
-            logger.error(f"Graph file not found: {graph_filepath}")
+            logger.error(f"[Graph copy failed] Cannot find graph file: {graph_filepath}")
 
 
 def get_graph_filepath_from_dump_dir(graph_dump_dir, graph_type, graph_level="file"):
@@ -91,14 +94,14 @@ def get_graph_filepath_from_dump_dir(graph_dump_dir, graph_type, graph_level="fi
                     graph_filepath_dict[file_filename] = graph_file_filepath
                     break
     else:
-        logger.error(f"Invalid graph type: {graph_type}, please choose from ['all', 'cpg']")
+        logger.error(f"Cannot get graph_filepath, Invalid graph type: {graph_type}, please choose from ['all', 'cpg']")
 
     logger.info(f"Graph file path dict: {graph_filepath_dict}")
     
     return graph_filepath_dict
 
 
-def get_all_meta_filepath(root_dir = config.META_ROOT):
+def get_all_meta_filepath(root_dir):
     meta_filepath_list = []
     meta_filename_start = config.META_FILENAME_START
     for root, dirs, files in os.walk(root_dir):
@@ -111,7 +114,7 @@ def get_all_meta_filepath(root_dir = config.META_ROOT):
     return meta_filepath_list
 
 
-def get_all_code_filepath(root_dir=config.CODE_DIRNAME):
+def get_all_code_filepath(root_dir):
     code_filepath_list = []
     code_filename_start = config.CODE_FILENAME_START
     for root, dirs, files in os.walk(root_dir):
@@ -126,7 +129,7 @@ def get_all_code_filepath(root_dir=config.CODE_DIRNAME):
 
 def build_single_slice(criterion, slice_direction, slice_graph, slice_depth, graph_type="all", G_grpah=None):
     criterion_linenum = criterion.get('criterion').get('line')
-    code_filepath = criterion.get('save_file_code_old_filepath')
+    code_filepath = criterion.get('save_file_code_filepath')
     filename_base = criterion.get('save_filename_base')
     
     if not G_grpah:
@@ -154,7 +157,7 @@ def build_single_slice(criterion, slice_direction, slice_graph, slice_depth, gra
 def add_filename_to_all_graph(criterion, level):
     graph_save_filepath = get_path.get_graph_savepath_from_criterion(criterion=criterion, graph_type="all_filename", level=level)
     if os.path.exists(graph_save_filepath) and not config.GRAPH_ALL_OVERWRITE:
-        logging.warning(f"{graph_save_filepath} already exists and not overwrite, return G_all.")
+        logging.warning(f"all_graph with filename already exists and not overwrite, return G_all: {graph_save_filepath}")
         G_all = nx.drawing.nx_agraph.read_dot(graph_save_filepath)
         return G_all
 
@@ -173,7 +176,7 @@ def add_filename_to_all_graph(criterion, level):
     # get filename from cpg_graph_dir
     for file_filename, graph_filepath_cpg in graph_filepath_dict_cpg.items():
         if not os.path.exists(graph_filepath_cpg):
-            logger.error(f"File graph not found: {graph_filepath_cpg}")
+            logger.error(f"[Add filename failed] Cannot find graph (cpg), graph_filepath_cpg not exists: {graph_filepath_cpg}")
             continue
         # read cpg_graph from file_graph_filepath
         G_cpg = graph_builder.read_graph(graph_filepath_cpg)
@@ -253,12 +256,44 @@ def get_response_direction(response_direction):
     return response_direction
 
 
+def add_filename_from_parent(G):
+
+    for node in G.nodes(data=True):
+        node_id = node[0]
+        node_data = node[1]
+        
+        # check if the node is a FILE or has FILENAME attribute
+        node_label = node_data.get('label')
+        node_filename = node_data.get('FILENAME')
+        node_name = node_data.get('NAME')
+
+        if node_label == "FILE" and node_name:
+            G.nodes[node_id]['filename'] = node_name
+        elif node_filename:
+            G.nodes[node_id]['filename'] = node_filename
+        else:
+            for parent in G.predecessors(node_id):
+                parent_data = G.nodes[parent]
+                parent_label = parent_data.get('label')
+                parent_filename = parent_data.get('FILENAME')
+                parent_name = parent_data.get('NAME')
+                if parent_label == "FILE" and parent_name:
+                    G.nodes[node_id]['filename'] = node_name
+                    break
+                elif parent_filename:
+                    G.nodes[node_id]['filename'] = node_filename
+                    break
+    return G
+
+
 def slice_from_response():
     url = config.LINUX
     commit_id = config.COMMIT_ID
     extractor = CriterionExtractor(url=url, commit_id=commit_id)
     criterions = extractor.get_criterion_from_patch()
-    
+    all_meta_filepath = get_path.get_root_meta_filepath(commit_id=commit_id)
+    extractor._save_criterion_meta(criterions=criterions, meta_filepath=all_meta_filepath)
+
     # get matched criterions from response
     parsed_filepath = config.PARSED_FILEPATH
     parsed_response = response_parser.read_parsed_response(response_filepath=parsed_filepath)
@@ -270,7 +305,7 @@ def slice_from_response():
 
     # set graph type and level
     graph_type = "all"
-    graph_level = "file" # function, file, module    
+    graph_level = "function" # function, file, module
 
     graph_dir = build_level_graph(graph_type=graph_type, root_dir=criterion_root_dir, level=graph_level)
     graph_dir = build_level_graph(graph_type="cpg", root_dir=criterion_root_dir, level=graph_level)
@@ -292,6 +327,7 @@ def slice_from_response():
         slice_graph = criterion['graph']
         slice_depth = graph_level
         G_all = dict_G_all[graph_save_path]
+        logger.info("graph_save_path: %s", graph_save_path)
         slice_save_path, G_slice = build_single_slice(
             criterion=criterion,
             slice_direction=slice_direction,
