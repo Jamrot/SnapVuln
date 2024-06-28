@@ -88,7 +88,7 @@ def get_graph_filepath_from_dump_dir(graph_dump_dir, graph_type, graph_level="fi
     return graph_filepath_dict
 
 
-def get_all_meta_filepath(root_dir = config.META_ROOT):
+def get_all_meta_filepath(root_dir):
     meta_filepath_list = []
     meta_filename_start = config.META_FILENAME_START
     for root, dirs, files in os.walk(root_dir):
@@ -116,7 +116,7 @@ def get_all_code_filepath(root_dir=config.CODE_DIRNAME):
 
 def build_single_slice(criterion, slice_direction, slice_graph, slice_depth, graph_type="all", G_grpah=None):
     criterion_linenum = criterion.get('criterion').get('line')
-    code_filepath = criterion.get('save_file_code_old_filepath')
+    code_filepath = criterion.get('save_file_code_filepath')
     filename_base = criterion.get('save_filename_base')
     
     if not G_grpah:
@@ -147,7 +147,7 @@ def read_raw_function(filepath):
 
 
 def get_slice_code_from_dot_criterion(criterion, myslice_filepath, level='function'):
-    code_filepath = criterion.get('save_file_code_old_filepath')
+    code_filepath = criterion.get('save_file_code_filepath')
     filepath_list = [code_filepath]   
     
     if level == 'module':

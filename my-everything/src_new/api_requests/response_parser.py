@@ -135,10 +135,10 @@ def sort_parsed(parsed_data):
         justification = stmt.get("justification", "")
 
         if stmt_info not in selected_stmts:
-            logger.error(f"stmt_info {stmt_info} not found in statements extraction results.")
+            logger.error(f"[Response Parse Error] Cannot find stmt_info in stmt_extraction results: {stmt_info}")
             continue
         if selected_stmts[stmt_info]['statement'] != stmt_code:
-            logger.error(f"stmt_code mismatch for stmt_info {stmt_info}.")
+            logger.error(f"[Response Parse Error] stmt_code mismatched: {stmt_info}")
         
         selected_stmts[stmt_info]['slicing_direction'] = direction
         selected_stmts[stmt_info]['code_representation_graph'] = graph

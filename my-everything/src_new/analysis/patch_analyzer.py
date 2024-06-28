@@ -220,7 +220,3 @@ def test():
     patch_analyzer = PatchAnalyzer(url, hash_id)
     info = patch_analyzer.get_changed_type()
     print(info)
-
-
-if __name__=="__main__":
-    test()
