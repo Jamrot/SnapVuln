@@ -22,7 +22,7 @@ def build_level_graph(root_dir, graph_type="all", level='function'):
     
     for meta_filepath in meta_filepath_list:
         criterion = read_criterion_from_meta(meta_filepath=meta_filepath)
-        graph_dir = get_path.get_graph_dir_from_criterion(criterion=criterion, level=level)
+        graph_dir = get_path.get_graph_dirpath_from_criterion(criterion=criterion, graph_level=level)
         parse_path = get_path.get_joern_parse_path_from_criterion(criterion=criterion, level=level)
         # check path validation
         if not graph_dir or not parse_path:
@@ -30,11 +30,11 @@ def build_level_graph(root_dir, graph_type="all", level='function'):
         if not os.path.exists(graph_dir):
             os.makedirs(graph_dir)
 
-        bin_filepath = get_path.get_bin_filepath_from_criterion(criterion=criterion, level=level)
+        bin_filepath = get_path.get_bin_filepath_from_criterion(criterion=criterion, graph_level=level)
         if config.BIN_OVERWRITE or not os.path.exists(bin_filepath):
             graph_builder.joern_parse(source_path=parse_path, bin_file=bin_filepath)
         
-        graph_dump_dir = get_path.get_graph_dump_dir(graph_dump_dir=graph_dir, graph_dump_type=graph_type)
+        graph_dump_dir = get_path.get_graph_dump_dirpath(graph_dump_dirpath=graph_dir, graph_dump_type=graph_type)
         if config.GRAPH_OVERWRITE or not os.path.exists(graph_dump_dir):
             graph_builder.joern_dump_graph(graph_dir=graph_dump_dir, bin_file=bin_filepath, graph_type=graph_type)
 
@@ -54,7 +54,7 @@ def read_criterion_from_meta(meta_filepath):
 
 
 def save_graph_file(graph_dump_dir, criterion, graph_type, level):
-    graph_dir = get_path.get_graph_dir_from_criterion(criterion=criterion, level=level)
+    graph_dir = get_path.get_graph_dirpath_from_criterion(criterion=criterion, graph_level=level)
     filename_base = criterion.get('save_filename_base')
 
     graph_path_dict = get_graph_filepath_from_dump_dir(graph_dump_dir=graph_dump_dir, graph_type=graph_type)
@@ -120,7 +120,7 @@ def build_single_slice(criterion, slice_direction, slice_graph, slice_depth, gra
     filename_base = criterion.get('save_filename_base')
     
     if not G_grpah:
-        graph_path = get_path.get_graph_savepath_from_criterion(criterion=criterion, graph_type=graph_type, level=slice_depth)
+        graph_path = get_path.get_graph_savepath_from_criterion(criterion=criterion, graph_type=graph_type, graph_level=slice_depth)
         G_grpah = nx.drawing.nx_agraph.read_dot(graph_path)
 
     slicer = Slicer(G_graph=G_grpah)
@@ -218,15 +218,15 @@ def get_slice_code_from_dot_criterion(criterion, myslice_filepath, level='functi
 
 
 def add_filename_to_all_graph(criterion, level):
-    graph_save_filepath = get_path.get_graph_savepath_from_criterion(criterion=criterion, graph_type="all_filename", level=level)
+    graph_save_filepath = get_path.get_graph_savepath_from_criterion(criterion=criterion, graph_type="all_filename", graph_level=level)
     if os.path.exists(graph_save_filepath) and not config.GRAPH_ALL_OVERWRITE:
         logging.warning(f"{graph_save_filepath} already exists and not overwrite, return G_all.")
         G_all = nx.drawing.nx_agraph.read_dot(graph_save_filepath)
         return G_all
 
-    graph_dump_dir = get_path.get_graph_dir_from_criterion(criterion=criterion, level=level)
-    graph_dump_dir_all = get_path.get_graph_dump_dir(graph_dump_dir, "all")
-    graph_dump_dir_cpg = get_path.get_graph_dump_dir(graph_dump_dir, "cpg")
+    graph_dump_dir = get_path.get_graph_dirpath_from_criterion(criterion=criterion, graph_level=level)
+    graph_dump_dir_all = get_path.get_graph_dump_dirpath(graph_dump_dir, "all")
+    graph_dump_dir_cpg = get_path.get_graph_dump_dirpath(graph_dump_dir, "cpg")
 
     graph_filepath_dict_all = get_graph_filepath_from_dump_dir(graph_dump_dir_all, "all")
     graph_filepath_dict_cpg = get_graph_filepath_from_dump_dir(graph_dump_dir_cpg, "cpg")

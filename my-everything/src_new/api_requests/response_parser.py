@@ -56,6 +56,8 @@ def save_response(response, response_filepath, request_content=""):
         os.makedirs(save_dir)
     with open(response_filepath, 'w') as f:
         json.dump(save_content, f, indent=2)
+    
+    logger.info(f"Response saved to {response_filepath}")
 
 
 def save_parsed_response(response_dict, parsed_filepath):
@@ -100,6 +102,7 @@ def read_parsed(parsed_savepath):
         parsed = json.load(f)
     return parsed
 
+
 def save_parsed(parsed_data, parsed_savepath):
     save_dir = os.path.dirname(parsed_savepath)
     if not os.path.exists(save_dir):
@@ -115,6 +118,8 @@ def sort_parsed(parsed_data):
     vulnerability_summary = parsed_data.get("vulnerability_summary", "")
     relevant_stmts = parsed_data.get("relevant_statements", "")
     stmts_slicing_strategy = parsed_data.get("statements_slicing_strategy", "")
+    core_operations = parsed_data.get("core_operations", "")
+    integrity_analysis = parsed_data.get("integrity_analysis", "")
 
     selected_stmts = {}
     for stmt in relevant_stmts:
@@ -124,7 +129,7 @@ def sort_parsed(parsed_data):
         selected_stmts[stmt_info] = {
             'statement_info': stmt_info,
             'statement': stmt_code,
-            'reason': reason
+            # 'reason': reason
         }
 
     for stmt in stmts_slicing_strategy:
@@ -142,13 +147,45 @@ def sort_parsed(parsed_data):
         
         selected_stmts[stmt_info]['slicing_direction'] = direction
         selected_stmts[stmt_info]['code_representation_graph'] = graph
-        selected_stmts[stmt_info]['justification'] = justification
+        # selected_stmts[stmt_info]['justification'] = justification
     
+    core_operation_list = []
+    for core_operation_dict in core_operations:
+        core_operation = core_operation_dict.get("core_operation", "")
+        core_operation_list.append(core_operation)
+
+    integrity_cause = integrity_analysis.get("sliced_code_cause_vulnerability", "").get("includes_all_codes", "")
+    integrity_all_operations = integrity_analysis.get("sliced_code_core_operations", {}).get("includes_all_core_operations", "")
+    integrity_final_decision = integrity_analysis.get("final_determination", {}).get("contains_all_relevant_code", "")
+    integrity_single_operation = {"YES":{}, "NO":{}}
+    operations_list = integrity_analysis.get("sliced_code_core_operations", {}).get("core_operation_codes", "")
+    for operation_dict in operations_list:
+        operation = operation_dict.get("core_operation", "")
+        operation_code = operation_dict.get("sliced_code", "")
+        operation_justification = operation_dict.get("justification", "")
+        if operation_code == "NONE":
+            if operation in integrity_single_operation["NO"]:
+                logger.warning(f"[Response Parse Error] Duplicated core operation, skipping: {operation}")
+                continue
+            integrity_single_operation["NO"][operation] = operation_code
+        else:
+            if operation in integrity_single_operation["YES"]:
+                logger.warning(f"[Response Parse Error] Duplicated core operation, skipping: {operation}")
+                continue
+            integrity_single_operation["YES"][operation] = operation_code
+
     sorted_parsed_data = {
         "patch_summary": patch_summary,
         "vulnerability_type": vulnerability_type,
         "vulnerability_summary": vulnerability_summary,
-        "slicing_statements": selected_stmts
+        "slicing_statements": selected_stmts,
+        "core_operations": core_operation_list,
+        "integrity_analysis": {
+            "cause": integrity_cause,
+            "all_operations": integrity_all_operations,
+            "single_operation": integrity_single_operation,
+            "final_decision": integrity_final_decision,
+        }
     }
     
     return sorted_parsed_data

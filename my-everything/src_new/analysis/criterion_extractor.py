@@ -152,7 +152,7 @@ class CriterionExtractor:
             # logger.warning(f"Remove module directory: {module_dirpath}")
             os.system(f"rm -rf {module_dirpath}")
 
-        os.system(f"cp -r {local_module_path} {module_dirpath}")
+        os.system(f"cp -r {local_module_path}/ {module_dirpath}")
         
 
     def _get_module_path(self, file_path, root=config.LINUX):
