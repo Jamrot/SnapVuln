@@ -3,6 +3,7 @@ LINUX = '/mnt/wsl2/home/jamrot/linux'
 
 DATA_ROOT = '/app/slicing-snapvuln/my-everything/data/test_slice/response'
 
+CODE_ROOT_DIRNAME = 'code'
 OLD_CODE_DIRNAME = 'code_old'
 NEW_CODE_DIRNAME = 'code_new'
 GRAPH_DIRNAME = 'graph'
@@ -21,6 +22,9 @@ GRAPH_FILE_END = '.dot'
 SLICE_START = 'slice'
 SLICE_DIR_END = '.slice'
 SLICE_DOT_FILE_END = '.slice_code.dot'
+SLICE_CODE_FILE_END = '.slice_code.md'
+SLICE_CODE_FILE_END_JSON = '.slice_code.json'
+SLICE_INFO_FILE_END = '.slice_info.json'
 
 PARSED_START = 'parsed'
 PARSED_DIR_END = '.parsed'
@@ -30,11 +34,11 @@ CODE_FILENAME_START = 'file_code_old'
 META_FILENAME_START = 'meta'
 MODULE_DIRNAME_START = 'module'
 
-CODE_FILE_OVERWRITE = True
+CODE_FILE_OVERWRITE = False
 MODULE_OVERWRITE = False
 BIN_OVERWRITE = False
 GRAPH_OVERWRITE = False
-GRAPH_ALL_OVERWRITE = True
+GRAPH_ALL_OVERWRITE = False
 
 # patch
 COMMIT_ID = "a282a2f10539dce2aa619e71e1817570d557fc97"
@@ -45,6 +49,9 @@ PROMPT_FILEPATH = "my-everything/prompts/prompt-dump.json"
 PROMPT_STMT_EXTRACTION = "stmt_extraction"
 PROMPT_PATCH_ANALYSIS = "patch_analysis"
 PROMPT_SLICING_STRATEGY = "slicing_strategy_stmt"
+PROMPT_CORE_OPERATIONS = "core_operations"
+PROMPT_INTEGRITY_ANALYSIS = "integrity_analysis"
+PROMPT_FURTHER_SLICING = "further_slicing"
 
 # requests
 REQUEST_URL = "https://api.openai.com/v1/chat/completions"

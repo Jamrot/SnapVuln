@@ -36,9 +36,8 @@ def get_criterion_savepath(commit_id, criterion):
     if not os.path.exists(criterion_dir_path):
         os.makedirs(criterion_dir_path)
     
-    code_root = get_code_root(modification=modification, commit_id=commit_id)
     # module dir
-    module_relpath, module_dirpath = get_module_dirpath_from_criterion(criterion)
+    module_dirpath, module_relpath = get_module_dirpath_from_criterion(criterion)
     # code file
     code_filename = os.path.basename(file_path_old)
     code_filepath = os.path.join(module_dirpath, code_filename)
@@ -49,12 +48,9 @@ def get_criterion_savepath(commit_id, criterion):
     return save_root, basename, code_filepath, module_dirpath, meta_filepath
 
 
-def get_code_root(modification, commit_id):
+def get_code_root(commit_id):
     save_root = get_save_root(commit_id=commit_id)
-    if modification=='DELETE':
-        code_root = os.path.join(save_root, config.OLD_CODE_DIRNAME)
-    elif modification=='ADD':
-        code_root = os.path.join(save_root, config.NEW_CODE_DIRNAME)
+    code_root = os.path.join(save_root, config.CODE_ROOT_DIRNAME)
     return code_root
 
 
@@ -62,8 +58,16 @@ def get_module_dirpath_from_criterion(criterion):
     commit_id = criterion['commit_id']
     modification = criterion['modification']
     file_path_old = criterion['file_path']['old']
-    code_root = get_code_root(modification=modification, commit_id=commit_id)
-    module_relpath = os.path.dirname(file_path_old)
+    file_path_new = criterion['file_path']['new']
+
+    code_root = get_code_root(commit_id)
+
+    if modification=='DELETE':
+        code_relpath = os.path.join(config.OLD_CODE_DIRNAME, file_path_old)
+    elif modification=='ADD':
+        code_relpath = os.path.join(config.NEW_CODE_DIRNAME, file_path_new)
+    
+    module_relpath = os.path.dirname(code_relpath)
     module_dirpath = os.path.join(code_root, module_relpath)
     return module_dirpath, module_relpath
 
@@ -77,12 +81,12 @@ def get_root_meta_filepath(commit_id):
     return root_meta_filepath
 
 
-def get_graph_dir_from_criterion(criterion, level):
-    filename_base = criterion.get('save_filename_base')
+def get_graph_dirpath_from_criterion(criterion, graph_level):
     save_root = criterion.get('save_root')
-    module_path = criterion.get('save_module_dirpath')
-    module_relative_path = os.path.relpath(module_path, save_root)
-    graph_dir = os.path.join(save_root, config.GRAPH_DIRNAME, module_relative_path)
+    module_dirpath, module_relpath = get_module_dirpath_from_criterion(criterion)
+    graph_dir = os.path.join(save_root, config.GRAPH_DIRNAME, module_relpath)
+    if not os.path.exists(graph_dir):
+        os.makedirs(graph_dir)
     return graph_dir
 
 
@@ -110,34 +114,34 @@ def get_joern_parse_path_from_criterion(criterion, level):
     return parse_path
 
 
-def get_bin_filepath_from_criterion(criterion, level):
-    graph_dir = get_graph_dir_from_criterion(criterion=criterion, level=level)
+def get_bin_filepath_from_criterion(criterion, graph_level):
+    graph_dir = get_graph_dirpath_from_criterion(criterion=criterion, graph_level=graph_level)
     filename_base = criterion.get('save_filename_base')
     module_path = criterion.get('save_module_dirpath')
     module_dirname = os.path.basename(module_path)
     code_filename = os.path.basename(criterion.get('save_file_code_filepath'))
-    if level=='module':
-        bin_filepath = os.path.join(graph_dir, f"{level}-{module_dirname}.bin")
+    if graph_level=='module':
+        bin_filepath = os.path.join(graph_dir, f"{graph_level}-{module_dirname}.bin")
     else:
-        bin_filepath = os.path.join(graph_dir, f"{level}-{code_filename}.bin")
+        bin_filepath = os.path.join(graph_dir, f"{graph_level}-{code_filename}.bin")
 
     return bin_filepath
 
 
-def get_graph_dump_dir(graph_dump_dir, bin_filepath, graph_dump_type):
+def get_graph_dump_dirpath(graph_dir, bin_filepath, graph_dump_type):
     bin_filename = os.path.basename(bin_filepath)
-    graph_dump_dir = os.path.join(graph_dump_dir, "-".join([config.GRAPH_START, bin_filename, graph_dump_type]))
-    return graph_dump_dir
+    graph_dump_dirpath = os.path.join(graph_dir, "-".join([config.GRAPH_START, bin_filename, graph_dump_type]))
+    return graph_dump_dirpath
 
 
-def get_graph_savepath_from_criterion(criterion, graph_type, level):
-    graph_dir = get_graph_dir_from_criterion(criterion=criterion, level=level)
+def get_graph_savepath_from_criterion(criterion, graph_type, graph_level):
+    graph_dir = get_graph_dirpath_from_criterion(criterion=criterion, graph_level=graph_level)
     filename_base = criterion.get('save_filename_base')
     # graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, filename_base, graph_type+config.GRAPH_FILE_END]))
     module_path = criterion.get('save_module_dirpath')
     module_dirname = os.path.basename(module_path)
     code_filename = os.path.basename(criterion.get('save_file_code_filepath'))
-    if level=='module':
+    if graph_level=='module':
         graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, module_dirname, graph_type+config.GRAPH_FILE_END]))
     else:
         graph_save_path = os.path.join(graph_dir, "-".join([config.GRAPH_START, code_filename, graph_type+config.GRAPH_FILE_END]))
@@ -154,17 +158,22 @@ def get_slice_savepath_from_criterion(criterion, direction, graph_type, depth):
     return slice_save_path
 
 
-def get_collate_slice_savedir(commit_id):
+def get_collate_slice_savepath(commit_id, slice_depth):
+    """return collate slice save path (DOT)"""
     save_root = get_save_root(commit_id=commit_id)
+    commit_id_short = get_commit_id_short(commit_id=commit_id)
     collate_save_dir = os.path.join(save_root,"collate"+config.SLICE_DIR_END)
+
+    collate_filename = "-".join([config.SLICE_START, "collate", commit_id_short, slice_depth])+config.SLICE_DOT_FILE_END    
+    collate_savepath = os.path.join(collate_save_dir, collate_filename)
     if not os.path.exists(collate_save_dir):
         os.makedirs(collate_save_dir)
-    return collate_save_dir
+    return collate_savepath
 
 
 def get_code_filepath_list_from_criterion(criterion, level='function')->list:
     code_filepath = criterion.get('save_file_code_filepath')
-    filepath_list = [code_filepath]   
+    filepath_list = [code_filepath]
     
     if level == 'module':
         module_dirpath = criterion.get('save_module_dirpath')

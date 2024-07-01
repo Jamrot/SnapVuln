@@ -1,0 +1,47 @@
+{
+  "request": {
+    "model": "gpt-4-0613",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are an expert in vulnerability analysis. Given the provided information about a vulnerability, including its type and summary, your task is to identify and list the core operations related to the vulnerability. Each core operation should be justified briefly.\n\nResponse format:\n{\n  \"core_operations\": [\n    {\"core_operation\": \"<core_operation>\", \"justification\": \"<brief justification>\"}, ...\n  ]\n}"
+      },
+      {
+        "role": "user",
+        "content": "{\n  \"vulnerability_information\": {'patch_summary': '', 'vulnerability_type': '', 'vulnerability_summary': ''}\n}"
+      }
+    ],
+    "temperature": 0,
+    "top_p": 1,
+    "n": 1,
+    "stream": false,
+    "stop": "",
+    "logit_bias": {},
+    "presence_penalty": 0,
+    "frequency_penalty": 0,
+    "seed": 0
+  },
+  "response": {
+    "id": "chatcmpl-9g16CNDh8vAPm6OQrzf6648h6V4AX",
+    "object": "chat.completion",
+    "created": 1719801028,
+    "model": "gpt-4-0613",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "The provided information does not contain any specific details about the vulnerability, its type, or summary. Therefore, it's not possible to identify and list the core operations related to the vulnerability. Please provide more detailed information."
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 116,
+      "completion_tokens": 43,
+      "total_tokens": 159
+    },
+    "system_fingerprint": null
+  }
+}

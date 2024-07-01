@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L501: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L544: \tif (desc->fd_lens[3] < 0 ||\n",
+            "L545: \t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+            "L546: \t\tpr_err(\"bad data segment length %d\\n\", desc->fd_lens[3]);\n",
+            "L547: \t\treturn -EINVAL;\n",
+            "L554: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L555: \t\tpr_err(\"last segment empty, segment count %d\\n\",\n",
+            "L556: \t\t       desc->fd_seg_cnt);\n",
+            "L557: \t\treturn -EINVAL;\n",
+            "L560: \treturn 0;\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

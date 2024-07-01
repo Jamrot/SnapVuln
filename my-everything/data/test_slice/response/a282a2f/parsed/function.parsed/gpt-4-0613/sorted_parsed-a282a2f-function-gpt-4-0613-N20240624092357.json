@@ -1,0 +1,92 @@
+{
+  "patch_summary": "The patch hardens the checks for segment lengths in the libceph library, preventing potential buffer overruns due to negative control lengths.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows for buffer overruns due to insufficient checks on segment lengths, potentially leading to arbitrary code execution.",
+  "slicing_statements": {
+    "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 534 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 539 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph"
+    },
+    "net/ceph/messenger_v2.c | decode_preamble | 544 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Control Flow Graph"
+    },
+    "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "slicing_direction": "bidirectional",
+      "code_representation_graph": "Program Dependence Graph"
+    },
+    "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD": {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "bidirectional",
+      "code_representation_graph": "Program Dependence Graph"
+    }
+  },
+  "core_operations": [
+    "Input Validation",
+    "Memory Allocation",
+    "Error Handling"
+  ],
+  "integrity_analysis": {
+    "cause": "YES",
+    "all_operations": "NO",
+    "single_operation": {
+      "YES": {
+        "Input Validation": "code/code_new/net/ceph/messenger_v2.c",
+        "Error Handling": "code/code_new/net/ceph/messenger_v2.c"
+      },
+      "NO": {
+        "Memory Allocation": "NONE"
+      }
+    },
+    "final_decision": "NO"
+  }
+}

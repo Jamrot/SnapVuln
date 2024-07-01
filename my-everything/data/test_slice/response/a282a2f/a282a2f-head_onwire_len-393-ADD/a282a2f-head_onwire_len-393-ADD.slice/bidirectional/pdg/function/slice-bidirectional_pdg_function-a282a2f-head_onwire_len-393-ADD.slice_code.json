@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int head_onwire_len(int ctrl_len, bool secure)",
+          "lines": [
+            "L388: static int head_onwire_len(int ctrl_len, bool secure)\n",
+            "L393: \tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n",
+            "L397: \t\tif (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {\n",
+            "L398: \t\t\trem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN;\n",
+            "L399: \t\t\thead_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN;\n",
+            "L404: \t\t\thead_len += ctrl_len + CEPH_CRC_LEN;\n",
+            "L406: \treturn head_len;\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 import networkx as nx
 import queue
 import re
+import copy
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -19,10 +21,12 @@ class Slicer:
         criterion_nodes = []
         for node in self.G_graph.nodes(data=True):
             node_location = node[1]['LINE_NUMBER'] if 'LINE_NUMBER' in node[1] else ''
+            # if not node_location:
+            #     continue
             if node_location and int(node_location) == int(criterion_linenum):
                 criterion_nodes.append(node)
         
-        logger.debug("criterions: %s", criterion_nodes)
+        logger.debug(f"criterion_linenum matched criterion nodes: {criterion_nodes}")
         return criterion_nodes
 
     
@@ -57,9 +61,9 @@ class Slicer:
         if g_type == 'ast':
             edge_type_list = ['AST']
         elif g_type == 'pdg':
-            edge_type_list = ['PDG', 'DDG', 'REACHING_DEF', 'REF', 'CDG'] # , 'ARGUMENT', 'RECEIVER', 'DOMINATE'
+            edge_type_list = ['PDG', 'DDG', 'REACHING_DEF', 'CDG'] # , 'ARGUMENT', 'RECEIVER', 'DOMINATE'
         elif g_type == 'ddg': 
-            edge_type_list = ['DDG', 'REACHING_DEF', 'REF'] # , 'ARGUMENT', 'RECEIVER'
+            edge_type_list = ['DDG', 'REACHING_DEF'] # , 'ARGUMENT', 'RECEIVER'
         elif g_type == 'cdg':
             edge_type_list = ['CDG'] # , 'DOMINATE'
         elif g_type == 'cfg':
@@ -73,18 +77,29 @@ class Slicer:
         if not depth=="function":
             edge_type_list.append('CALL')
 
+
         edges_of_type = []
         if isinstance(G_graph, nx.MultiGraph) or isinstance(G_graph, nx.MultiDiGraph):
             for u, v, k, d in G_graph.edges(data=True, keys=True):
                 edge_label = d.get('label', '')
                 edge_var = d.get('VARIABLE', '')
-                if not self.__skip_edge(edge_label, edge_var) and edge_label in edge_type_list:
+                if self.__skip_edge(edge_label, edge_var):
+                    logger.info(f"Skip edge: {u} -> {v}, edge_label: {edge_label}, edge_var: {edge_var}")
+                    continue
+                if not edge_label:
+                    logger.warning(f"Edge label is empty: {u} -> {v}")
+                if edge_label in edge_type_list:
                     edges_of_type.append((u, v, k))
         else:
             for u, v, d in G_graph.edges(data=True):
                 edge_label = d.get('label', '')
                 edge_var = d.get('VARIABLE', '')
-                if not self.__skip_edge(edge_label, edge_var) and edge_label in edge_type_list:
+                if self.__skip_edge(edge_label, edge_var):
+                    logger.info(f"Skip edge: {u} -> {v}, edge_label: {edge_label}, edge_var: {edge_var}")
+                    continue
+                if not edge_label:
+                    logger.warning(f"Edge label is empty: {u} -> {v}")
+                if edge_label in edge_type_list:
                     edges_of_type.append((u, v))
 
         G_type_graph = G_graph.edge_subgraph(edges_of_type).copy()
@@ -103,6 +118,8 @@ class Slicer:
         slice_nodes = set()
         q = queue.Queue()
 
+        print(G_graph.has_node('1189'))
+
         for node in criterion_node:
             q.put(node[0])
 
@@ -110,16 +127,17 @@ class Slicer:
             current_node_id = q.get()
 
             if not G_graph.has_node(current_node_id):
-                logger.warning(f"Node not in graph: {current_node_id}")
+                logger.warning(f"Node not in graph: node_id - {current_node_id}, node_data - {self.G_graph.nodes[current_node_id]}")
+                logger.debug(f"Node not in graph: node_id - {current_node_id}, criterion_node - {criterion_node}")
                 continue
 
             if current_node_id not in slice_nodes:
                 slice_nodes.add(current_node_id)
 
                 successors = G_graph.successors(current_node_id)
-                for successor in successors:
-                    if successor not in slice_nodes:
-                        q.put((successor,))
+                for succ_node_id in successors:
+                    if succ_node_id not in slice_nodes:
+                        q.put(succ_node_id)
 
         G_slice = G_graph.subgraph(slice_nodes).copy()
         return G_slice
@@ -136,7 +154,8 @@ class Slicer:
             current_node_id = q.get()
 
             if not G_graph.has_node(current_node_id):
-                logger.warning(f"Node not in graph: {current_node_id}")
+                logger.warning(f"[Slice] Node not in graph: node_id - {current_node_id}, node_data - {self.G_graph.nodes[current_node_id]}")
+                logger.debug(f"[Slice] Node not in graph, criterion_node: {criterion_node}")
                 continue
 
             if current_node_id not in slice_nodes:
