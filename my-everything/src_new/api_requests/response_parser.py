@@ -89,7 +89,12 @@ def get_line_info(file_path, func_name, stmt_info, modification):
     #     "line_num: "+str(line), 
     #     "modification: "+modification])
 
-    line_info = " | ".join([file_path_old, func_name, str(line), modification])
+    if modification == "ADD":
+        filepath = file_path_new
+    elif modification == "DELETE":
+        filepath = file_path_old
+
+    line_info = " | ".join([filepath, func_name, str(line), modification])
 
     return line_info, code
 

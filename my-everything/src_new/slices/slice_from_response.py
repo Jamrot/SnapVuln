@@ -18,16 +18,10 @@ logger = logging.getLogger(__name__)
 
 # from slices.slice_from_patch import *
 
-def build_level_graph(root_dir, graph_dump_type="all", level='function'):
+def build_level_graph(criterions, graph_dump_type="all", level='function'):
     graph_builder = GraphBuilder()
-    meta_filepath_list = get_all_meta_filepath(root_dir=root_dir)
     
-    for meta_filepath in meta_filepath_list:
-        criterion = read_criterion_from_meta(meta_filepath=meta_filepath)
-        if not criterion:
-            logger.warning(f"Cannot find criterion from meta file: {meta_filepath}")
-            continue
-
+    for criterion in criterions:
         graph_dir = get_path.get_graph_dirpath_from_criterion(criterion=criterion, graph_level=level)
         joern_parse_path = get_path.get_joern_parse_path_from_criterion(criterion=criterion, level=level)
         # check path validation
@@ -46,16 +40,6 @@ def build_level_graph(root_dir, graph_dump_type="all", level='function'):
         # save_graph_file(graph_dump_dir=graph_dump_dir, criterion=criterion, graph_type=graph_type)
     
     return graph_dump_dir
-
-
-def read_criterion_from_meta(meta_filepath):
-    with open(meta_filepath, 'r') as f:
-        criterion = json.load(f)
-    if not len(criterion)==1:
-        logger.error(f"[Read criterion failed] Invalid criterion num from meta file: {meta_filepath}")
-        return None
-    criterion = criterion[0]
-    return criterion
 
 
 def copy_graph_file(graph_dump_dir, criterion, graph_type, level):
@@ -92,19 +76,6 @@ def get_graph_dump_filepath(graph_dump_dir, graph_type, graph_level="file"):
     logger.info(f"Graph file path dict: {graph_dump_filepath_dict}")
     
     return graph_dump_filepath_dict
-
-
-def get_all_meta_filepath(root_dir):
-    meta_filepath_list = []
-    meta_filename_start = config.META_FILENAME_START
-    for root, dirs, files in os.walk(root_dir):
-        for filename in files:
-            if not filename.endswith(".json") or not filename.startswith(meta_filename_start):
-                continue
-            meta_filepath = os.path.join(root, filename)
-            meta_filepath_list.append(meta_filepath)
-    
-    return meta_filepath_list
 
 
 def get_all_code_filepath(root_dir):
@@ -219,21 +190,6 @@ def match_criterion_from_response(parsed_response, criterions):
     return matched_criterions
 
 
-def match_criterion_from_response_further(parsed_response, criterions):
-    matched_criterions = []
-    slicing_direction = ""
-    slicing_graph = ""
-
-    criterions_dict = {}
-    for criterion in criterions:
-        file_path = criterion['file_path']
-        func_name = criterion['func_name']
-        stmt_info = criterion['criterion']
-        modification = criterion['modification']
-        criterion_info, _ = response_parser.get_line_info(file_path, func_name, stmt_info, modification)
-        criterions_dict[criterion_info] = criterion
-
-
 def get_response_graph_type(response_graph_type):
     if response_graph_type == "Control Flow Graph":
         graph_type = "cfg"
@@ -328,16 +284,14 @@ def slice_from_response():
     # get matched criterions from response
     parsed_filepath = config.PARSED_FILEPATH
     parsed_response = response_parser.read_parsed_response(response_filepath=parsed_filepath)
-    matched_criterions = match_criterion_from_response(parsed_response, criterions)    
-    extractor.save_criterion(criterions=matched_criterions)
-
-    # set graph build root path
-    criterion_root_dir = get_path.get_save_root(commit_id=commit_id)
+    # matched_criterions = match_criterion_from_response(parsed_response, criterions)
+    matched_criterions = match_criterion_from_response(parsed_response, criterions)
+    matched_criterions = extractor.save_criterion(criterions=matched_criterions)
 
     # build dump graph
     graph_dump_type = "all"
-    graph_level = "file" # function, file, module
-    build_level_graph(graph_dump_type=graph_dump_type, root_dir=criterion_root_dir, level=graph_level)
+    graph_level = "function" # function, file, module
+    build_level_graph(graph_dump_type=graph_dump_type, criterions=matched_criterions, level=graph_level)
     
     G_filename_dict = {} # dict for all nodes and edges graph
     for criterion in matched_criterions:

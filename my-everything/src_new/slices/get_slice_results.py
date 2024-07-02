@@ -35,6 +35,7 @@ def execute_command(command,cwd):
     
 
 def get_line_map_funcs_in_file(file_path):
+    """return a dict with key as line number and value as function name"""
     file_func_dict = {}
 
     cmd2 = 'ctags --fields=+ne-t -o - --sort=no --excmd=number %s' % file_path
@@ -79,9 +80,7 @@ def get_num(fields, tag):
 def extract_function(file_path, start_num, end_num):
     with open(file_path, "r", errors="ignore") as rfile:
         lines = rfile.readlines()
-        # return "".join(lines[start_num - 1:end_num])
         return lines[start_num - 1:end_num]
-
 
 
 def get_slice_info_from_dot_criterion(criterion, myslice_filepath="", level='function', G_slice=None):

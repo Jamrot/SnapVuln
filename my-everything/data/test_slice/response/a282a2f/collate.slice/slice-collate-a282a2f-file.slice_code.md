@@ -1,78 +1,22 @@
 ### File: `code/code_old/net/ceph/messenger_v2.c`
 
-#### Function: `static int handle_preamble(struct ceph_connection *con)`
-
-```c
-L2727: static int handle_preamble(struct ceph_connection *con)
-L2729: 	struct ceph_frame_desc *desc = &con->v2.in_desc;
-L2732: 	if (con_secure(con)) {
-L2733: 		ret = decrypt_preamble(con);
-L2734: 		if (ret) {
-L2741: 	ret = decode_preamble(con->v2.in_buf, desc);
-```
-
-#### Function: `static int populate_in_iter(struct ceph_connection *con)`
-
-```c
-L2854: static int populate_in_iter(struct ceph_connection *con)
-L2858: 	dout("%s con %p state %d in_state %d\n", __func__, con, con->state,
-L2859: 	     con->v2.in_state);
-L2860: 	WARN_ON(iov_iter_count(&con->v2.in_iter));
-L2862: 	if (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {
-L2864: 	} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {
-L2866: 	} else if ((con->state >= CEPH_CON_S_V2_HELLO &&
-L2867: 		    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||
-L2868: 		   con->state == CEPH_CON_S_OPEN) {
-L2869: 		switch (con->v2.in_state) {
-L2870: 		case IN_S_HANDLE_PREAMBLE:
-L2871: 			ret = handle_preamble(con);
-```
-
-#### Function: `int ceph_con_v2_try_read(struct ceph_connection *con)`
-
-```c
-L2917: int ceph_con_v2_try_read(struct ceph_connection *con)
-L2921: 	dout("%s con %p state %d need %zu\n", __func__, con, con->state,
-L2922: 	     iov_iter_count(&con->v2.in_iter));
-L2924: 	if (con->state == CEPH_CON_S_PREOPEN)
-L2932: 	if (WARN_ON(!iov_iter_count(&con->v2.in_iter)))
-L2936: 		ret = ceph_tcp_recv(con);
-L2937: 		if (ret <= 0)
-L2940: 		ret = populate_in_iter(con);
-L2941: 		if (ret <= 0) {
-```
-
 #### Function: `static int decode_preamble(void *p, struct ceph_frame_desc *desc)`
 
 ```c
-L495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)
-L497: 	void *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;
-L501: 	crc = crc32c(0, p, crcp - p);
-L502: 	expected_crc = get_unaligned_le32(crcp);
-L503: 	if (crc != expected_crc) {
-L509: 	memset(desc, 0, sizeof(*desc));
-L511: 	desc->fd_tag = ceph_decode_8(&p);
-L512: 	desc->fd_seg_cnt = ceph_decode_8(&p);
-L513: 	if (desc->fd_seg_cnt < 1 ||
-L514: 	    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {
-L518: 	for (i = 0; i < desc->fd_seg_cnt; i++) {
 L519: 		desc->fd_lens[i] = ceph_decode_32(&p);
 L520: 		desc->fd_aligns[i] = ceph_decode_16(&p);
 L527: 	if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {
 L532: 	if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {
+L533: 		pr_err("control segment too big %d\n", desc->fd_lens[0]);
 L536: 	if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {
+L537: 		pr_err("front segment too big %d\n", desc->fd_lens[1]);
 L540: 	if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {
+L541: 		pr_err("middle segment too big %d\n", desc->fd_lens[2]);
 L544: 	if (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {
+L545: 		pr_err("data segment too big %d\n", desc->fd_lens[3]);
 ```
 
 ### File: `code/code_new/net/ceph/messenger_v2.c`
-
-#### Function: `static int decrypt_tail(struct ceph_connection *con)`
-
-```c
-L1042: static int decrypt_tail(struct ceph_connection *con)
-L1049: 	tail_len = tail_onwire_len(con->in_msg, true);
-```
 
 #### Function: `static int prepare_hello(struct ceph_connection *con)`
 
@@ -113,6 +57,9 @@ L1376: static int prepare_client_ident(struct ceph_connection *con)
 L1378: 	struct ceph_entity_addr *my_addr = &con->msgr->inst.addr;
 L1379: 	struct ceph_client *client = from_msgr(con->msgr);
 L1380: 	u64 global_id = ceph_client_gid(client);
+L1384: 	WARN_ON(con->v2.server_cookie);
+L1385: 	WARN_ON(con->v2.connect_seq);
+L1386: 	WARN_ON(con->v2.peer_global_seq);
 L1388: 	if (!con->v2.client_cookie) {
 L1390: 			get_random_bytes(&con->v2.client_cookie,
 L1391: 					 sizeof(con->v2.client_cookie));
@@ -139,41 +86,13 @@ L1430: 	struct ceph_entity_addr *my_addr = &con->msgr->inst.addr;
 L1434: 	WARN_ON(!con->v2.client_cookie);
 L1435: 	WARN_ON(!con->v2.server_cookie);
 L1436: 	WARN_ON(!con->v2.connect_seq);
+L1437: 	WARN_ON(!con->v2.peer_global_seq);
 L1439: 	dout("%s con %p my_addr %s/%u client_cookie 0x%llx server_cookie 0x%llx global_seq %llu connect_seq %llu in_seq %llu\n",
 L1440: 	     __func__, con, ceph_pr_addr(my_addr), le32_to_cpu(my_addr->nonce),
 L1441: 	     con->v2.client_cookie, con->v2.server_cookie, con->v2.global_seq,
 L1442: 	     con->v2.connect_seq, con->in_seq);
 L1444: 	ctrl_len = 1 + 4 + ceph_entity_addr_encoding_len(my_addr) + 5 * 8;
 L1445: 	buf = alloc_conn_buf(con, head_onwire_len(ctrl_len, con_secure(con)));
-```
-
-#### Function: `static int prepare_message_secure(struct ceph_connection *con)`
-
-```c
-L1564: static int prepare_message_secure(struct ceph_connection *con)
-L1574: 	ret = prepare_head_secure_small(con, con->v2.out_buf,
-L1576: 	if (ret)
-L1579: 	tail_len = tail_onwire_len(con->out_msg, true);
-```
-
-#### Function: `static int prepare_message(struct ceph_connection *con)`
-
-```c
-L1628: static int prepare_message(struct ceph_connection *con)
-L1630: 	int lens[] = {
-L1632: 		front_len(con->out_msg),
-L1633: 		middle_len(con->out_msg),
-L1634: 		data_len(con->out_msg)
-L1639: 	dout("%s con %p msg %p logical %d+%d+%d+%d\n", __func__, con,
-L1640: 	     con->out_msg, lens[0], lens[1], lens[2], lens[3]);
-L1642: 	if (con->in_seq > con->in_seq_acked) {
-L1643: 		dout("%s con %p in_seq_acked %llu -> %llu\n", __func__, con,
-L1644: 		     con->in_seq_acked, con->in_seq);
-L1645: 		con->in_seq_acked = con->in_seq;
-L1648: 	reset_out_kvecs(con);
-L1652: 		     con->in_seq_acked);
-L1654: 	if (con_secure(con)) {
-L1655: 		ret = prepare_message_secure(con);
 ```
 
 #### Function: `static int prepare_read_control(struct ceph_connection *con)`
@@ -185,23 +104,6 @@ L1712: 	reset_in_kvecs(con);
 L1713: 	if (con->state == CEPH_CON_S_V2_HELLO ||
 L1714: 	    con->state == CEPH_CON_S_V2_AUTH) {
 L1715: 		head_len = head_onwire_len(ctrl_len, false);
-```
-
-#### Function: `static int prepare_read_tail_secure(struct ceph_connection *con)`
-
-```c
-L1884: static int prepare_read_tail_secure(struct ceph_connection *con)
-L1890: 	tail_len = tail_onwire_len(con->in_msg, true);
-```
-
-#### Function: `static void prepare_skip_message(struct ceph_connection *con)`
-
-```c
-L1914: static void prepare_skip_message(struct ceph_connection *con)
-L1919: 	dout("%s con %p %d+%d+%d\n", __func__, con, desc->fd_lens[1],
-L1920: 	     desc->fd_lens[2], desc->fd_lens[3]);
-L1922: 	tail_len = __tail_onwire_len(desc->fd_lens[1], desc->fd_lens[2],
-L1923: 				     desc->fd_lens[3], con_secure(con));
 ```
 
 #### Function: `static int process_banner_payload(struct ceph_connection *con)`
@@ -234,6 +136,7 @@ L2019: 	dout("%s con %p entity_type %d addr_for_me %s\n", __func__, con,
 L2020: 	     entity_type, ceph_pr_addr(&addr_for_me));
 L2022: 	if (entity_type != con->peer_name.type) {
 L2035: 	if (ceph_addr_is_blank(my_addr)) {
+L2036: 		memcpy(&my_addr->in_addr, &addr_for_me.in_addr,
 L2037: 		       sizeof(my_addr->in_addr));
 L2038: 		ceph_addr_set_port(my_addr, 0);
 L2039: 		dout("%s con %p set my addr %s, as seen by peer %s\n",
@@ -241,6 +144,9 @@ L2040: 		     __func__, con, ceph_pr_addr(my_addr),
 L2041: 		     ceph_pr_addr(&con->peer_addr));
 L2043: 		dout("%s con %p my addr already set %s\n",
 L2044: 		     __func__, con, ceph_pr_addr(my_addr));
+L2047: 	WARN_ON(ceph_addr_is_blank(my_addr) || ceph_addr_port(my_addr));
+L2048: 	WARN_ON(my_addr->type != CEPH_ENTITY_ADDR_TYPE_ANY);
+L2049: 	WARN_ON(!my_addr->nonce);
 L2052: 	ret = prepare_auth_request(con);
 ```
 
@@ -248,7 +154,6 @@ L2052: 	ret = prepare_auth_request(con);
 
 ```c
 L2129: static int process_auth_reply_more(struct ceph_connection *con,
-L2130: 				   void *p, void *end)
 L2135: 	if (con->state != CEPH_CON_S_V2_AUTH) {
 L2140: 	ceph_decode_32_safe(&p, end, payload_len, bad);
 L2141: 	ceph_decode_need(&p, end, payload_len, bad);
@@ -280,6 +185,7 @@ L2196: 	if (con->state != CEPH_CON_S_V2_AUTH) {
 L2203: 	dout("%s con %p handle_auth_done ret %d\n", __func__, con, ret);
 L2204: 	if (ret)
 L2207: 	ret = setup_crypto(con, session_key, session_key_len, con_secret,
+L2208: 			   con_secret_len);
 L2209: 	if (ret)
 L2212: 	reset_out_kvecs(con);
 L2213: 	ret = prepare_auth_signature(con);
@@ -289,7 +195,6 @@ L2213: 	ret = prepare_auth_signature(con);
 
 ```c
 L2231: static int process_auth_signature(struct ceph_connection *con,
-L2232: 				  void *p, void *end)
 L2237: 	if (con->state != CEPH_CON_S_V2_AUTH_SIGNATURE) {
 L2242: 	ret = hmac_sha256(con, con->v2.out_sign_kvecs,
 L2243: 			  con->v2.out_sign_kvec_cnt, hmac);
@@ -306,10 +211,11 @@ L2265: 		ret = prepare_session_reconnect(con);
 
 ```c
 L2416: static int process_session_retry(struct ceph_connection *con,
-L2417: 				 void *p, void *end)
 L2422: 	if (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {
 L2427: 	ceph_decode_64_safe(&p, end, connect_seq, bad);
 L2429: 	dout("%s con %p connect_seq %llu\n", __func__, con, connect_seq);
+L2430: 	WARN_ON(connect_seq <= con->v2.connect_seq);
+L2431: 	con->v2.connect_seq = connect_seq + 1;
 L2433: 	free_conn_bufs(con);
 L2435: 	reset_out_kvecs(con);
 L2436: 	ret = prepare_session_reconnect(con);
@@ -319,7 +225,6 @@ L2436: 	ret = prepare_session_reconnect(con);
 
 ```c
 L2449: static int process_session_retry_global(struct ceph_connection *con,
-L2450: 					void *p, void *end)
 L2455: 	if (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {
 L2460: 	ceph_decode_64_safe(&p, end, global_seq, bad);
 L2462: 	dout("%s con %p global_seq %llu\n", __func__, con, global_seq);
@@ -334,7 +239,6 @@ L2469: 	ret = prepare_session_reconnect(con);
 
 ```c
 L2482: static int process_session_reset(struct ceph_connection *con,
-L2483: 				 void *p, void *end)
 L2488: 	if (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {
 L2493: 	ceph_decode_8_safe(&p, end, full, bad);
 L2494: 	if (!full) {
@@ -358,12 +262,19 @@ L2571: static int process_control(struct ceph_connection *con, void *p, void *en
 L2573: 	int tag = con->v2.in_desc.fd_tag;
 L2576: 	dout("%s con %p tag %d len %d\n", __func__, con, tag, (int)(end - p));
 L2578: 	switch (tag) {
+L2579: 	case FRAME_TAG_HELLO:
 L2580: 		ret = process_hello(con, p, end);
+L2585: 	case FRAME_TAG_AUTH_REPLY_MORE:
 L2586: 		ret = process_auth_reply_more(con, p, end);
+L2588: 	case FRAME_TAG_AUTH_DONE:
 L2589: 		ret = process_auth_done(con, p, end);
+L2591: 	case FRAME_TAG_AUTH_SIGNATURE:
 L2592: 		ret = process_auth_signature(con, p, end);
+L2603: 	case FRAME_TAG_SESSION_RETRY:
 L2604: 		ret = process_session_retry(con, p, end);
+L2606: 	case FRAME_TAG_SESSION_RETRY_GLOBAL:
 L2607: 		ret = process_session_retry_global(con, p, end);
+L2609: 	case FRAME_TAG_SESSION_RESET:
 L2610: 		ret = process_session_reset(con, p, end);
 ```
 
@@ -374,20 +285,6 @@ L2698: static int __handle_control(struct ceph_connection *con, void *p)
 L2700: 	void *end = p + con->v2.in_desc.fd_lens[0];
 L2704: 	if (con->v2.in_desc.fd_tag != FRAME_TAG_MESSAGE)
 L2705: 		return process_control(con, p, end);
-L2707: 	ret = process_message_header(con, p, end);
-L2708: 	if (ret < 0)
-L2710: 	if (ret == 0) {
-L2711: 		prepare_skip_message(con);
-L2715: 	msg = con->in_msg;  /* set in process_message_header() */
-L2716: 	if (front_len(msg)) {
-L2717: 		WARN_ON(front_len(msg) > msg->front_alloc_len);
-L2718: 		msg->front.iov_len = front_len(msg);
-L2722: 	if (middle_len(msg)) {
-L2723: 		WARN_ON(middle_len(msg) > msg->middle->alloc_len);
-L2724: 		msg->middle->vec.iov_len = middle_len(msg);
-L2729: 	if (!front_len(msg) && !middle_len(msg) && !data_len(msg))
-L2732: 	if (con_secure(con))
-L2733: 		return prepare_read_tail_secure(con);
 ```
 
 #### Function: `static int handle_preamble(struct ceph_connection *con)`
@@ -436,20 +333,13 @@ L2813: 	return __handle_control(con, con->v2.in_kvecs[0].iov_base -
 L2814: 				     CEPH_PREAMBLE_INLINE_LEN);
 ```
 
-#### Function: `static int handle_epilogue(struct ceph_connection *con)`
-
-```c
-L2817: static int handle_epilogue(struct ceph_connection *con)
-L2822: 	if (con_secure(con)) {
-L2823: 		ret = decrypt_tail(con);
-```
-
 #### Function: `static int populate_in_iter(struct ceph_connection *con)`
 
 ```c
 L2865: static int populate_in_iter(struct ceph_connection *con)
 L2869: 	dout("%s con %p state %d in_state %d\n", __func__, con, con->state,
 L2870: 	     con->v2.in_state);
+L2871: 	WARN_ON(iov_iter_count(&con->v2.in_iter));
 L2873: 	if (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {
 L2875: 	} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {
 L2876: 		ret = process_banner_payload(con);
@@ -457,10 +347,12 @@ L2877: 	} else if ((con->state >= CEPH_CON_S_V2_HELLO &&
 L2878: 		    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||
 L2879: 		   con->state == CEPH_CON_S_OPEN) {
 L2880: 		switch (con->v2.in_state) {
+L2881: 		case IN_S_HANDLE_PREAMBLE:
 L2882: 			ret = handle_preamble(con);
+L2884: 		case IN_S_HANDLE_CONTROL:
 L2885: 			ret = handle_control(con);
+L2887: 		case IN_S_HANDLE_CONTROL_REMAINDER:
 L2888: 			ret = handle_control_remainder(con);
-L2902: 			ret = handle_epilogue(con);
 ```
 
 #### Function: `int ceph_con_v2_try_read(struct ceph_connection *con)`
@@ -477,112 +369,30 @@ L2951: 		ret = populate_in_iter(con);
 L2952: 		if (ret <= 0) {
 ```
 
-#### Function: `static int populate_out_iter(struct ceph_connection *con)`
-
-```c
-L3068: static int populate_out_iter(struct ceph_connection *con)
-L3072: 	dout("%s con %p state %d out_state %d\n", __func__, con, con->state,
-L3073: 	     con->v2.out_state);
-L3076: 	if (con->state != CEPH_CON_S_OPEN) {
-L3082: 	switch (con->v2.out_state) {
-L3099: 		finish_message(con);
-L3109: 	if (ceph_con_flag_test_and_clear(con, CEPH_CON_F_KEEPALIVE_PENDING)) {
-L3115: 	} else if (!list_empty(&con->out_queue)) {
-L3116: 		ceph_con_get_out_msg(con);
-L3117: 		ret = prepare_message(con);
-```
-
-#### Function: `int ceph_con_v2_try_write(struct ceph_connection *con)`
-
-```c
-L3146: int ceph_con_v2_try_write(struct ceph_connection *con)
-L3150: 	dout("%s con %p state %d have %zu\n", __func__, con, con->state,
-L3151: 	     iov_iter_count(&con->v2.out_iter));
-L3154: 	if (con->state == CEPH_CON_S_PREOPEN) {
-L3162: 		con->v2.global_seq = ceph_get_global_seq(con->msgr, 0);
-L3166: 		ret = prepare_read_banner_prefix(con);
-L3167: 		if (ret) {
-L3173: 		reset_out_kvecs(con);
-L3174: 		ret = prepare_banner(con);
-L3175: 		if (ret) {
-L3181: 		ret = ceph_tcp_connect(con);
-L3182: 		if (ret) {
-L3189: 	if (!iov_iter_count(&con->v2.out_iter)) {
-L3190: 		ret = populate_out_iter(con);
-L3191: 		if (ret <= 0) {
-L3200: 		ret = ceph_tcp_send(con);
-L3201: 		if (ret <= 0)
-L3204: 		ret = populate_out_iter(con);
-L3205: 		if (ret <= 0) {
-```
-
-#### Function: `static int padded_len(int len)`
-
-```c
-L377: static int padded_len(int len)
-L379: 	return ALIGN(len, CEPH_GCM_BLOCK_LEN);
-```
-
 #### Function: `static int head_onwire_len(int ctrl_len, bool secure)`
 
 ```c
 L388: static int head_onwire_len(int ctrl_len, bool secure)
 L393: 	BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);
-L397: 		if (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {
-L398: 			rem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN;
-L399: 			head_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN;
-L404: 			head_len += ctrl_len + CEPH_CRC_LEN;
-L406: 	return head_len;
-```
-
-#### Function: `static int __tail_onwire_len(int front_len, int middle_len, int data_len,`
-
-```c
-L410: static int __tail_onwire_len(int front_len, int middle_len, int data_len,
-L413: 	BUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||
-L414: 	       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||
-L415: 	       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);
-L417: 	if (!front_len && !middle_len && !data_len)
-L418: 		return 0;
-L420: 	if (!secure)
-L421: 		return front_len + middle_len + data_len +
-L422: 		       CEPH_EPILOGUE_PLAIN_LEN;
-L424: 	return padded_len(front_len) + padded_len(middle_len) +
-L425: 	       padded_len(data_len) + CEPH_EPILOGUE_SECURE_LEN;
-```
-
-#### Function: `static int tail_onwire_len(const struct ceph_msg *msg, bool secure)`
-
-```c
-L428: static int tail_onwire_len(const struct ceph_msg *msg, bool secure)
-L430: 	return __tail_onwire_len(front_len(msg), middle_len(msg),
-L431: 				 data_len(msg), secure);
 ```
 
 #### Function: `static int decode_preamble(void *p, struct ceph_frame_desc *desc)`
 
 ```c
 L501: static int decode_preamble(void *p, struct ceph_frame_desc *desc)
+L503: 	void *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;
+L507: 	crc = crc32c(0, p, crcp - p);
+L508: 	expected_crc = get_unaligned_le32(crcp);
+L509: 	if (crc != expected_crc) {
+L515: 	memset(desc, 0, sizeof(*desc));
+L517: 	desc->fd_tag = ceph_decode_8(&p);
+L518: 	desc->fd_seg_cnt = ceph_decode_8(&p);
+L519: 	if (desc->fd_seg_cnt < 1 ||
+L520: 	    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {
+L524: 	for (i = 0; i < desc->fd_seg_cnt; i++) {
+L525: 		desc->fd_lens[i] = ceph_decode_32(&p);
+L526: 		desc->fd_aligns[i] = ceph_decode_16(&p);
 L529: 	if (desc->fd_lens[0] < 0 ||
 L530: 	    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {
-L531: 		pr_err("bad control segment length %d\n", desc->fd_lens[0]);
-L532: 		return -EINVAL;
-L534: 	if (desc->fd_lens[1] < 0 ||
-L535: 	    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {
-L536: 		pr_err("bad front segment length %d\n", desc->fd_lens[1]);
-L537: 		return -EINVAL;
-L539: 	if (desc->fd_lens[2] < 0 ||
-L540: 	    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {
-L541: 		pr_err("bad middle segment length %d\n", desc->fd_lens[2]);
-L542: 		return -EINVAL;
-L544: 	if (desc->fd_lens[3] < 0 ||
-L545: 	    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {
-L546: 		pr_err("bad data segment length %d\n", desc->fd_lens[3]);
-L547: 		return -EINVAL;
-L554: 	if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {
-L555: 		pr_err("last segment empty, segment count %d\n",
-L556: 		       desc->fd_seg_cnt);
-L557: 		return -EINVAL;
-L560: 	return 0;
 ```
 

@@ -22,9 +22,9 @@ def get_criterion_savepath(commit_id, criterion):
 
     commit_id_short = get_commit_id_short(commit_id=commit_id)
     criterion_line = criterion['criterion']['line']
-    file_code = criterion['file_code']
-    file_code_old = file_code['old']
-    file_code_new = file_code['new']
+    # file_code = criterion['file_code']
+    # file_code_old = file_code['old']
+    # file_code_new = file_code['new']
     commit_id = criterion['commit_id']
     func_name = criterion['func_name']
     file_path_old = criterion['file_path']['old']
@@ -39,7 +39,11 @@ def get_criterion_savepath(commit_id, criterion):
     # module dir
     module_dirpath, module_relpath = get_module_dirpath_from_criterion(criterion)
     # code file
-    code_filename = os.path.basename(file_path_old)
+    if modification=='DELETE':
+        code_filename = os.path.basename(file_path_old)
+    elif modification=='ADD':
+        code_filename = os.path.basename(file_path_new)
+    # code_filename = os.path.basename(file_path_old)
     code_filepath = os.path.join(module_dirpath, code_filename)
     # meta file
     meta_filename = "-".join([config.META_FILENAME_START, basename])+'.json'
@@ -79,6 +83,19 @@ def get_root_meta_filepath(commit_id):
     root_meta_filepath = os.path.join(save_root, root_meta_filename)
 
     return root_meta_filepath
+
+
+def get_all_meta_filepath_from_root(root_dir):
+    meta_filepath_list = []
+    meta_filename_start = config.META_FILENAME_START
+    for root, dirs, files in os.walk(root_dir):
+        for filename in files:
+            if not filename.endswith(".json") or not filename.startswith(meta_filename_start):
+                continue
+            meta_filepath = os.path.join(root, filename)
+            meta_filepath_list.append(meta_filepath)
+    
+    return meta_filepath_list
 
 
 def get_graph_dirpath_from_criterion(criterion, graph_level):
@@ -177,11 +194,16 @@ def get_code_filepath_list_from_criterion(criterion, level='function')->list:
     
     if level == 'module':
         module_dirpath = criterion.get('save_module_dirpath')
-        filename_list = os.listdir(module_dirpath)
+        # filename_list = os.listdir(module_dirpath)
         module_filepath_list = []
-        for filename in filename_list:
-            filepath = os.path.join(module_dirpath, filename)
-            module_filepath_list.append(filepath)
+        # for filename in filename_list:
+        #     filepath = os.path.join(module_dirpath, filename)
+        #     if os.path.isfile(filepath):
+        #         module_filepath_list.append(filepath)
+        for root, dirs, files in os.walk(module_dirpath):
+            for file in files:
+                filepath = os.path.join(root, file)
+                module_filepath_list.append(filepath)
         filepath_list = module_filepath_list
 
     return filepath_list

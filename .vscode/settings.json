@@ -5,4 +5,12 @@
     },
     "python.envFile": "${workspaceFolder}/.env",
     "python.pythonPath": "${workspaceFolder}/env3.7_snapvuln/bin/python",
+    "python.testing.pytestArgs": [
+        "my-everything"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.analysis.extraPaths": [
+        "./my-everything/src_new"
+    ]
 }

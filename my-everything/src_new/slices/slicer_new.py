@@ -118,8 +118,6 @@ class Slicer:
         slice_nodes = set()
         q = queue.Queue()
 
-        print(G_graph.has_node('1189'))
-
         for node in criterion_node:
             q.put(node[0])
 

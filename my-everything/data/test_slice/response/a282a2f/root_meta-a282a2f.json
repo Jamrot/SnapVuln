@@ -1,132 +1,6 @@
 [
   {
     "criterion": {
-      "line": 393,
-      "code": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);"
-    },
-    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
-    "version": {
-      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
-      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
-    },
-    "file_path": {
-      "old": "net/ceph/messenger_v2.c",
-      "new": "net/ceph/messenger_v2.c"
-    },
-    "func_name": "head_onwire_len",
-    "func_line": {
-      "start": 388,
-      "end": 407
-    },
-    "modification": "ADD"
-  },
-  {
-    "criterion": {
-      "line": 394,
-      "code": ""
-    },
-    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
-    "version": {
-      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
-      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
-    },
-    "file_path": {
-      "old": "net/ceph/messenger_v2.c",
-      "new": "net/ceph/messenger_v2.c"
-    },
-    "func_name": "head_onwire_len",
-    "func_line": {
-      "start": 388,
-      "end": 407
-    },
-    "modification": "ADD"
-  },
-  {
-    "criterion": {
-      "line": 413,
-      "code": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||"
-    },
-    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
-    "version": {
-      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
-      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
-    },
-    "file_path": {
-      "old": "net/ceph/messenger_v2.c",
-      "new": "net/ceph/messenger_v2.c"
-    },
-    "func_name": "__tail_onwire_len",
-    "func_line": {
-      "start": 410,
-      "end": 426
-    },
-    "modification": "ADD"
-  },
-  {
-    "criterion": {
-      "line": 414,
-      "code": "\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||"
-    },
-    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
-    "version": {
-      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
-      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
-    },
-    "file_path": {
-      "old": "net/ceph/messenger_v2.c",
-      "new": "net/ceph/messenger_v2.c"
-    },
-    "func_name": "__tail_onwire_len",
-    "func_line": {
-      "start": 410,
-      "end": 426
-    },
-    "modification": "ADD"
-  },
-  {
-    "criterion": {
-      "line": 415,
-      "code": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);"
-    },
-    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
-    "version": {
-      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
-      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
-    },
-    "file_path": {
-      "old": "net/ceph/messenger_v2.c",
-      "new": "net/ceph/messenger_v2.c"
-    },
-    "func_name": "__tail_onwire_len",
-    "func_line": {
-      "start": 410,
-      "end": 426
-    },
-    "modification": "ADD"
-  },
-  {
-    "criterion": {
-      "line": 416,
-      "code": ""
-    },
-    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
-    "version": {
-      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
-      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
-    },
-    "file_path": {
-      "old": "net/ceph/messenger_v2.c",
-      "new": "net/ceph/messenger_v2.c"
-    },
-    "func_name": "__tail_onwire_len",
-    "func_line": {
-      "start": 410,
-      "end": 426
-    },
-    "modification": "ADD"
-  },
-  {
-    "criterion": {
       "line": 523,
       "code": "\t/*"
     },
@@ -857,6 +731,132 @@
     "func_line": {
       "start": 501,
       "end": 561
+    },
+    "modification": "ADD"
+  },
+  {
+    "criterion": {
+      "line": 393,
+      "code": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);"
+    },
+    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
+    "version": {
+      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
+      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
+    },
+    "file_path": {
+      "old": "net/ceph/messenger_v2.c",
+      "new": "net/ceph/messenger_v2.c"
+    },
+    "func_name": "head_onwire_len",
+    "func_line": {
+      "start": 388,
+      "end": 407
+    },
+    "modification": "ADD"
+  },
+  {
+    "criterion": {
+      "line": 394,
+      "code": ""
+    },
+    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
+    "version": {
+      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
+      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
+    },
+    "file_path": {
+      "old": "net/ceph/messenger_v2.c",
+      "new": "net/ceph/messenger_v2.c"
+    },
+    "func_name": "head_onwire_len",
+    "func_line": {
+      "start": 388,
+      "end": 407
+    },
+    "modification": "ADD"
+  },
+  {
+    "criterion": {
+      "line": 413,
+      "code": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||"
+    },
+    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
+    "version": {
+      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
+      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
+    },
+    "file_path": {
+      "old": "net/ceph/messenger_v2.c",
+      "new": "net/ceph/messenger_v2.c"
+    },
+    "func_name": "__tail_onwire_len",
+    "func_line": {
+      "start": 410,
+      "end": 426
+    },
+    "modification": "ADD"
+  },
+  {
+    "criterion": {
+      "line": 414,
+      "code": "\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||"
+    },
+    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
+    "version": {
+      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
+      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
+    },
+    "file_path": {
+      "old": "net/ceph/messenger_v2.c",
+      "new": "net/ceph/messenger_v2.c"
+    },
+    "func_name": "__tail_onwire_len",
+    "func_line": {
+      "start": 410,
+      "end": 426
+    },
+    "modification": "ADD"
+  },
+  {
+    "criterion": {
+      "line": 415,
+      "code": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);"
+    },
+    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
+    "version": {
+      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
+      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
+    },
+    "file_path": {
+      "old": "net/ceph/messenger_v2.c",
+      "new": "net/ceph/messenger_v2.c"
+    },
+    "func_name": "__tail_onwire_len",
+    "func_line": {
+      "start": 410,
+      "end": 426
+    },
+    "modification": "ADD"
+  },
+  {
+    "criterion": {
+      "line": 416,
+      "code": ""
+    },
+    "commit_id": "a282a2f10539dce2aa619e71e1817570d557fc97",
+    "version": {
+      "old": "06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5",
+      "new": "a282a2f10539dce2aa619e71e1817570d557fc97"
+    },
+    "file_path": {
+      "old": "net/ceph/messenger_v2.c",
+      "new": "net/ceph/messenger_v2.c"
+    },
+    "func_name": "__tail_onwire_len",
+    "func_line": {
+      "start": 410,
+      "end": 426
     },
     "modification": "ADD"
   }

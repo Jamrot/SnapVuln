@@ -23,7 +23,7 @@
     "graph": "ddg",
     "save_root": "/app/slicing-snapvuln/my-everything/data/test_slice/response/a282a2f",
     "save_filename_base": "a282a2f-decode_preamble-536-DELETE",
-    "save_file_code_filepath": "/app/slicing-snapvuln/my-everything/data/test_slice/response/a282a2f/code/code_old/net/ceph/messenger_v2.c",
-    "save_module_dirpath": "/app/slicing-snapvuln/my-everything/data/test_slice/response/a282a2f/code/code_old/net/ceph"
+    "save_module_dirpath": "/app/slicing-snapvuln/my-everything/data/test_slice/response/a282a2f/code/code_old/net/ceph",
+    "save_file_code_filepath": "/app/slicing-snapvuln/my-everything/data/test_slice/response/a282a2f/code/code_old/net/ceph/messenger_v2.c"
   }
 ]

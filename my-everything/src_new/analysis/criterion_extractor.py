@@ -5,6 +5,9 @@ import json
 import logging
 import utils.get_path as get_path
 import copy
+import shutil
+import re
+from subprocess import Popen, PIPE
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +21,7 @@ class CriterionExtractor:
             url (str): The URL of the Git repository.
             hash_id (str): The commit hash ID.
         """
+        self.commit_id = commit_id
         self.patch_analyzer = PatchAnalyzer(url, commit_id)
 
     def get_criterion_from_patch(self):
@@ -78,6 +82,179 @@ class CriterionExtractor:
                             'modification': modifcation
                         })
         return criterions
+    
+    def get_criterion_from_response(self, parsed_response):
+        criterions = []
+        further_stmts = parsed_response.get("further_slicing", {})
+        for stmt in further_stmts:
+            stmt_code_extract = stmt.get("statement")
+            stmt_info = stmt.get("statement_info")
+            
+            # get filepath, function name, line from statement_info
+            stmt_info_parts = stmt_info.split(" | ")
+            if len(stmt_info_parts) != 3:
+                logger.warning(f"Invalid statement_info: {stmt_info}")
+                continue
+            filepath_extract, funcname_extract, line_extract = stmt_info_parts
+            line_num = int(re.search(r'\d+', line_extract).group())
+
+            # get direction, graph        
+            direction = self._get_response_direction(stmt['slicing_direction'])
+            graph = self._get_response_graph_type(stmt['code_representation_graph'])
+
+            # get modification and filepath
+            modification = ""
+            if config.OLD_CODE_DIRNAME in filepath_extract:
+                modification = "DELETE"
+                filepath = filepath_extract.split(config.OLD_CODE_DIRNAME+"/")[-1]
+            elif config.NEW_CODE_DIRNAME in filepath_extract:
+                modification = "ADD"
+                filepath = filepath_extract.split(config.NEW_CODE_DIRNAME+"/")[-1]
+            else:
+                logger.error(f"Cannot determine modification: {filepath_extract}")
+
+            # get func_name
+            funcname_clean = funcname_extract.split('(')[0].split()[-1]
+
+            # init criterion
+            criterion = {
+                "criterion": {
+                    "line": line_num,
+                    "code": stmt_code_extract
+                },
+                "commit_id": self.commit_id,
+                "file_path": {
+                    "old": filepath,
+                    "new": filepath,
+                },
+                "func_name": funcname_clean,
+                "func_line": {},
+                "modification": modification,
+                "direction": direction,
+                "graph": graph,
+            }
+
+            # absoulte path of the code file
+            save_root, criterion_dir, code_filepath, module_dirpath, meta_filepath = get_path.get_criterion_savepath(commit_id=self.commit_id, criterion=criterion)
+            criterion['save_root'] = save_root
+            criterion['save_filename_base'] = criterion_dir
+            criterion['save_file_code_filepath'] = code_filepath
+            criterion['save_module_dirpath'] = module_dirpath
+
+            # check if the extracted funcname is correct
+            funcname, func_start, func_end = self._get_funcname_from_line(file_path=code_filepath, line_num=line_num)        
+            if not funcname_clean == funcname:
+                logger.error(f"Function name mismatch: {funcname_extract} != {funcname}")
+                continue
+            criterion['func_line'] = {
+                "start": func_start,
+                "end": func_end
+            }
+
+            # check if the extracted code is correct
+            stmt_code = self._get_code_from_line(file_path=code_filepath, line_num=line_num)
+            if stmt_code not in stmt_code_extract:
+                logger.error(f"Statement code mismatch: {stmt_code} not in {stmt_code_extract}")
+                continue
+
+            # save criterion
+            with open(meta_filepath, 'w') as f:
+                json.dump([criterion], f, indent=2)
+            logger.info(f"Extracted criterion from response, save to: {meta_filepath}")
+            
+            criterions.append(criterion)
+            logger.info(f"Extracted criterion (Checked): {stmt_info}")
+        
+        return criterions
+    
+
+    def _get_response_graph_type(self, response_graph_type):
+        if response_graph_type == "Control Flow Graph":
+            graph_type = "cfg"
+        elif response_graph_type == "Program Dependence Graph":
+            graph_type = "pdg"
+        elif response_graph_type == "Data Dependency Graph":
+            graph_type = "ddg"
+        elif response_graph_type == "Control Dependency Graph":
+            graph_type = "cdg"
+        elif response_graph_type == "Abstract Syntax Tree":
+            graph_type = "ast"
+        elif response_graph_type == "Code Property Graph":
+            graph_type = "cpg"
+        elif response_graph_type == "Call Graph":
+            graph_type = "cg"
+        else:
+            logger.error(f"Invalid graph type: {response_graph_type}")
+            graph_type = "all"
+        
+        return graph_type
+    
+
+    def _get_response_direction(self, response_direction):
+        if response_direction not in ['forward', 'backward', 'bidirectional']:
+            logger.error(f"Invalid slicing direction: {response_direction}")
+            response_direction = "bidirectional"
+        
+        return response_direction
+    
+
+    def _execute_command(self, command, cwd):
+        try:
+            p = Popen(command,stdout=PIPE,stderr=PIPE,cwd=cwd,shell=True)
+            content, _ = p.communicate()
+            out = content.decode("utf8","ignore")
+            return out
+        except Exception as e:
+            logger.error(f"[Command execution failed] Execution error: {e.stderr}")
+            return ''
+
+
+    def _get_code_from_line(self, file_path, line_num):
+        with open(file_path, "r", errors="ignore") as rfile:
+            lines = rfile.readlines()
+            return lines[line_num - 1].strip()
+    
+
+    def _get_funcname_from_line(self, file_path, line_num):
+        cmd2 = 'ctags --fields=+ne-t -o - --sort=no --excmd=number %s' % file_path
+        res = self._execute_command(cmd2, ".")
+        if not res:
+            with open(file_path, "r", errors="ignore") as rfile:
+                file_str = rfile.read()
+            if not file_str:
+                return None
+            else:
+                logger.error(f"Empty Ctags Result [{file_path}]")
+                return None
+                
+        lines = res.splitlines()
+
+        for line in lines:
+            fields = line.split()
+            if 'f' in fields:            
+                start_num = self._get_num(fields, 'line:')
+                end_num = self._get_num(fields, 'end:')
+
+                with open(file_path, "r", errors="ignore") as rfile:
+                    lines = rfile.readlines()
+                func_code = lines[start_num - 1:end_num]
+
+                if start_num is None or end_num is None:
+                    continue
+                if line_num >= start_num and line_num <= end_num:
+                    func_first_line = func_code[0]
+                    funcname = func_first_line.strip().split('(')[0].split()[-1]
+                    return funcname, start_num, end_num
+        
+        return None, None, None
+    
+
+    def _get_num(self, fields, tag):
+        for item in fields:
+            if tag in item:
+                tag_list = item.split(":")
+                return int(tag_list[-1])
+
 
     def save_criterion(self, criterions, save_file=True, save_meta=True, save_module=True):
         """Saves the extracted criterions to CODE_ROOT/commit_id directory.
@@ -110,6 +287,10 @@ class CriterionExtractor:
             criterion['save_root'] = save_root
             criterion['save_filename_base'] = criterion_dir
 
+            if save_module:
+                self._save_module(criterion=criterion, module_dirpath=module_dirpath, overwrite=config.MODULE_OVERWRITE)
+                criterion['save_module_dirpath'] = module_dirpath
+
             if save_file:
                 if not os.path.exists(code_filepath):
                     logger.warning(f"Code file not exist: {code_filepath}")
@@ -118,13 +299,11 @@ class CriterionExtractor:
                     elif modification=='ADD':
                         self._save_file(file_code_new, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
                 criterion['save_file_code_filepath'] = code_filepath
-
-            if save_module:
-                self._save_module(criterion=criterion, module_dirpath=module_dirpath, overwrite=config.MODULE_OVERWRITE)
-                criterion['save_module_dirpath'] = module_dirpath
             
             if save_meta:
                 self._save_criterion_meta([criterion], meta_filepath)
+
+        return criterions
 
     
     def _save_module(self, criterion, module_dirpath, overwrite=False):
@@ -143,16 +322,18 @@ class CriterionExtractor:
         local_module_path = self._get_module_path(file_path)
         if not os.path.exists(local_module_path):
             logger.error(f"Cannot find local_module_path: {local_module_path}")
-            exit() 
 
-        if os.path.exists(module_dirpath) and overwrite:
-            if not len(os.listdir(module_dirpath)) == 0:
-                logger.warning(f"[Remove module directory] Module directory exists (not empty):{module_dirpath}")
-                
-            # logger.warning(f"Remove module directory: {module_dirpath}")
-            os.system(f"rm -rf {module_dirpath}")
+        if os.path.exists(module_dirpath):
+            if overwrite:
+                if os.listdir(module_dirpath):
+                    logger.warning(f"[Remove module directory] Module directory exists (not empty): {module_dirpath}")
+                shutil.rmtree(module_dirpath)
+            else:
+                logger.warning(f"Module directory already exists and overwrite is not enabled: {module_dirpath}")
+                return
 
-        os.system(f"cp -r {local_module_path}/ {module_dirpath}")
+        shutil.copytree(local_module_path, module_dirpath)
+        logger.info(f"Copied {local_module_path} to {module_dirpath}")
         
 
     def _get_module_path(self, file_path, root=config.LINUX):

@@ -1,0 +1,762 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_old/net/ceph/snapshot.c",
+      "functions": [
+        {
+          "function_name": "void ceph_put_snap_context(struct ceph_snap_context *sc)",
+          "lines": [
+            "L54: void ceph_put_snap_context(struct ceph_snap_context *sc)\n",
+            "L56: \tif (!sc)\n",
+            "L57: \t\treturn;\n",
+            "L58: \tif (refcount_dec_and_test(&sc->nref)) {\n",
+            "L60: \t\tkfree(sc);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/osdmap.c",
+      "functions": [
+        {
+          "function_name": "void ceph_oloc_destroy(struct ceph_object_locator *oloc)",
+          "lines": [
+            "L2131: void ceph_oloc_destroy(struct ceph_object_locator *oloc)\n",
+            "L2133: \tceph_put_string(oloc->pool_ns);\n"
+          ]
+        },
+        {
+          "function_name": "void ceph_oid_destroy(struct ceph_object_id *oid)",
+          "lines": [
+            "L2225: void ceph_oid_destroy(struct ceph_object_id *oid)\n",
+            "L2227: \tif (oid->name != oid->inline_name)\n",
+            "L2228: \t\tkfree(oid->name);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/messenger.c",
+      "functions": [
+        {
+          "function_name": "void ceph_msg_put(struct ceph_msg *msg)",
+          "lines": [
+            "L2191: void ceph_msg_put(struct ceph_msg *msg)\n",
+            "L2193: \tdout(\"%s %p (was %d)\\n\", __func__, msg,\n",
+            "L2194: \t     kref_read(&msg->kref));\n",
+            "L2195: \tkref_put(&msg->kref, ceph_msg_release);\n"
+          ]
+        },
+        {
+          "function_name": "static void ceph_con_reset_protocol(struct ceph_connection *con)",
+          "lines": [
+            "L508: static void ceph_con_reset_protocol(struct ceph_connection *con)\n",
+            "L519: \t\tWARN_ON(con->out_msg->con != con);\n",
+            "L520: \t\tceph_msg_put(con->out_msg);\n",
+            "L521: \t\tcon->out_msg = NULL;\n",
+            "L523: \tif (con->bounce_page) {\n",
+            "L524: \t\t__free_page(con->bounce_page);\n",
+            "L525: \t\tcon->bounce_page = NULL;\n",
+            "L528: \tif (ceph_msgr2(from_msgr(con->msgr)))\n",
+            "L529: \t\tceph_con_v2_reset_protocol(con);\n",
+            "L531: \t\tceph_con_v1_reset_protocol(con);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static void free_conn_bufs(struct ceph_connection *con)",
+          "lines": [
+            "L318: static void free_conn_bufs(struct ceph_connection *con)\n",
+            "L320: \twhile (con->v2.conn_buf_cnt)\n",
+            "L321: \t\tkvfree(con->v2.conn_bufs[--con->v2.conn_buf_cnt]);\n"
+          ]
+        },
+        {
+          "function_name": "static void clear_in_sign_kvecs(struct ceph_connection *con)",
+          "lines": [
+            "L333: static void clear_in_sign_kvecs(struct ceph_connection *con)\n",
+            "L335: \tcon->v2.in_sign_kvec_cnt = 0;\n"
+          ]
+        },
+        {
+          "function_name": "static void clear_out_sign_kvecs(struct ceph_connection *con)",
+          "lines": [
+            "L347: static void clear_out_sign_kvecs(struct ceph_connection *con)\n",
+            "L349: \tcon->v2.out_sign_kvec_cnt = 0;\n"
+          ]
+        },
+        {
+          "function_name": "void ceph_con_v2_reset_protocol(struct ceph_connection *con)",
+          "lines": [
+            "L3529: void ceph_con_v2_reset_protocol(struct ceph_connection *con)\n",
+            "L3531: \tiov_iter_truncate(&con->v2.in_iter, 0);\n",
+            "L3532: \tiov_iter_truncate(&con->v2.out_iter, 0);\n",
+            "L3533: \tcon->v2.out_zero = 0;\n",
+            "L3535: \tclear_in_sign_kvecs(con);\n",
+            "L3536: \tclear_out_sign_kvecs(con);\n",
+            "L3537: \tfree_conn_bufs(con);\n",
+            "L3539: \tif (con->v2.in_enc_pages) {\n",
+            "L3540: \t\tWARN_ON(!con->v2.in_enc_page_cnt);\n",
+            "L3541: \t\tceph_release_page_vector(con->v2.in_enc_pages,\n",
+            "L3542: \t\t\t\t\t con->v2.in_enc_page_cnt);\n",
+            "L3543: \t\tcon->v2.in_enc_pages = NULL;\n",
+            "L3544: \t\tcon->v2.in_enc_page_cnt = 0;\n",
+            "L3546: \tif (con->v2.out_enc_pages) {\n",
+            "L3547: \t\tWARN_ON(!con->v2.out_enc_page_cnt);\n",
+            "L3548: \t\tceph_release_page_vector(con->v2.out_enc_pages,\n",
+            "L3549: \t\t\t\t\t con->v2.out_enc_page_cnt);\n",
+            "L3550: \t\tcon->v2.out_enc_pages = NULL;\n",
+            "L3551: \t\tcon->v2.out_enc_page_cnt = 0;\n",
+            "L3554: \tcon->v2.con_mode = CEPH_CON_MODE_UNKNOWN;\n",
+            "L3555: \tmemzero_explicit(&con->v2.in_gcm_nonce, CEPH_GCM_IV_LEN);\n",
+            "L3556: \tmemzero_explicit(&con->v2.out_gcm_nonce, CEPH_GCM_IV_LEN);\n",
+            "L3558: \tif (con->v2.hmac_tfm) {\n",
+            "L3559: \t\tcrypto_free_shash(con->v2.hmac_tfm);\n",
+            "L3560: \t\tcon->v2.hmac_tfm = NULL;\n",
+            "L3562: \tif (con->v2.gcm_req) {\n",
+            "L3563: \t\taead_request_free(con->v2.gcm_req);\n",
+            "L3564: \t\tcon->v2.gcm_req = NULL;\n",
+            "L3566: \tif (con->v2.gcm_tfm) {\n",
+            "L3567: \t\tcrypto_free_aead(con->v2.gcm_tfm);\n",
+            "L3568: \t\tcon->v2.gcm_tfm = NULL;\n"
+          ]
+        },
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L519: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L520: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L527: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L532: \tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+            "L533: \t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);\n",
+            "L536: \tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+            "L537: \t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);\n",
+            "L540: \tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+            "L541: \t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);\n",
+            "L544: \tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+            "L545: \t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/osd_client.c",
+      "functions": [
+        {
+          "function_name": "static void osd_req_op_data_release(struct ceph_osd_request *osd_req,",
+          "lines": [
+            "L394: static void osd_req_op_data_release(struct ceph_osd_request *osd_req,\n",
+            "L395: \t\t\tunsigned int which)\n",
+            "L399: \tBUG_ON(which >= osd_req->r_num_ops);\n",
+            "L400: \top = &osd_req->r_ops[which];\n",
+            "L402: \tswitch (op->op) {\n",
+            "L403: \tcase CEPH_OSD_OP_READ:\n",
+            "L404: \tcase CEPH_OSD_OP_SPARSE_READ:\n",
+            "L405: \tcase CEPH_OSD_OP_WRITE:\n",
+            "L406: \tcase CEPH_OSD_OP_WRITEFULL:\n",
+            "L407: \t\tkfree(op->extent.sparse_ext);\n",
+            "L408: \t\tceph_osd_data_release(&op->extent.osd_data);\n",
+            "L410: \tcase CEPH_OSD_OP_CALL:\n",
+            "L411: \t\tceph_osd_data_release(&op->cls.request_info);\n",
+            "L412: \t\tceph_osd_data_release(&op->cls.request_data);\n",
+            "L413: \t\tceph_osd_data_release(&op->cls.response_data);\n",
+            "L415: \tcase CEPH_OSD_OP_SETXATTR:\n",
+            "L416: \tcase CEPH_OSD_OP_CMPXATTR:\n",
+            "L417: \t\tceph_osd_data_release(&op->xattr.osd_data);\n",
+            "L419: \tcase CEPH_OSD_OP_STAT:\n",
+            "L420: \t\tceph_osd_data_release(&op->raw_data_in);\n",
+            "L422: \tcase CEPH_OSD_OP_NOTIFY_ACK:\n",
+            "L423: \t\tceph_osd_data_release(&op->notify_ack.request_data);\n",
+            "L425: \tcase CEPH_OSD_OP_NOTIFY:\n",
+            "L426: \t\tceph_osd_data_release(&op->notify.request_data);\n",
+            "L427: \t\tceph_osd_data_release(&op->notify.response_data);\n",
+            "L429: \tcase CEPH_OSD_OP_LIST_WATCHERS:\n",
+            "L430: \t\tceph_osd_data_release(&op->list_watchers.response_data);\n",
+            "L432: \tcase CEPH_OSD_OP_COPY_FROM2:\n",
+            "L433: \t\tceph_osd_data_release(&op->copy_from.osd_data);\n"
+          ]
+        },
+        {
+          "function_name": "static void target_destroy(struct ceph_osd_request_target *t)",
+          "lines": [
+            "L487: static void target_destroy(struct ceph_osd_request_target *t)\n",
+            "L489: \tceph_oid_destroy(&t->base_oid);\n",
+            "L490: \tceph_oloc_destroy(&t->base_oloc);\n",
+            "L491: \tceph_oid_destroy(&t->target_oid);\n",
+            "L492: \tceph_oloc_destroy(&t->target_oloc);\n"
+          ]
+        },
+        {
+          "function_name": "static void ceph_osdc_release_request(struct kref *kref)",
+          "lines": [
+            "L506: static void ceph_osdc_release_request(struct kref *kref)\n",
+            "L519: \t\tceph_msg_put(req->r_reply);\n",
+            "L521: \tfor (which = 0; which < req->r_num_ops; which++)\n",
+            "L522: \t\tosd_req_op_data_release(req, which);\n",
+            "L524: \ttarget_destroy(&req->r_t);\n",
+            "L525: \tceph_put_snap_context(req->r_snapc);\n",
+            "L527: \tif (req->r_mempool)\n",
+            "L528: \t\tmempool_free(req, req->r_osdc->req_mempool);\n",
+            "L529: \telse if (req->r_num_ops <= CEPH_OSD_SLAB_OPS)\n",
+            "L530: \t\tkmem_cache_free(ceph_osd_request_cache, req);\n",
+            "L532: \t\tkfree(req);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/ceph_common.c",
+      "functions": [
+        {
+          "function_name": "int ceph_parse_param(struct fs_parameter *param, struct ceph_options *opt,",
+          "lines": [
+            "L519: \t\tcase Opt_ms_mode_prefer_secure:\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/messenger_v1.c",
+      "functions": [
+        {
+          "function_name": "static void con_out_kvec_add(struct ceph_connection *con,",
+          "lines": [
+            "L119: static void con_out_kvec_add(struct ceph_connection *con,\n",
+            "L120: \t\t\t\tsize_t size, void *data)\n",
+            "L122: \tint index = con->v1.out_kvec_left;\n",
+            "L124: \tBUG_ON(con->v1.out_skip);\n",
+            "L125: \tBUG_ON(index >= ARRAY_SIZE(con->v1.out_kvec));\n",
+            "L127: \tcon->v1.out_kvec[index].iov_len = size;\n",
+            "L128: \tcon->v1.out_kvec[index].iov_base = data;\n",
+            "L129: \tcon->v1.out_kvec_left++;\n",
+            "L130: \tcon->v1.out_kvec_bytes += size;\n"
+          ]
+        },
+        {
+          "function_name": "static size_t sizeof_footer(struct ceph_connection *con)",
+          "lines": [
+            "L153: static size_t sizeof_footer(struct ceph_connection *con)\n",
+            "L155: \treturn (con->peer_features & CEPH_FEATURE_MSG_AUTH) ?\n"
+          ]
+        },
+        {
+          "function_name": "void ceph_con_v1_reset_protocol(struct ceph_connection *con)",
+          "lines": [
+            "L1621: void ceph_con_v1_reset_protocol(struct ceph_connection *con)\n",
+            "L1623: \tcon->v1.out_skip = 0;\n"
+          ]
+        },
+        {
+          "function_name": "static void prepare_write_message_footer(struct ceph_connection *con)",
+          "lines": [
+            "L172: static void prepare_write_message_footer(struct ceph_connection *con)\n",
+            "L174: \tstruct ceph_msg *m = con->out_msg;\n",
+            "L176: \tm->footer.flags |= CEPH_MSG_FOOTER_COMPLETE;\n",
+            "L178: \tdout(\"prepare_write_message_footer %p\\n\", con);\n",
+            "L179: \tcon_out_kvec_add(con, sizeof_footer(con), &m->footer);\n",
+            "L180: \tif (con->peer_features & CEPH_FEATURE_MSG_AUTH) {\n",
+            "L181: \t\tif (con->ops->sign_message)\n",
+            "L182: \t\t\tcon->ops->sign_message(m);\n",
+            "L184: \t\t\tm->footer.sig = 0;\n",
+            "L186: \t\tm->old_footer.flags = m->footer.flags;\n",
+            "L188: \tcon->v1.out_more = m->more_to_follow;\n",
+            "L189: \tcon->v1.out_msg_done = true;\n"
+          ]
+        },
+        {
+          "function_name": "static int write_partial_message_data(struct ceph_connection *con)",
+          "lines": [
+            "L519: \tprepare_write_message_footer(con);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/mon_client.c",
+      "functions": [
+        {
+          "function_name": "int ceph_monc_wait_osdmap(struct ceph_mon_client *monc, u32 epoch,",
+          "lines": [
+            "L496: int ceph_monc_wait_osdmap(struct ceph_mon_client *monc, u32 epoch,\n",
+            "L519: \treturn 0;\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/crush/mapper.c",
+      "functions": [
+        {
+          "function_name": "static int bucket_perm_choose(const struct crush_bucket *bucket,",
+          "lines": [
+            "L100: \t\tfor (i = 1; i < bucket->size; i++)\n",
+            "L101: \t\t\twork->perm[i] = i;\n",
+            "L102: \t\twork->perm[work->perm[0]] = 0;\n",
+            "L103: \t\twork->perm_n = 1;\n",
+            "L107: \tfor (i = 0; i < work->perm_n; i++)\n",
+            "L109: \twhile (work->perm_n <= pr) {\n",
+            "L110: \t\tunsigned int p = work->perm_n;\n",
+            "L112: \t\tif (p < bucket->size - 1) {\n",
+            "L113: \t\t\ti = crush_hash32_3(bucket->hash, x, bucket->id, p) %\n",
+            "L114: \t\t\t\t(bucket->size - p);\n",
+            "L115: \t\t\tif (i) {\n",
+            "L116: \t\t\t\tunsigned int t = work->perm[p + i];\n",
+            "L117: \t\t\t\twork->perm[p + i] = work->perm[p];\n",
+            "L118: \t\t\t\twork->perm[p] = t;\n",
+            "L122: \t\twork->perm_n++;\n",
+            "L124: \tfor (i = 0; i < bucket->size; i++)\n",
+            "L127: \ts = work->perm[pr];\n",
+            "L131: \treturn bucket->items[s];\n"
+          ]
+        },
+        {
+          "function_name": "static int bucket_uniform_choose(const struct crush_bucket_uniform *bucket,",
+          "lines": [
+            "L135: static int bucket_uniform_choose(const struct crush_bucket_uniform *bucket,\n",
+            "L136: \t\t\t\t struct crush_work_bucket *work, int x, int r)\n",
+            "L138: \treturn bucket_perm_choose(&bucket->h, work, x, r);\n"
+          ]
+        },
+        {
+          "function_name": "static int bucket_list_choose(const struct crush_bucket_list *bucket,",
+          "lines": [
+            "L142: static int bucket_list_choose(const struct crush_bucket_list *bucket,\n",
+            "L143: \t\t\t      int x, int r)\n",
+            "L147: \tfor (i = bucket->h.size-1; i >= 0; i--) {\n",
+            "L148: \t\t__u64 w = crush_hash32_4(bucket->h.hash, x, bucket->h.items[i],\n",
+            "L149: \t\t\t\t\t r, bucket->h.id);\n",
+            "L150: \t\tw &= 0xffff;\n",
+            "L155: \t\tw *= bucket->sum_weights[i];\n",
+            "L156: \t\tw = w >> 16;\n",
+            "L158: \t\tif (w < bucket->item_weights[i]) {\n",
+            "L159: \t\t\treturn bucket->h.items[i];\n",
+            "L164: \treturn bucket->h.items[0];\n"
+          ]
+        },
+        {
+          "function_name": "static int height(int n)",
+          "lines": [
+            "L169: static int height(int n)\n",
+            "L171: \tint h = 0;\n",
+            "L172: \twhile ((n & 1) == 0) {\n",
+            "L173: \t\th++;\n",
+            "L174: \t\tn = n >> 1;\n",
+            "L176: \treturn h;\n"
+          ]
+        },
+        {
+          "function_name": "static int left(int x)",
+          "lines": [
+            "L179: static int left(int x)\n",
+            "L181: \tint h = height(x);\n",
+            "L182: \treturn x - (1 << (h-1));\n"
+          ]
+        },
+        {
+          "function_name": "static int right(int x)",
+          "lines": [
+            "L185: static int right(int x)\n",
+            "L187: \tint h = height(x);\n",
+            "L188: \treturn x + (1 << (h-1));\n"
+          ]
+        },
+        {
+          "function_name": "static int terminal(int x)",
+          "lines": [
+            "L191: static int terminal(int x)\n",
+            "L193: \treturn x & 1;\n"
+          ]
+        },
+        {
+          "function_name": "static int bucket_tree_choose(const struct crush_bucket_tree *bucket,",
+          "lines": [
+            "L196: static int bucket_tree_choose(const struct crush_bucket_tree *bucket,\n",
+            "L197: \t\t\t      int x, int r)\n",
+            "L204: \tn = bucket->num_nodes >> 1;\n",
+            "L206: \twhile (!terminal(n)) {\n",
+            "L209: \t\tw = bucket->node_weights[n];\n",
+            "L210: \t\tt = (__u64)crush_hash32_4(bucket->h.hash, x, n, r,\n",
+            "L211: \t\t\t\t\t  bucket->h.id) * (__u64)w;\n",
+            "L212: \t\tt = t >> 32;\n",
+            "L215: \t\tl = left(n);\n",
+            "L216: \t\tif (t < bucket->node_weights[l])\n",
+            "L217: \t\t\tn = l;\n",
+            "L219: \t\t\tn = right(n);\n",
+            "L222: \treturn bucket->h.items[n >> 1];\n"
+          ]
+        },
+        {
+          "function_name": "static int bucket_straw_choose(const struct crush_bucket_straw *bucket,",
+          "lines": [
+            "L228: static int bucket_straw_choose(const struct crush_bucket_straw *bucket,\n",
+            "L229: \t\t\t       int x, int r)\n",
+            "L232: \tint high = 0;\n",
+            "L233: \t__u64 high_draw = 0;\n",
+            "L236: \tfor (i = 0; i < bucket->h.size; i++) {\n",
+            "L237: \t\tdraw = crush_hash32_3(bucket->h.hash, x, bucket->h.items[i], r);\n",
+            "L238: \t\tdraw &= 0xffff;\n",
+            "L239: \t\tdraw *= bucket->straws[i];\n",
+            "L240: \t\tif (i == 0 || draw > high_draw) {\n",
+            "L241: \t\t\thigh = i;\n",
+            "L242: \t\t\thigh_draw = draw;\n",
+            "L245: \treturn bucket->h.items[high];\n"
+          ]
+        },
+        {
+          "function_name": "static __u64 crush_ln(unsigned int xin)",
+          "lines": [
+            "L249: static __u64 crush_ln(unsigned int xin)\n",
+            "L251: \tunsigned int x = xin;\n",
+            "L255: \tx++;\n",
+            "L258: \tiexpon = 15;\n",
+            "L264: \tif (!(x & 0x18000)) {\n",
+            "L265: \t\tint bits = __builtin_clz(x & 0x1FFFF) - 16;\n",
+            "L266: \t\tx <<= bits;\n",
+            "L267: \t\tiexpon = 15 - bits;\n",
+            "L270: \tindex1 = (x >> 8) << 1;\n",
+            "L272: \tRH = __RH_LH_tbl[index1 - 256];\n",
+            "L274: \tLH = __RH_LH_tbl[index1 + 1 - 256];\n",
+            "L277: \txl64 = (__s64)x * RH;\n",
+            "L278: \txl64 >>= 48;\n",
+            "L280: \tresult = iexpon;\n",
+            "L281: \tresult <<= (12 + 32);\n",
+            "L283: \tindex2 = xl64 & 0xff;\n",
+            "L285: \tLL = __LL_tbl[index2];\n",
+            "L287: \tLH = LH + LL;\n",
+            "L289: \tLH >>= (48 - 12 - 32);\n",
+            "L290: \tresult += LH;\n",
+            "L292: \treturn result;\n"
+          ]
+        },
+        {
+          "function_name": "static __u32 *get_choose_arg_weights(const struct crush_bucket_straw2 *bucket,",
+          "lines": [
+            "L305: static __u32 *get_choose_arg_weights(const struct crush_bucket_straw2 *bucket,\n",
+            "L306: \t\t\t\t     const struct crush_choose_arg *arg,\n",
+            "L307: \t\t\t\t     int position)\n",
+            "L309: \tif (!arg || !arg->weight_set)\n",
+            "L310: \t\treturn bucket->item_weights;\n",
+            "L312: \tif (position >= arg->weight_set_size)\n",
+            "L313: \t\tposition = arg->weight_set_size - 1;\n",
+            "L314: \treturn arg->weight_set[position].weights;\n"
+          ]
+        },
+        {
+          "function_name": "static __s32 *get_choose_arg_ids(const struct crush_bucket_straw2 *bucket,",
+          "lines": [
+            "L317: static __s32 *get_choose_arg_ids(const struct crush_bucket_straw2 *bucket,\n",
+            "L318: \t\t\t\t const struct crush_choose_arg *arg)\n",
+            "L320: \tif (!arg || !arg->ids)\n",
+            "L321: \t\treturn bucket->h.items;\n",
+            "L323: \treturn arg->ids;\n"
+          ]
+        },
+        {
+          "function_name": "static int bucket_straw2_choose(const struct crush_bucket_straw2 *bucket,",
+          "lines": [
+            "L326: static int bucket_straw2_choose(const struct crush_bucket_straw2 *bucket,\n",
+            "L327: \t\t\t\tint x, int r,\n",
+            "L328: \t\t\t\tconst struct crush_choose_arg *arg,\n",
+            "L329: \t\t\t\tint position)\n",
+            "L331: \tunsigned int i, high = 0;\n",
+            "L333: \t__s64 ln, draw, high_draw = 0;\n",
+            "L334: \t__u32 *weights = get_choose_arg_weights(bucket, arg, position);\n",
+            "L335: \t__s32 *ids = get_choose_arg_ids(bucket, arg);\n",
+            "L337: \tfor (i = 0; i < bucket->h.size; i++) {\n",
+            "L339: \t\tif (weights[i]) {\n",
+            "L340: \t\t\tu = crush_hash32_3(bucket->h.hash, x, ids[i], r);\n",
+            "L341: \t\t\tu &= 0xffff;\n",
+            "L353: \t\t\tln = crush_ln(u) - 0x1000000000000ll;\n",
+            "L361: \t\t\tdraw = div64_s64(ln, weights[i]);\n",
+            "L363: \t\t\tdraw = S64_MIN;\n",
+            "L366: \t\tif (i == 0 || draw > high_draw) {\n",
+            "L367: \t\t\thigh = i;\n",
+            "L368: \t\t\thigh_draw = draw;\n",
+            "L372: \treturn bucket->h.items[high];\n"
+          ]
+        },
+        {
+          "function_name": "static int crush_bucket_choose(const struct crush_bucket *in,",
+          "lines": [
+            "L376: static int crush_bucket_choose(const struct crush_bucket *in,\n",
+            "L377: \t\t\t       struct crush_work_bucket *work,\n",
+            "L378: \t\t\t       int x, int r,\n",
+            "L379: \t\t\t       const struct crush_choose_arg *arg,\n",
+            "L380: \t\t\t       int position)\n",
+            "L383: \tBUG_ON(in->size == 0);\n",
+            "L384: \tswitch (in->alg) {\n",
+            "L385: \tcase CRUSH_BUCKET_UNIFORM:\n",
+            "L386: \t\treturn bucket_uniform_choose(\n",
+            "L387: \t\t\t(const struct crush_bucket_uniform *)in,\n",
+            "L388: \t\t\twork, x, r);\n",
+            "L389: \tcase CRUSH_BUCKET_LIST:\n",
+            "L390: \t\treturn bucket_list_choose((const struct crush_bucket_list *)in,\n",
+            "L391: \t\t\t\t\t  x, r);\n",
+            "L392: \tcase CRUSH_BUCKET_TREE:\n",
+            "L393: \t\treturn bucket_tree_choose((const struct crush_bucket_tree *)in,\n",
+            "L394: \t\t\t\t\t  x, r);\n",
+            "L395: \tcase CRUSH_BUCKET_STRAW:\n",
+            "L396: \t\treturn bucket_straw_choose(\n",
+            "L397: \t\t\t(const struct crush_bucket_straw *)in,\n",
+            "L398: \t\t\tx, r);\n",
+            "L399: \tcase CRUSH_BUCKET_STRAW2:\n",
+            "L400: \t\treturn bucket_straw2_choose(\n",
+            "L401: \t\t\t(const struct crush_bucket_straw2 *)in,\n",
+            "L402: \t\t\tx, r, arg, position);\n",
+            "L405: \t\treturn in->items[0];\n"
+          ]
+        },
+        {
+          "function_name": "static int is_out(const struct crush_map *map,",
+          "lines": [
+            "L413: static int is_out(const struct crush_map *map,\n",
+            "L414: \t\t  const __u32 *weight, int weight_max,\n",
+            "L415: \t\t  int item, int x)\n",
+            "L417: \tif (item >= weight_max)\n",
+            "L418: \t\treturn 1;\n",
+            "L419: \tif (weight[item] >= 0x10000)\n",
+            "L420: \t\treturn 0;\n",
+            "L421: \tif (weight[item] == 0)\n",
+            "L422: \t\treturn 1;\n",
+            "L423: \tif ((crush_hash32_2(CRUSH_HASH_RJENKINS1, x, item) & 0xffff)\n",
+            "L424: \t    < weight[item])\n",
+            "L425: \t\treturn 0;\n",
+            "L426: \treturn 1;\n"
+          ]
+        },
+        {
+          "function_name": "static int crush_choose_firstn(const struct crush_map *map,",
+          "lines": [
+            "L449: static int crush_choose_firstn(const struct crush_map *map,\n",
+            "L450: \t\t\t       struct crush_work *work,\n",
+            "L451: \t\t\t       const struct crush_bucket *bucket,\n",
+            "L452: \t\t\t       const __u32 *weight, int weight_max,\n",
+            "L453: \t\t\t       int x, int numrep, int type,\n",
+            "L454: \t\t\t       int *out, int outpos,\n",
+            "L455: \t\t\t       int out_size,\n",
+            "L456: \t\t\t       unsigned int tries,\n",
+            "L457: \t\t\t       unsigned int recurse_tries,\n",
+            "L458: \t\t\t       unsigned int local_retries,\n",
+            "L459: \t\t\t       unsigned int local_fallback_retries,\n",
+            "L460: \t\t\t       int recurse_to_leaf,\n",
+            "L461: \t\t\t       unsigned int vary_r,\n",
+            "L462: \t\t\t       unsigned int stable,\n",
+            "L463: \t\t\t       int *out2,\n",
+            "L464: \t\t\t       int parent_r,\n",
+            "L465: \t\t\t       const struct crush_choose_arg *choose_args)\n",
+            "L470: \tconst struct crush_bucket *in = bucket;\n",
+            "L473: \tint item = 0;\n",
+            "L476: \tint count = out_size;\n",
+            "L484: \tfor (rep = stable ? 0 : outpos; rep < numrep && count > 0 ; rep++) {\n",
+            "L486: \t\tftotal = 0;\n",
+            "L487: \t\tskip_rep = 0;\n",
+            "L489: \t\t\tretry_descent = 0;\n",
+            "L490: \t\t\tin = bucket;               /* initial bucket */\n",
+            "L493: \t\t\tflocal = 0;\n",
+            "L495: \t\t\t\tcollide = 0;\n",
+            "L496: \t\t\t\tretry_bucket = 0;\n",
+            "L497: \t\t\t\tr = rep + parent_r;\n",
+            "L499: \t\t\t\tr += ftotal;\n",
+            "L502: \t\t\t\tif (in->size == 0) {\n",
+            "L503: \t\t\t\t\treject = 1;\n",
+            "L506: \t\t\t\tif (local_fallback_retries > 0 &&\n",
+            "L507: \t\t\t\t    flocal >= (in->size>>1) &&\n",
+            "L508: \t\t\t\t    flocal > local_fallback_retries)\n",
+            "L509: \t\t\t\t\titem = bucket_perm_choose(\n",
+            "L510: \t\t\t\t\t\tin, work->work[-1-in->id],\n",
+            "L511: \t\t\t\t\t\tx, r);\n",
+            "L513: \t\t\t\t\titem = crush_bucket_choose(\n",
+            "L514: \t\t\t\t\t\tin, work->work[-1-in->id],\n",
+            "L515: \t\t\t\t\t\tx, r,\n",
+            "L516: \t\t\t\t\t\t(choose_args ?\n",
+            "L517: \t\t\t\t\t\t &choose_args[-1-in->id] : NULL),\n",
+            "L518: \t\t\t\t\t\toutpos);\n",
+            "L519: \t\t\t\tif (item >= map->max_devices) {\n",
+            "L521: \t\t\t\t\tskip_rep = 1;\n",
+            "L526: \t\t\t\tif (item < 0)\n",
+            "L527: \t\t\t\t\titemtype = map->buckets[-1-item]->type;\n",
+            "L529: \t\t\t\t\titemtype = 0;\n",
+            "L533: \t\t\t\tif (itemtype != type) {\n",
+            "L534: \t\t\t\t\tif (item >= 0 ||\n",
+            "L535: \t\t\t\t\t    (-1-item) >= map->max_buckets) {\n",
+            "L537: \t\t\t\t\t\tskip_rep = 1;\n",
+            "L540: \t\t\t\t\tin = map->buckets[-1-item];\n",
+            "L541: \t\t\t\t\tretry_bucket = 1;\n",
+            "L546: \t\t\t\tfor (i = 0; i < outpos; i++) {\n",
+            "L547: \t\t\t\t\tif (out[i] == item) {\n",
+            "L548: \t\t\t\t\t\tcollide = 1;\n",
+            "L553: \t\t\t\treject = 0;\n",
+            "L554: \t\t\t\tif (!collide && recurse_to_leaf) {\n",
+            "L555: \t\t\t\t\tif (item < 0) {\n",
+            "L557: \t\t\t\t\t\tif (vary_r)\n",
+            "L558: \t\t\t\t\t\t\tsub_r = r >> (vary_r-1);\n",
+            "L560: \t\t\t\t\t\t\tsub_r = 0;\n",
+            "L561: \t\t\t\t\t\tif (crush_choose_firstn(\n",
+            "L562: \t\t\t\t\t\t\t    map,\n",
+            "L563: \t\t\t\t\t\t\t    work,\n",
+            "L564: \t\t\t\t\t\t\t    map->buckets[-1-item],\n",
+            "L565: \t\t\t\t\t\t\t    weight, weight_max,\n",
+            "L566: \t\t\t\t\t\t\t    x, stable ? 1 : outpos+1, 0,\n",
+            "L567: \t\t\t\t\t\t\t    out2, outpos, count,\n",
+            "L568: \t\t\t\t\t\t\t    recurse_tries, 0,\n",
+            "L569: \t\t\t\t\t\t\t    local_retries,\n",
+            "L570: \t\t\t\t\t\t\t    local_fallback_retries,\n",
+            "L571: \t\t\t\t\t\t\t    0,\n",
+            "L572: \t\t\t\t\t\t\t    vary_r,\n",
+            "L573: \t\t\t\t\t\t\t    stable,\n",
+            "L574: \t\t\t\t\t\t\t    NULL,\n",
+            "L575: \t\t\t\t\t\t\t    sub_r,\n",
+            "L576: \t\t\t\t\t\t\t    choose_args) <= outpos)\n",
+            "L578: \t\t\t\t\t\t\treject = 1;\n",
+            "L581: \t\t\t\t\t\tout2[outpos] = item;\n",
+            "L585: \t\t\t\tif (!reject && !collide) {\n",
+            "L587: \t\t\t\t\tif (itemtype == 0)\n",
+            "L588: \t\t\t\t\t\treject = is_out(map, weight,\n",
+            "L589: \t\t\t\t\t\t\t\tweight_max,\n",
+            "L590: \t\t\t\t\t\t\t\titem, x);\n",
+            "L594: \t\t\t\tif (reject || collide) {\n",
+            "L595: \t\t\t\t\tftotal++;\n",
+            "L596: \t\t\t\t\tflocal++;\n",
+            "L598: \t\t\t\t\tif (collide && flocal <= local_retries)\n",
+            "L600: \t\t\t\t\t\tretry_bucket = 1;\n",
+            "L601: \t\t\t\t\telse if (local_fallback_retries > 0 &&\n",
+            "L602: \t\t\t\t\t\t flocal <= in->size + local_fallback_retries)\n",
+            "L604: \t\t\t\t\t\tretry_bucket = 1;\n",
+            "L605: \t\t\t\t\telse if (ftotal < tries)\n",
+            "L607: \t\t\t\t\t\tretry_descent = 1;\n",
+            "L610: \t\t\t\t\t\tskip_rep = 1;\n",
+            "L616: \t\t\t} while (retry_bucket);\n",
+            "L617: \t\t} while (retry_descent);\n",
+            "L619: \t\tif (skip_rep) {\n",
+            "L625: \t\tout[outpos] = item;\n",
+            "L626: \t\toutpos++;\n",
+            "L627: \t\tcount--;\n",
+            "L629: \t\tif (map->choose_tries && ftotal <= map->choose_total_tries)\n",
+            "L630: \t\t\tmap->choose_tries[ftotal]++;\n",
+            "L635: \treturn outpos;\n"
+          ]
+        },
+        {
+          "function_name": "static int bucket_perm_choose(const struct crush_bucket *bucket,",
+          "lines": [
+            "L74: static int bucket_perm_choose(const struct crush_bucket *bucket,\n",
+            "L75: \t\t\t      struct crush_work_bucket *work,\n",
+            "L76: \t\t\t      int x, int r)\n",
+            "L78: \tunsigned int pr = r % bucket->size;\n",
+            "L82: \tif (work->perm_x != (__u32)x || work->perm_n == 0) {\n",
+            "L84: \t\twork->perm_x = x;\n",
+            "L87: \t\tif (pr == 0) {\n",
+            "L88: \t\t\ts = crush_hash32_3(bucket->hash, x, bucket->id, 0) %\n",
+            "L89: \t\t\t\tbucket->size;\n",
+            "L90: \t\t\twork->perm[0] = s;\n",
+            "L91: \t\t\twork->perm_n = 0xffff;   /* magic value, see below */\n",
+            "L95: \t\tfor (i = 0; i < bucket->size; i++)\n",
+            "L96: \t\t\twork->perm[i] = i;\n",
+            "L97: \t\twork->perm_n = 0;\n",
+            "L98: \t} else if (work->perm_n == 0xffff) {\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_old/net/ceph/crush/hash.c",
+      "functions": [
+        {
+          "function_name": "__u32 crush_hash32_2(int type, __u32 a, __u32 b)",
+          "lines": [
+            "L104: __u32 crush_hash32_2(int type, __u32 a, __u32 b)\n",
+            "L106: \tswitch (type) {\n",
+            "L107: \tcase CRUSH_HASH_RJENKINS1:\n",
+            "L108: \t\treturn crush_hash32_rjenkins1_2(a, b);\n",
+            "L110: \t\treturn 0;\n"
+          ]
+        },
+        {
+          "function_name": "__u32 crush_hash32_3(int type, __u32 a, __u32 b, __u32 c)",
+          "lines": [
+            "L114: __u32 crush_hash32_3(int type, __u32 a, __u32 b, __u32 c)\n",
+            "L116: \tswitch (type) {\n",
+            "L117: \tcase CRUSH_HASH_RJENKINS1:\n",
+            "L118: \t\treturn crush_hash32_rjenkins1_3(a, b, c);\n",
+            "L120: \t\treturn 0;\n"
+          ]
+        },
+        {
+          "function_name": "__u32 crush_hash32_4(int type, __u32 a, __u32 b, __u32 c, __u32 d)",
+          "lines": [
+            "L124: __u32 crush_hash32_4(int type, __u32 a, __u32 b, __u32 c, __u32 d)\n",
+            "L126: \tswitch (type) {\n",
+            "L127: \tcase CRUSH_HASH_RJENKINS1:\n",
+            "L128: \t\treturn crush_hash32_rjenkins1_4(a, b, c, d);\n"
+          ]
+        },
+        {
+          "function_name": null,
+          "lines": [
+            "L13: #define crush_hashmix(a, b, c) do {\t\t\t\\\n"
+          ]
+        },
+        {
+          "function_name": "__u32 crush_hash32_4(int type, __u32 a, __u32 b, __u32 c, __u32 d)",
+          "lines": [
+            "L130: \t\treturn 0;\n"
+          ]
+        },
+        {
+          "function_name": null,
+          "lines": [
+            "L25: #define crush_hash_seed 1315423911\n"
+          ]
+        },
+        {
+          "function_name": "static __u32 crush_hash32_rjenkins1_2(__u32 a, __u32 b)",
+          "lines": [
+            "L38: static __u32 crush_hash32_rjenkins1_2(__u32 a, __u32 b)\n",
+            "L40: \t__u32 hash = crush_hash_seed ^ a ^ b;\n",
+            "L41: \t__u32 x = 231232;\n",
+            "L42: \t__u32 y = 1232;\n",
+            "L43: \tcrush_hashmix(a, b, hash);\n",
+            "L44: \tcrush_hashmix(x, a, hash);\n",
+            "L45: \tcrush_hashmix(b, y, hash);\n",
+            "L46: \treturn hash;\n"
+          ]
+        },
+        {
+          "function_name": "static __u32 crush_hash32_rjenkins1_3(__u32 a, __u32 b, __u32 c)",
+          "lines": [
+            "L49: static __u32 crush_hash32_rjenkins1_3(__u32 a, __u32 b, __u32 c)\n",
+            "L51: \t__u32 hash = crush_hash_seed ^ a ^ b ^ c;\n",
+            "L52: \t__u32 x = 231232;\n",
+            "L53: \t__u32 y = 1232;\n",
+            "L54: \tcrush_hashmix(a, b, hash);\n",
+            "L55: \tcrush_hashmix(c, x, hash);\n",
+            "L56: \tcrush_hashmix(y, a, hash);\n",
+            "L57: \tcrush_hashmix(b, x, hash);\n",
+            "L58: \tcrush_hashmix(y, c, hash);\n",
+            "L59: \treturn hash;\n"
+          ]
+        },
+        {
+          "function_name": "static __u32 crush_hash32_rjenkins1_4(__u32 a, __u32 b, __u32 c, __u32 d)",
+          "lines": [
+            "L62: static __u32 crush_hash32_rjenkins1_4(__u32 a, __u32 b, __u32 c, __u32 d)\n",
+            "L64: \t__u32 hash = crush_hash_seed ^ a ^ b ^ c ^ d;\n",
+            "L65: \t__u32 x = 231232;\n",
+            "L66: \t__u32 y = 1232;\n",
+            "L67: \tcrush_hashmix(a, b, hash);\n",
+            "L68: \tcrush_hashmix(c, d, hash);\n",
+            "L69: \tcrush_hashmix(a, x, hash);\n",
+            "L70: \tcrush_hashmix(y, b, hash);\n",
+            "L71: \tcrush_hashmix(c, x, hash);\n",
+            "L72: \tcrush_hashmix(y, d, hash);\n",
+            "L73: \treturn hash;\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
