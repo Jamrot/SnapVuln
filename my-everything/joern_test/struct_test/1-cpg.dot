@@ -1,0 +1,17 @@
+digraph "&lt;clinit&gt;" {  
+"10" [label = <(METHOD,&lt;clinit&gt;)<SUB>1</SUB>> ]
+"11" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"12" [label = <(&lt;operator&gt;.arrayInitializer,fd_lens[10])<SUB>2</SUB>> ]
+"13" [label = <(LITERAL,10,fd_lens[10])<SUB>2</SUB>> ]
+"14" [label = <(MODIFIER,STATIC)> ]
+"15" [label = <(METHOD_RETURN,ANY)> ]
+  "10" -> "11"  [ label = "AST: "] 
+  "10" -> "14"  [ label = "AST: "] 
+  "10" -> "15"  [ label = "AST: "] 
+  "11" -> "12"  [ label = "AST: "] 
+  "12" -> "13"  [ label = "AST: "] 
+  "12" -> "15"  [ label = "CFG: "] 
+  "10" -> "12"  [ label = "CFG: "] 
+  "12" -> "15"  [ label = "DDG: fd_lens[10]"] 
+  "10" -> "12"  [ label = "DDG: "] 
+}

@@ -1,0 +1,16 @@
+digraph "&lt;operator&gt;.fieldAccess" {  
+"139" [label = <(METHOD,&lt;operator&gt;.fieldAccess)> ]
+"140" [label = <(PARAM,p1)> ]
+"141" [label = <(PARAM,p2)> ]
+"142" [label = <(BLOCK,&lt;empty&gt;,&lt;empty&gt;)> ]
+"143" [label = <(METHOD_RETURN,ANY)> ]
+  "139" -> "140"  [ label = "AST: "] 
+  "139" -> "142"  [ label = "AST: "] 
+  "139" -> "141"  [ label = "AST: "] 
+  "139" -> "143"  [ label = "AST: "] 
+  "139" -> "143"  [ label = "CFG: "] 
+  "140" -> "143"  [ label = "DDG: p1"] 
+  "141" -> "143"  [ label = "DDG: p2"] 
+  "139" -> "140"  [ label = "DDG: "] 
+  "139" -> "141"  [ label = "DDG: "] 
+}

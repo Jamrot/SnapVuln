@@ -1,0 +1,499 @@
+{
+  "files": [
+    {
+      "file_name": "messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int prepare_hello(struct ceph_connection *con)",
+          "new_lines": [
+            "L1267: static int prepare_hello(struct ceph_connection *con)\n",
+            "L1272: \tctrl_len = 1 + ceph_entity_addr_encoding_len(&con->peer_addr);\n",
+            "L1273: \tbuf = alloc_conn_buf(con, head_onwire_len(ctrl_len, false));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int prepare_auth_request(struct ceph_connection *con)",
+          "new_lines": [
+            "L1289: static int prepare_auth_request(struct ceph_connection *con)\n",
+            "L1296: \tctrl_len = AUTH_BUF_LEN;\n",
+            "L1297: \tbuf = alloc_conn_buf(con, head_onwire_len(ctrl_len, false));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int prepare_auth_request_more(struct ceph_connection *con,",
+          "new_lines": [
+            "L1325: static int prepare_auth_request_more(struct ceph_connection *con,\n",
+            "L1333: \tctrl_len = AUTH_BUF_LEN;\n",
+            "L1334: \tbuf = alloc_conn_buf(con, head_onwire_len(ctrl_len, false));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int prepare_auth_signature(struct ceph_connection *con)",
+          "new_lines": [
+            "L1357: static int prepare_auth_signature(struct ceph_connection *con)\n",
+            "L1362: \tbuf = alloc_conn_buf(con, head_onwire_len(SHA256_DIGEST_SIZE,\n",
+            "L1363: \t\t\t\t\t\t  con_secure(con)));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int prepare_client_ident(struct ceph_connection *con)",
+          "new_lines": [
+            "L1376: static int prepare_client_ident(struct ceph_connection *con)\n",
+            "L1378: \tstruct ceph_entity_addr *my_addr = &con->msgr->inst.addr;\n",
+            "L1379: \tstruct ceph_client *client = from_msgr(con->msgr);\n",
+            "L1380: \tu64 global_id = ceph_client_gid(client);\n",
+            "L1384: \tWARN_ON(con->v2.server_cookie);\n",
+            "L1385: \tWARN_ON(con->v2.connect_seq);\n",
+            "L1386: \tWARN_ON(con->v2.peer_global_seq);\n",
+            "L1388: \tif (!con->v2.client_cookie) {\n",
+            "L1390: \t\t\tget_random_bytes(&con->v2.client_cookie,\n",
+            "L1391: \t\t\t\t\t sizeof(con->v2.client_cookie));\n",
+            "L1392: \t\t} while (!con->v2.client_cookie);\n",
+            "L1393: \t\tdout(\"%s con %p generated cookie 0x%llx\\n\", __func__, con,\n",
+            "L1394: \t\t     con->v2.client_cookie);\n",
+            "L1396: \t\tdout(\"%s con %p cookie already set 0x%llx\\n\", __func__, con,\n",
+            "L1397: \t\t     con->v2.client_cookie);\n",
+            "L1400: \tdout(\"%s con %p my_addr %s/%u peer_addr %s/%u global_id %llu global_seq %llu features 0x%llx required_features 0x%llx cookie 0x%llx\\n\",\n",
+            "L1401: \t     __func__, con, ceph_pr_addr(my_addr), le32_to_cpu(my_addr->nonce),\n",
+            "L1402: \t     ceph_pr_addr(&con->peer_addr), le32_to_cpu(con->peer_addr.nonce),\n",
+            "L1403: \t     global_id, con->v2.global_seq, client->supported_features,\n",
+            "L1404: \t     client->required_features, con->v2.client_cookie);\n",
+            "L1406: \tctrl_len = 1 + 4 + ceph_entity_addr_encoding_len(my_addr) +\n",
+            "L1407: \t\t   ceph_entity_addr_encoding_len(&con->peer_addr) + 6 * 8;\n",
+            "L1408: \tbuf = alloc_conn_buf(con, head_onwire_len(ctrl_len, con_secure(con)));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int prepare_session_reconnect(struct ceph_connection *con)",
+          "new_lines": [
+            "L1428: static int prepare_session_reconnect(struct ceph_connection *con)\n",
+            "L1430: \tstruct ceph_entity_addr *my_addr = &con->msgr->inst.addr;\n",
+            "L1434: \tWARN_ON(!con->v2.client_cookie);\n",
+            "L1435: \tWARN_ON(!con->v2.server_cookie);\n",
+            "L1436: \tWARN_ON(!con->v2.connect_seq);\n",
+            "L1437: \tWARN_ON(!con->v2.peer_global_seq);\n",
+            "L1439: \tdout(\"%s con %p my_addr %s/%u client_cookie 0x%llx server_cookie 0x%llx global_seq %llu connect_seq %llu in_seq %llu\\n\",\n",
+            "L1440: \t     __func__, con, ceph_pr_addr(my_addr), le32_to_cpu(my_addr->nonce),\n",
+            "L1441: \t     con->v2.client_cookie, con->v2.server_cookie, con->v2.global_seq,\n",
+            "L1442: \t     con->v2.connect_seq, con->in_seq);\n",
+            "L1444: \tctrl_len = 1 + 4 + ceph_entity_addr_encoding_len(my_addr) + 5 * 8;\n",
+            "L1445: \tbuf = alloc_conn_buf(con, head_onwire_len(ctrl_len, con_secure(con)));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int prepare_read_control(struct ceph_connection *con)",
+          "new_lines": [
+            "L1706: static int prepare_read_control(struct ceph_connection *con)\n",
+            "L1708: \tint ctrl_len = con->v2.in_desc.fd_lens[0];\n",
+            "L1712: \treset_in_kvecs(con);\n",
+            "L1713: \tif (con->state == CEPH_CON_S_V2_HELLO ||\n",
+            "L1714: \t    con->state == CEPH_CON_S_V2_AUTH) {\n",
+            "L1715: \t\thead_len = head_onwire_len(ctrl_len, false);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_banner_payload(struct ceph_connection *con)",
+          "new_lines": [
+            "L1955: static int process_banner_payload(struct ceph_connection *con)\n",
+            "L1957: \tvoid *end = con->v2.in_kvecs[0].iov_base + con->v2.in_kvecs[0].iov_len;\n",
+            "L1958: \tu64 feat = CEPH_MSGR2_SUPPORTED_FEATURES;\n",
+            "L1959: \tu64 req_feat = CEPH_MSGR2_REQUIRED_FEATURES;\n",
+            "L1964: \tp = con->v2.in_kvecs[0].iov_base;\n",
+            "L1965: \tceph_decode_64_safe(&p, end, server_feat, bad);\n",
+            "L1966: \tceph_decode_64_safe(&p, end, server_req_feat, bad);\n",
+            "L1968: \tdout(\"%s con %p server_feat 0x%llx server_req_feat 0x%llx\\n\",\n",
+            "L1969: \t     __func__, con, server_feat, server_req_feat);\n",
+            "L1971: \tif (req_feat & ~server_feat) {\n",
+            "L1977: \tif (server_req_feat & ~feat) {\n",
+            "L1985: \tret = prepare_hello(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_hello(struct ceph_connection *con, void *p, void *end)",
+          "new_lines": [
+            "L2000: static int process_hello(struct ceph_connection *con, void *p, void *end)\n",
+            "L2002: \tstruct ceph_entity_addr *my_addr = &con->msgr->inst.addr;\n",
+            "L2007: \tif (con->state != CEPH_CON_S_V2_HELLO) {\n",
+            "L2012: \tceph_decode_8_safe(&p, end, entity_type, bad);\n",
+            "L2013: \tret = ceph_decode_entity_addr(&p, end, &addr_for_me);\n",
+            "L2014: \tif (ret) {\n",
+            "L2019: \tdout(\"%s con %p entity_type %d addr_for_me %s\\n\", __func__, con,\n",
+            "L2020: \t     entity_type, ceph_pr_addr(&addr_for_me));\n",
+            "L2022: \tif (entity_type != con->peer_name.type) {\n",
+            "L2035: \tif (ceph_addr_is_blank(my_addr)) {\n",
+            "L2036: \t\tmemcpy(&my_addr->in_addr, &addr_for_me.in_addr,\n",
+            "L2037: \t\t       sizeof(my_addr->in_addr));\n",
+            "L2038: \t\tceph_addr_set_port(my_addr, 0);\n",
+            "L2039: \t\tdout(\"%s con %p set my addr %s, as seen by peer %s\\n\",\n",
+            "L2040: \t\t     __func__, con, ceph_pr_addr(my_addr),\n",
+            "L2041: \t\t     ceph_pr_addr(&con->peer_addr));\n",
+            "L2043: \t\tdout(\"%s con %p my addr already set %s\\n\",\n",
+            "L2044: \t\t     __func__, con, ceph_pr_addr(my_addr));\n",
+            "L2047: \tWARN_ON(ceph_addr_is_blank(my_addr) || ceph_addr_port(my_addr));\n",
+            "L2048: \tWARN_ON(my_addr->type != CEPH_ENTITY_ADDR_TYPE_ANY);\n",
+            "L2049: \tWARN_ON(!my_addr->nonce);\n",
+            "L2052: \tret = prepare_auth_request(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_auth_reply_more(struct ceph_connection *con,",
+          "new_lines": [
+            "L2129: static int process_auth_reply_more(struct ceph_connection *con,\n",
+            "L2135: \tif (con->state != CEPH_CON_S_V2_AUTH) {\n",
+            "L2140: \tceph_decode_32_safe(&p, end, payload_len, bad);\n",
+            "L2141: \tceph_decode_need(&p, end, payload_len, bad);\n",
+            "L2143: \tdout(\"%s con %p payload_len %d\\n\", __func__, con, payload_len);\n",
+            "L2145: \treset_out_kvecs(con);\n",
+            "L2146: \tret = prepare_auth_request_more(con, p, payload_len);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_auth_done(struct ceph_connection *con, void *p, void *end)",
+          "new_lines": [
+            "L2166: static int process_auth_done(struct ceph_connection *con, void *p, void *end)\n",
+            "L2170: \tu8 *session_key = PTR_ALIGN(&session_key_buf[0], 16);\n",
+            "L2171: \tu8 *con_secret = PTR_ALIGN(&con_secret_buf[0], 16);\n",
+            "L2177: \tif (con->state != CEPH_CON_S_V2_AUTH) {\n",
+            "L2182: \tceph_decode_64_safe(&p, end, global_id, bad);\n",
+            "L2183: \tceph_decode_32_safe(&p, end, con->v2.con_mode, bad);\n",
+            "L2184: \tceph_decode_32_safe(&p, end, payload_len, bad);\n",
+            "L2186: \tdout(\"%s con %p global_id %llu con_mode %d payload_len %d\\n\",\n",
+            "L2187: \t     __func__, con, global_id, con->v2.con_mode, payload_len);\n",
+            "L2189: \tmutex_unlock(&con->mutex);\n",
+            "L2190: \tsession_key_len = 0;\n",
+            "L2191: \tcon_secret_len = 0;\n",
+            "L2192: \tret = con->ops->handle_auth_done(con, global_id, p, payload_len,\n",
+            "L2193: \t\t\t\t\t session_key, &session_key_len,\n",
+            "L2194: \t\t\t\t\t con_secret, &con_secret_len);\n",
+            "L2195: \tmutex_lock(&con->mutex);\n",
+            "L2196: \tif (con->state != CEPH_CON_S_V2_AUTH) {\n",
+            "L2203: \tdout(\"%s con %p handle_auth_done ret %d\\n\", __func__, con, ret);\n",
+            "L2204: \tif (ret)\n",
+            "L2207: \tret = setup_crypto(con, session_key, session_key_len, con_secret,\n",
+            "L2208: \t\t\t   con_secret_len);\n",
+            "L2209: \tif (ret)\n",
+            "L2212: \treset_out_kvecs(con);\n",
+            "L2213: \tret = prepare_auth_signature(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_auth_signature(struct ceph_connection *con,",
+          "new_lines": [
+            "L2231: static int process_auth_signature(struct ceph_connection *con,\n",
+            "L2237: \tif (con->state != CEPH_CON_S_V2_AUTH_SIGNATURE) {\n",
+            "L2242: \tret = hmac_sha256(con, con->v2.out_sign_kvecs,\n",
+            "L2243: \t\t\t  con->v2.out_sign_kvec_cnt, hmac);\n",
+            "L2244: \tif (ret)\n",
+            "L2247: \tceph_decode_need(&p, end, SHA256_DIGEST_SIZE, bad);\n",
+            "L2248: \tif (crypto_memneq(p, hmac, SHA256_DIGEST_SIZE)) {\n",
+            "L2253: \tdout(\"%s con %p auth signature ok\\n\", __func__, con);\n",
+            "L2256: \tif (!con->v2.server_cookie) {\n",
+            "L2257: \t\tret = prepare_client_ident(con);\n",
+            "L2265: \t\tret = prepare_session_reconnect(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_session_retry(struct ceph_connection *con,",
+          "new_lines": [
+            "L2416: static int process_session_retry(struct ceph_connection *con,\n",
+            "L2422: \tif (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {\n",
+            "L2427: \tceph_decode_64_safe(&p, end, connect_seq, bad);\n",
+            "L2429: \tdout(\"%s con %p connect_seq %llu\\n\", __func__, con, connect_seq);\n",
+            "L2430: \tWARN_ON(connect_seq <= con->v2.connect_seq);\n",
+            "L2431: \tcon->v2.connect_seq = connect_seq + 1;\n",
+            "L2433: \tfree_conn_bufs(con);\n",
+            "L2435: \treset_out_kvecs(con);\n",
+            "L2436: \tret = prepare_session_reconnect(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_session_retry_global(struct ceph_connection *con,",
+          "new_lines": [
+            "L2449: static int process_session_retry_global(struct ceph_connection *con,\n",
+            "L2455: \tif (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {\n",
+            "L2460: \tceph_decode_64_safe(&p, end, global_seq, bad);\n",
+            "L2462: \tdout(\"%s con %p global_seq %llu\\n\", __func__, con, global_seq);\n",
+            "L2463: \tWARN_ON(global_seq <= con->v2.global_seq);\n",
+            "L2464: \tcon->v2.global_seq = ceph_get_global_seq(con->msgr, global_seq);\n",
+            "L2466: \tfree_conn_bufs(con);\n",
+            "L2468: \treset_out_kvecs(con);\n",
+            "L2469: \tret = prepare_session_reconnect(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_session_reset(struct ceph_connection *con,",
+          "new_lines": [
+            "L2482: static int process_session_reset(struct ceph_connection *con,\n",
+            "L2488: \tif (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {\n",
+            "L2493: \tceph_decode_8_safe(&p, end, full, bad);\n",
+            "L2494: \tif (!full) {\n",
+            "L2499: \tpr_info(\"%s%lld %s session reset\\n\", ENTITY_NAME(con->peer_name),\n",
+            "L2500: \t\tceph_pr_addr(&con->peer_addr));\n",
+            "L2501: \tceph_con_reset_session(con);\n",
+            "L2503: \tmutex_unlock(&con->mutex);\n",
+            "L2504: \tif (con->ops->peer_reset)\n",
+            "L2505: \t\tcon->ops->peer_reset(con);\n",
+            "L2506: \tmutex_lock(&con->mutex);\n",
+            "L2507: \tif (con->state != CEPH_CON_S_V2_SESSION_RECONNECT) {\n",
+            "L2513: \tfree_conn_bufs(con);\n",
+            "L2515: \treset_out_kvecs(con);\n",
+            "L2516: \tret = prepare_client_ident(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int process_control(struct ceph_connection *con, void *p, void *end)",
+          "new_lines": [
+            "L2571: static int process_control(struct ceph_connection *con, void *p, void *end)\n",
+            "L2573: \tint tag = con->v2.in_desc.fd_tag;\n",
+            "L2576: \tdout(\"%s con %p tag %d len %d\\n\", __func__, con, tag, (int)(end - p));\n",
+            "L2578: \tswitch (tag) {\n",
+            "L2579: \tcase FRAME_TAG_HELLO:\n",
+            "L2580: \t\tret = process_hello(con, p, end);\n",
+            "L2585: \tcase FRAME_TAG_AUTH_REPLY_MORE:\n",
+            "L2586: \t\tret = process_auth_reply_more(con, p, end);\n",
+            "L2588: \tcase FRAME_TAG_AUTH_DONE:\n",
+            "L2589: \t\tret = process_auth_done(con, p, end);\n",
+            "L2591: \tcase FRAME_TAG_AUTH_SIGNATURE:\n",
+            "L2592: \t\tret = process_auth_signature(con, p, end);\n",
+            "L2603: \tcase FRAME_TAG_SESSION_RETRY:\n",
+            "L2604: \t\tret = process_session_retry(con, p, end);\n",
+            "L2606: \tcase FRAME_TAG_SESSION_RETRY_GLOBAL:\n",
+            "L2607: \t\tret = process_session_retry_global(con, p, end);\n",
+            "L2609: \tcase FRAME_TAG_SESSION_RESET:\n",
+            "L2610: \t\tret = process_session_reset(con, p, end);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int __handle_control(struct ceph_connection *con, void *p)",
+          "new_lines": [
+            "L2698: static int __handle_control(struct ceph_connection *con, void *p)\n",
+            "L2700: \tvoid *end = p + con->v2.in_desc.fd_lens[0];\n",
+            "L2704: \tif (con->v2.in_desc.fd_tag != FRAME_TAG_MESSAGE)\n",
+            "L2705: \t\treturn process_control(con, p, end);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int handle_preamble(struct ceph_connection *con)",
+          "new_lines": [
+            "L2738: static int handle_preamble(struct ceph_connection *con)\n",
+            "L2740: \tstruct ceph_frame_desc *desc = &con->v2.in_desc;\n",
+            "L2743: \tif (con_secure(con)) {\n",
+            "L2744: \t\tret = decrypt_preamble(con);\n",
+            "L2745: \t\tif (ret) {\n",
+            "L2752: \tret = decode_preamble(con->v2.in_buf, desc);\n",
+            "L2753: \tif (ret) {\n",
+            "L2761: \tdout(\"%s con %p tag %d seg_cnt %d %d+%d+%d+%d\\n\", __func__,\n",
+            "L2762: \t     con, desc->fd_tag, desc->fd_seg_cnt, desc->fd_lens[0],\n",
+            "L2763: \t     desc->fd_lens[1], desc->fd_lens[2], desc->fd_lens[3]);\n",
+            "L2765: \tif (!con_secure(con))\n",
+            "L2766: \t\treturn prepare_read_control(con);\n",
+            "L2768: \tif (desc->fd_lens[0] > CEPH_PREAMBLE_INLINE_LEN)\n",
+            "L2771: \treturn __handle_control(con, CTRL_BODY(con->v2.in_buf));\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int handle_control(struct ceph_connection *con)",
+          "new_lines": [
+            "L2774: static int handle_control(struct ceph_connection *con)\n",
+            "L2776: \tint ctrl_len = con->v2.in_desc.fd_lens[0];\n",
+            "L2780: \tWARN_ON(con_secure(con));\n",
+            "L2782: \tret = verify_control_crc(con);\n",
+            "L2783: \tif (ret) {\n",
+            "L2788: \tif (con->state == CEPH_CON_S_V2_AUTH) {\n",
+            "L2789: \t\tbuf = alloc_conn_buf(con, ctrl_len);\n",
+            "L2790: \t\tif (!buf)\n",
+            "L2793: \t\tmemcpy(buf, con->v2.in_kvecs[0].iov_base, ctrl_len);\n",
+            "L2794: \t\treturn __handle_control(con, buf);\n",
+            "L2797: \treturn __handle_control(con, con->v2.in_kvecs[0].iov_base);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int handle_control_remainder(struct ceph_connection *con)",
+          "new_lines": [
+            "L2800: static int handle_control_remainder(struct ceph_connection *con)\n",
+            "L2804: \tWARN_ON(!con_secure(con));\n",
+            "L2806: \tret = decrypt_control_remainder(con);\n",
+            "L2807: \tif (ret) {\n",
+            "L2813: \treturn __handle_control(con, con->v2.in_kvecs[0].iov_base -\n",
+            "L2814: \t\t\t\t     CEPH_PREAMBLE_INLINE_LEN);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int populate_in_iter(struct ceph_connection *con)",
+          "new_lines": [
+            "L2865: static int populate_in_iter(struct ceph_connection *con)\n",
+            "L2869: \tdout(\"%s con %p state %d in_state %d\\n\", __func__, con, con->state,\n",
+            "L2870: \t     con->v2.in_state);\n",
+            "L2871: \tWARN_ON(iov_iter_count(&con->v2.in_iter));\n",
+            "L2873: \tif (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {\n",
+            "L2875: \t} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {\n",
+            "L2876: \t\tret = process_banner_payload(con);\n",
+            "L2877: \t} else if ((con->state >= CEPH_CON_S_V2_HELLO &&\n",
+            "L2878: \t\t    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||\n",
+            "L2879: \t\t   con->state == CEPH_CON_S_OPEN) {\n",
+            "L2880: \t\tswitch (con->v2.in_state) {\n",
+            "L2881: \t\tcase IN_S_HANDLE_PREAMBLE:\n",
+            "L2882: \t\t\tret = handle_preamble(con);\n",
+            "L2884: \t\tcase IN_S_HANDLE_CONTROL:\n",
+            "L2885: \t\t\tret = handle_control(con);\n",
+            "L2887: \t\tcase IN_S_HANDLE_CONTROL_REMAINDER:\n",
+            "L2888: \t\t\tret = handle_control_remainder(con);\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "int ceph_con_v2_try_read(struct ceph_connection *con)",
+          "new_lines": [
+            "L2928: int ceph_con_v2_try_read(struct ceph_connection *con)\n",
+            "L2932: \tdout(\"%s con %p state %d need %zu\\n\", __func__, con, con->state,\n",
+            "L2933: \t     iov_iter_count(&con->v2.in_iter));\n",
+            "L2935: \tif (con->state == CEPH_CON_S_PREOPEN)\n",
+            "L2943: \tif (WARN_ON(!iov_iter_count(&con->v2.in_iter)))\n",
+            "L2947: \t\tret = ceph_tcp_recv(con);\n",
+            "L2948: \t\tif (ret <= 0)\n",
+            "L2951: \t\tret = populate_in_iter(con);\n",
+            "L2952: \t\tif (ret <= 0) {\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int head_onwire_len(int ctrl_len, bool secure)",
+          "new_lines": [
+            "L388: static int head_onwire_len(int ctrl_len, bool secure)\n",
+            "L393: \tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n",
+            "L397: \t\tif (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {\n",
+            "L398: \t\t\trem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN;\n",
+            "L399: \t\t\thead_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN;\n",
+            "L404: \t\t\thead_len += ctrl_len + CEPH_CRC_LEN;\n",
+            "L406: \treturn head_len;\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "new_lines": [
+            "L501: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L503: \tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
+            "L507: \tcrc = crc32c(0, p, crcp - p);\n",
+            "L508: \texpected_crc = get_unaligned_le32(crcp);\n",
+            "L509: \tif (crc != expected_crc) {\n",
+            "L515: \tmemset(desc, 0, sizeof(*desc));\n",
+            "L517: \tdesc->fd_tag = ceph_decode_8(&p);\n",
+            "L518: \tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
+            "L519: \tif (desc->fd_seg_cnt < 1 ||\n",
+            "L520: \t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
+            "L524: \tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
+            "L525: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L526: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L529: \tif (desc->fd_lens[0] < 0 ||\n",
+            "L530: \t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+            "L531: \t\tpr_err(\"bad control segment length %d\\n\", desc->fd_lens[0]);\n",
+            "L532: \t\treturn -EINVAL;\n",
+            "L534: \tif (desc->fd_lens[1] < 0 ||\n",
+            "L535: \t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+            "L536: \t\tpr_err(\"bad front segment length %d\\n\", desc->fd_lens[1]);\n",
+            "L537: \t\treturn -EINVAL;\n",
+            "L539: \tif (desc->fd_lens[2] < 0 ||\n",
+            "L540: \t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+            "L541: \t\tpr_err(\"bad middle segment length %d\\n\", desc->fd_lens[2]);\n",
+            "L542: \t\treturn -EINVAL;\n",
+            "L544: \tif (desc->fd_lens[3] < 0 ||\n",
+            "L545: \t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+            "L546: \t\tpr_err(\"bad data segment length %d\\n\", desc->fd_lens[3]);\n",
+            "L547: \t\treturn -EINVAL;\n",
+            "L554: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L555: \t\tpr_err(\"last segment empty, segment count %d\\n\",\n",
+            "L556: \t\t       desc->fd_seg_cnt);\n",
+            "L557: \t\treturn -EINVAL;\n",
+            "L560: \treturn 0;\n"
+          ],
+          "old_lines": [
+            "L495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L497: \tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
+            "L502: \texpected_crc = get_unaligned_le32(crcp);\n",
+            "L503: \tif (crc != expected_crc) {\n",
+            "L509: \tmemset(desc, 0, sizeof(*desc));\n",
+            "L511: \tdesc->fd_tag = ceph_decode_8(&p);\n",
+            "L512: \tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
+            "L513: \tif (desc->fd_seg_cnt < 1 ||\n",
+            "L514: \t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
+            "L518: \tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
+            "L519: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L520: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L527: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L532: \tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+            "L533: \t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);\n",
+            "L536: \tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+            "L537: \t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);\n",
+            "L540: \tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+            "L541: \t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);\n",
+            "L544: \tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+            "L545: \t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);\n"
+          ],
+          "both_lines": []
+        },
+        {
+          "function_name": "static int __tail_onwire_len(int front_len, int middle_len, int data_len,",
+          "new_lines": [
+            "L410: static int __tail_onwire_len(int front_len, int middle_len, int data_len,\n",
+            "L413: \tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n",
+            "L414: \t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n",
+            "L415: \t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);\n",
+            "L417: \tif (!front_len && !middle_len && !data_len)\n",
+            "L418: \t\treturn 0;\n",
+            "L420: \tif (!secure)\n",
+            "L421: \t\treturn front_len + middle_len + data_len +\n",
+            "L422: \t\t       CEPH_EPILOGUE_PLAIN_LEN;\n",
+            "L424: \treturn padded_len(front_len) + padded_len(middle_len) +\n",
+            "L425: \t       padded_len(data_len) + CEPH_EPILOGUE_SECURE_LEN;\n"
+          ],
+          "old_lines": [],
+          "both_lines": []
+        }
+      ]
+    }
+  ]
+}

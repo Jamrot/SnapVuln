@@ -1,0 +1,53 @@
+{
+  "include/linux/ceph/decode.h": {
+    "25": "static inline u32 ceph_decode_32(void **p)\n",
+    "27": "\tu32 v = get_unaligned_le32(*p);\n",
+    "28": "\t*p += sizeof(u32);\n",
+    "29": "\treturn v;\n",
+    "31": "static inline u16 ceph_decode_16(void **p)\n",
+    "33": "\tu16 v = get_unaligned_le16(*p);\n",
+    "34": "\t*p += sizeof(u16);\n",
+    "35": "\treturn v;\n",
+    "37": "static inline u8 ceph_decode_8(void **p)\n",
+    "39": "\tu8 v = *(u8 *)*p;\n",
+    "40": "\t(*p)++;\n",
+    "41": "\treturn v;\n"
+  },
+  "code_new/messenger_v2.c": {
+    "495": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+    "497": "\tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
+    "501": "\tcrc = crc32c(0, p, crcp - p);\n",
+    "502": "\texpected_crc = get_unaligned_le32(crcp);\n",
+    "503": "\tif (crc != expected_crc) {\n",
+    "504": "\t\tpr_err(\"bad preamble crc, calculated %u, expected %u\\n\",\n",
+    "505": "\t\t       crc, expected_crc);\n",
+    "509": "\tmemset(desc, 0, sizeof(*desc));\n",
+    "511": "\tdesc->fd_tag = ceph_decode_8(&p);\n",
+    "512": "\tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
+    "513": "\tif (desc->fd_seg_cnt < 1 ||\n",
+    "514": "\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
+    "515": "\t\tpr_err(\"bad segment count %d\\n\", desc->fd_seg_cnt);\n",
+    "518": "\tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
+    "519": "\t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+    "520": "\t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+    "527": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+    "532": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+    "533": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);\n",
+    "536": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+    "537": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);\n",
+    "540": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+    "541": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);\n",
+    "544": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+    "545": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);\n"
+  },
+  "include/linux/crc32c.h": {
+    "7": "extern u32 crc32c(u32 crc, const void *address, unsigned int length);\n"
+  },
+  "include/linux/ceph/messenger.h": {
+    "383": "\tint fd_tag;  /* FRAME_TAG_* */\n",
+    "384": "\tint fd_seg_cnt;\n",
+    "385": "\tint fd_lens[CEPH_FRAME_MAX_SEGMENT_COUNT];  /* logical */\n",
+    "386": "\tint fd_aligns[CEPH_FRAME_MAX_SEGMENT_COUNT];\n",
+    "519": "bool ceph_con_flag_test(struct ceph_connection *con, unsigned long con_flag);\n"
+  }
+}

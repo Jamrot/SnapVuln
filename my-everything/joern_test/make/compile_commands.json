@@ -1,0 +1,14 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-o",
+      "struct_test",
+      "struct_test_simple.c"
+    ],
+    "directory": "/app/slicing-snapvuln/my-everything/joern_test/make",
+    "file": "/app/slicing-snapvuln/my-everything/joern_test/make/struct_test_simple.c",
+    "output": "/app/slicing-snapvuln/my-everything/joern_test/make/struct_test"
+  }
+]

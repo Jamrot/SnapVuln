@@ -1,0 +1,1875 @@
+strict digraph "" {
+	node [label="\N"];
+	2	[CODE="<empty>",
+		FILENAME="<unknown>",
+		FULL_NAME="<global>",
+		NAME="<global>",
+		ORDER=1,
+		label="id:2
+label:NAMESPACE_BLOCK
+name:<global>
+line:
+code:<empty>"];
+	116	[CODE="<empty>",
+		NAME="<global>",
+		ORDER=-1,
+		label="id:116
+label:NAMESPACE
+name:<global>
+line:
+code:<empty>"];
+	2 -> 116	[key=0,
+		label=REF];
+	4	[CODE="<empty>",
+		FILENAME="struct_test.c",
+		FULL_NAME="struct_test.c:<global>",
+		NAME="<global>",
+		ORDER=1,
+		label="id:4
+label:NAMESPACE_BLOCK
+name:<global>
+line:
+code:<empty>"];
+	4 -> 116	[key=0,
+		label=REF];
+	10	[AST_PARENT_FULL_NAME="<empty>",
+		AST_PARENT_TYPE="<empty>",
+		CODE="<empty>",
+		COLUMN_NUMBER=1,
+		FILENAME="struct_test.c",
+		FULL_NAME="ceph_frame_desc:<clinit>",
+		IS_EXTERNAL=false,
+		LINE_NUMBER=1,
+		NAME="<clinit>",
+		ORDER=2,
+		label="id:10
+label:METHOD
+name:<clinit>
+line:1
+code:<empty>"];
+	13	[ARGUMENT_INDEX=1,
+		CODE=10,
+		COLUMN_NUMBER=17,
+		LINE_NUMBER=2,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:13
+label:LITERAL
+name:
+line:2
+code:10"];
+	10 -> 13	[key=3,
+		label=REACHING_DEF];
+	12	[ARGUMENT_INDEX=-1,
+		CODE="fd_lens[10]",
+		COLUMN_NUMBER=9,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=2,
+		METHOD_FULL_NAME="<operator>.arrayInitializer",
+		NAME="<operator>.arrayInitializer",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:12
+label:CALL
+name:<operator>.arrayInitializer
+line:2
+code:fd_lens[10]"];
+	13 -> 12	[VARIABLE=10,
+		key=2,
+		label=REACHING_DEF];
+	15	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=3,
+		TYPE_FULL_NAME=ANY,
+		label="id:15
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	12 -> 15	[VARIABLE="fd_lens[10]",
+		key=2,
+		label=REACHING_DEF];
+	117	[AST_PARENT_FULL_NAME="<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="<empty>",
+		FILENAME="<empty>",
+		FULL_NAME="<operator>.arrayInitializer",
+		IS_EXTERNAL=true,
+		NAME="<operator>.arrayInitializer",
+		ORDER=0,
+		label="id:117
+label:METHOD
+name:<operator>.arrayInitializer
+line:
+code:<empty>"];
+	12 -> 117	[key=0,
+		label=CALL];
+	118	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:118
+label:METHOD_PARAMETER_IN
+name:p1
+line:
+code:p1"];
+	117 -> 118	[key=1,
+		label=REACHING_DEF];
+	23	[AST_PARENT_FULL_NAME="struct_test.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static int decode_preamble(struct ceph_frame_desc *desc) {
+    desc->fd_lens[0] = 0;
+    return 0;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=decode_preamble,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=15,
+		LINE_NUMBER_END=18,
+		NAME=decode_preamble,
+		ORDER=4,
+		SIGNATURE="int decode_preamble (ceph_frame_desc*)",
+		label="id:23
+label:METHOD
+name:decode_preamble
+line:15
+code:static int decode_preamble(struct ceph_frame_desc *desc) {
+    desc->fd_lens[\
+0] = 0;
+    return 0;
+}"];
+	24	[CODE="struct ceph_frame_desc *desc",
+		COLUMN_NUMBER=28,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=15,
+		NAME=desc,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_frame_desc*",
+		label="id:24
+label:METHOD_PARAMETER_IN
+name:desc
+line:15
+code:struct ceph_frame_desc *desc"];
+	23 -> 24	[key=1,
+		label=REACHING_DEF];
+	29	[ARGUMENT_INDEX=1,
+		CODE=desc,
+		COLUMN_NUMBER=5,
+		LINE_NUMBER=16,
+		NAME=desc,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_frame_desc*",
+		label="id:29
+label:IDENTIFIER
+name:desc
+line:16
+code:desc"];
+	23 -> 29	[key=3,
+		label=REACHING_DEF];
+	31	[ARGUMENT_INDEX=2,
+		CODE=0,
+		COLUMN_NUMBER=19,
+		LINE_NUMBER=16,
+		ORDER=2,
+		TYPE_FULL_NAME=int,
+		label="id:31
+label:LITERAL
+name:
+line:16
+code:0"];
+	23 -> 31	[key=1,
+		label=REACHING_DEF];
+	32	[ARGUMENT_INDEX=2,
+		CODE=0,
+		COLUMN_NUMBER=24,
+		LINE_NUMBER=16,
+		ORDER=2,
+		TYPE_FULL_NAME=int,
+		label="id:32
+label:LITERAL
+name:
+line:16
+code:0"];
+	23 -> 32	[key=1,
+		label=REACHING_DEF];
+	33	[ARGUMENT_INDEX=-1,
+		CODE="return 0;",
+		COLUMN_NUMBER=5,
+		LINE_NUMBER=17,
+		ORDER=2,
+		label="id:33
+label:RETURN
+name:
+line:17
+code:return 0;"];
+	23 -> 33	[key=1,
+		label=REACHING_DEF];
+	34	[ARGUMENT_INDEX=-1,
+		CODE=0,
+		COLUMN_NUMBER=12,
+		LINE_NUMBER=17,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:34
+label:LITERAL
+name:
+line:17
+code:0"];
+	23 -> 34	[key=1,
+		label=REACHING_DEF];
+	24 -> 29	[VARIABLE=desc,
+		key=0,
+		label=REACHING_DEF];
+	28	[ARGUMENT_INDEX=1,
+		CODE="desc->fd_lens",
+		COLUMN_NUMBER=5,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=16,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:28
+label:CALL
+name:<operator>.indirectFieldAccess
+line:16
+code:desc->fd_lens"];
+	24 -> 28	[VARIABLE=desc,
+		key=0,
+		label=REACHING_DEF];
+	35	[CODE=RET,
+		COLUMN_NUMBER=1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		LINE_NUMBER=15,
+		ORDER=3,
+		TYPE_FULL_NAME=int,
+		label="id:35
+label:METHOD_RETURN
+name:
+line:15
+code:RET"];
+	24 -> 35	[VARIABLE=desc,
+		key=0,
+		label=REACHING_DEF];
+	145	[CODE="struct ceph_frame_desc *desc",
+		COLUMN_NUMBER=28,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=15,
+		NAME=desc,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_frame_desc*",
+		label="id:145
+label:METHOD_PARAMETER_OUT
+name:desc
+line:15
+code:struct ceph_frame_desc *desc"];
+	24 -> 145	[VARIABLE=desc,
+		key=2,
+		label=REACHING_DEF];
+	29 -> 24	[key=0,
+		label=REF];
+	26	[ARGUMENT_INDEX=-1,
+		CODE="desc->fd_lens[0] = 0",
+		COLUMN_NUMBER=5,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=16,
+		METHOD_FULL_NAME="<operator>.assignment",
+		NAME="<operator>.assignment",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:26
+label:CALL
+name:<operator>.assignment
+line:16
+code:desc->fd_lens[0] = 0"];
+	32 -> 26	[VARIABLE=0,
+		key=2,
+		label=REACHING_DEF];
+	27	[ARGUMENT_INDEX=1,
+		CODE="desc->fd_lens[0]",
+		COLUMN_NUMBER=5,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=16,
+		METHOD_FULL_NAME="<operator>.indirectIndexAccess",
+		NAME="<operator>.indirectIndexAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:27
+label:CALL
+name:<operator>.indirectIndexAccess
+line:16
+code:desc->fd_lens[0]"];
+	32 -> 27	[VARIABLE=0,
+		key=1,
+		label=REACHING_DEF];
+	33 -> 35	[VARIABLE="<RET>",
+		key=2,
+		label=REACHING_DEF];
+	34 -> 33	[VARIABLE=0,
+		key=2,
+		label=REACHING_DEF];
+	9	[AST_PARENT_FULL_NAME="<empty>",
+		AST_PARENT_TYPE="<empty>",
+		CODE="fd_lens[10]",
+		COLUMN_NUMBER=9,
+		LINE_NUMBER=2,
+		NAME=fd_lens,
+		ORDER=1,
+		TYPE_FULL_NAME="int[10]",
+		label="id:9
+label:MEMBER
+name:fd_lens
+line:2
+code:fd_lens[10]"];
+	28 -> 9	[key=0,
+		label=REF];
+	131	[AST_PARENT_FULL_NAME="<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="<empty>",
+		FILENAME="<empty>",
+		FULL_NAME="<operator>.indirectFieldAccess",
+		IS_EXTERNAL=true,
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=0,
+		label="id:131
+label:METHOD
+name:<operator>.indirectFieldAccess
+line:
+code:<empty>"];
+	28 -> 131	[key=0,
+		label=CALL];
+	26 -> 35	[VARIABLE="desc->fd_lens[0] = 0",
+		key=0,
+		label=REACHING_DEF];
+	121	[AST_PARENT_FULL_NAME="<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="<empty>",
+		FILENAME="<empty>",
+		FULL_NAME="<operator>.assignment",
+		IS_EXTERNAL=true,
+		NAME="<operator>.assignment",
+		ORDER=0,
+		label="id:121
+label:METHOD
+name:<operator>.assignment
+line:
+code:<empty>"];
+	26 -> 121	[key=0,
+		label=CALL];
+	122	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:122
+label:METHOD_PARAMETER_IN
+name:p1
+line:
+code:p1"];
+	121 -> 122	[key=1,
+		label=REACHING_DEF];
+	123	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:123
+label:METHOD_PARAMETER_IN
+name:p2
+line:
+code:p2"];
+	121 -> 123	[key=1,
+		label=REACHING_DEF];
+	27 -> 35	[VARIABLE="desc->fd_lens[0]",
+		key=0,
+		label=REACHING_DEF];
+	27 -> 26	[VARIABLE="desc->fd_lens[0]",
+		key=0,
+		label=REACHING_DEF];
+	126	[AST_PARENT_FULL_NAME="<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="<empty>",
+		FILENAME="<empty>",
+		FULL_NAME="<operator>.indirectIndexAccess",
+		IS_EXTERNAL=true,
+		NAME="<operator>.indirectIndexAccess",
+		ORDER=0,
+		label="id:126
+label:METHOD
+name:<operator>.indirectIndexAccess
+line:
+code:<empty>"];
+	27 -> 126	[key=0,
+		label=CALL];
+	127	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:127
+label:METHOD_PARAMETER_IN
+name:p1
+line:
+code:p1"];
+	126 -> 127	[key=1,
+		label=REACHING_DEF];
+	128	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:128
+label:METHOD_PARAMETER_IN
+name:p2
+line:
+code:p2"];
+	126 -> 128	[key=1,
+		label=REACHING_DEF];
+	132	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:132
+label:METHOD_PARAMETER_IN
+name:p1
+line:
+code:p1"];
+	131 -> 132	[key=1,
+		label=REACHING_DEF];
+	133	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:133
+label:METHOD_PARAMETER_IN
+name:p2
+line:
+code:p2"];
+	131 -> 133	[key=1,
+		label=REACHING_DEF];
+	36	[METHOD_FULL_NAME=decode_preamble,
+		NAME=decode_preamble,
+		SIGNATURE="int decode_preamble (ceph_frame_desc*)",
+		label="id:36
+label:BINDING
+name:decode_preamble
+line:
+code:"];
+	36 -> 23	[key=0,
+		label=REF];
+	37	[AST_PARENT_FULL_NAME="struct_test.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static int prepare_read_control(struct ceph_connection *con) {
+    int ctrl_len = con->v2.in_desc.fd_lens[0];
+    return 0;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=prepare_read_control,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=20,
+		LINE_NUMBER_END=23,
+		NAME=prepare_read_control,
+		ORDER=5,
+		SIGNATURE="int prepare_read_control (ceph_connection*)",
+		label="id:37
+label:METHOD
+name:prepare_read_control
+line:20
+code:static int prepare_read_control(struct ceph_connection *con) {
+    int \
+ctrl_len = con->v2.in_desc.fd_lens[0];
+    return 0;
+}"];
+	38	[CODE="struct ceph_connection *con",
+		COLUMN_NUMBER=33,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=20,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:38
+label:METHOD_PARAMETER_IN
+name:con
+line:20
+code:struct ceph_connection *con"];
+	37 -> 38	[key=1,
+		label=REACHING_DEF];
+	47	[ARGUMENT_INDEX=1,
+		CODE=con,
+		COLUMN_NUMBER=20,
+		LINE_NUMBER=21,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:47
+label:IDENTIFIER
+name:con
+line:21
+code:con"];
+	37 -> 47	[key=1,
+		label=REACHING_DEF];
+	51	[ARGUMENT_INDEX=2,
+		CODE=0,
+		COLUMN_NUMBER=44,
+		LINE_NUMBER=21,
+		ORDER=2,
+		TYPE_FULL_NAME=int,
+		label="id:51
+label:LITERAL
+name:
+line:21
+code:0"];
+	37 -> 51	[key=1,
+		label=REACHING_DEF];
+	52	[ARGUMENT_INDEX=-1,
+		CODE="return 0;",
+		COLUMN_NUMBER=5,
+		LINE_NUMBER=22,
+		ORDER=3,
+		label="id:52
+label:RETURN
+name:
+line:22
+code:return 0;"];
+	37 -> 52	[key=1,
+		label=REACHING_DEF];
+	53	[ARGUMENT_INDEX=-1,
+		CODE=0,
+		COLUMN_NUMBER=12,
+		LINE_NUMBER=22,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:53
+label:LITERAL
+name:
+line:22
+code:0"];
+	37 -> 53	[key=1,
+		label=REACHING_DEF];
+	38 -> 47	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	46	[ARGUMENT_INDEX=1,
+		CODE="con->v2",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=21,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:46
+label:CALL
+name:<operator>.indirectFieldAccess
+line:21
+code:con->v2"];
+	38 -> 46	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	54	[CODE=RET,
+		COLUMN_NUMBER=1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		LINE_NUMBER=20,
+		ORDER=3,
+		TYPE_FULL_NAME=int,
+		label="id:54
+label:METHOD_RETURN
+name:
+line:20
+code:RET"];
+	38 -> 54	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	146	[CODE="struct ceph_connection *con",
+		COLUMN_NUMBER=33,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=20,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:146
+label:METHOD_PARAMETER_OUT
+name:con
+line:20
+code:struct ceph_connection *con"];
+	38 -> 146	[VARIABLE=con,
+		key=2,
+		label=REACHING_DEF];
+	47 -> 38	[key=0,
+		label=REF];
+	52 -> 54	[VARIABLE="<RET>",
+		key=2,
+		label=REACHING_DEF];
+	53 -> 52	[VARIABLE=0,
+		key=2,
+		label=REACHING_DEF];
+	46 -> 131	[key=0,
+		label=CALL];
+	41	[ARGUMENT_INDEX=-1,
+		CODE="ctrl_len = con->v2.in_desc.fd_lens[0]",
+		COLUMN_NUMBER=9,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=21,
+		METHOD_FULL_NAME="<operator>.assignment",
+		NAME="<operator>.assignment",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		label="id:41
+label:CALL
+name:<operator>.assignment
+line:21
+code:ctrl_len = con->v2.in_desc.fd_lens[0]"];
+	41 -> 121	[key=0,
+		label=CALL];
+	41 -> 54	[VARIABLE="ctrl_len = con->v2.in_desc.fd_lens[0]",
+		key=0,
+		label=REACHING_DEF];
+	42	[ARGUMENT_INDEX=1,
+		CODE=ctrl_len,
+		COLUMN_NUMBER=9,
+		LINE_NUMBER=21,
+		NAME=ctrl_len,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:42
+label:IDENTIFIER
+name:ctrl_len
+line:21
+code:ctrl_len"];
+	42 -> 54	[VARIABLE=ctrl_len,
+		key=0,
+		label=REACHING_DEF];
+	42 -> 41	[VARIABLE=ctrl_len,
+		key=0,
+		label=REACHING_DEF];
+	40	[CODE="int ctrl_len",
+		COLUMN_NUMBER=9,
+		LINE_NUMBER=21,
+		NAME=ctrl_len,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:40
+label:LOCAL
+name:ctrl_len
+line:21
+code:int ctrl_len"];
+	42 -> 40	[key=0,
+		label=REF];
+	43	[ARGUMENT_INDEX=2,
+		CODE="con->v2.in_desc.fd_lens[0]",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=21,
+		METHOD_FULL_NAME="<operator>.indirectIndexAccess",
+		NAME="<operator>.indirectIndexAccess",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		label="id:43
+label:CALL
+name:<operator>.indirectIndexAccess
+line:21
+code:con->v2.in_desc.fd_lens[0]"];
+	43 -> 126	[key=0,
+		label=CALL];
+	43 -> 54	[VARIABLE="con->v2.in_desc.fd_lens[0]",
+		key=0,
+		label=REACHING_DEF];
+	43 -> 41	[VARIABLE="con->v2.in_desc.fd_lens[0]",
+		key=2,
+		label=REACHING_DEF];
+	43 -> 42	[VARIABLE="con->v2.in_desc.fd_lens[0]",
+		key=0,
+		label=REACHING_DEF];
+	44	[ARGUMENT_INDEX=1,
+		CODE="con->v2.in_desc.fd_lens",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=21,
+		METHOD_FULL_NAME="<operator>.fieldAccess",
+		NAME="<operator>.fieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:44
+label:CALL
+name:<operator>.fieldAccess
+line:21
+code:con->v2.in_desc.fd_lens"];
+	136	[AST_PARENT_FULL_NAME="<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="<empty>",
+		FILENAME="<empty>",
+		FULL_NAME="<operator>.fieldAccess",
+		IS_EXTERNAL=true,
+		NAME="<operator>.fieldAccess",
+		ORDER=0,
+		label="id:136
+label:METHOD
+name:<operator>.fieldAccess
+line:
+code:<empty>"];
+	44 -> 136	[key=0,
+		label=CALL];
+	137	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:137
+label:METHOD_PARAMETER_IN
+name:p1
+line:
+code:p1"];
+	136 -> 137	[key=1,
+		label=REACHING_DEF];
+	138	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:138
+label:METHOD_PARAMETER_IN
+name:p2
+line:
+code:p2"];
+	136 -> 138	[key=1,
+		label=REACHING_DEF];
+	45	[ARGUMENT_INDEX=1,
+		CODE="con->v2.in_desc",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=21,
+		METHOD_FULL_NAME="<operator>.fieldAccess",
+		NAME="<operator>.fieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:45
+label:CALL
+name:<operator>.fieldAccess
+line:21
+code:con->v2.in_desc"];
+	45 -> 136	[key=0,
+		label=CALL];
+	55	[METHOD_FULL_NAME=prepare_read_control,
+		NAME=prepare_read_control,
+		SIGNATURE="int prepare_read_control (ceph_connection*)",
+		label="id:55
+label:BINDING
+name:prepare_read_control
+line:
+code:"];
+	55 -> 37	[key=0,
+		label=REF];
+	56	[AST_PARENT_FULL_NAME="struct_test.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static int handle_preamble(struct ceph_connection *con) {
+    struct ceph_frame_desc *desc = &con->v2.in_desc;
+    decode_preamble(\
+desc); 
+    prepare_read_control(con);
+    return 0;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=handle_preamble,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=25,
+		LINE_NUMBER_END=30,
+		NAME=handle_preamble,
+		ORDER=6,
+		SIGNATURE="int handle_preamble (ceph_connection*)",
+		label="id:56
+label:METHOD
+name:handle_preamble
+line:25
+code:static int handle_preamble(struct ceph_connection *con) {
+    struct ceph_frame_\
+desc *desc = &con->v2.in_desc;
+    decode_preamble(desc); 
+    prepare_read_control(con);
+    return 0;
+}"];
+	57	[CODE="struct ceph_connection *con",
+		COLUMN_NUMBER=28,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=25,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:57
+label:METHOD_PARAMETER_IN
+name:con
+line:25
+code:struct ceph_connection *con"];
+	56 -> 57	[key=1,
+		label=REACHING_DEF];
+	65	[ARGUMENT_INDEX=1,
+		CODE=con,
+		COLUMN_NUMBER=37,
+		LINE_NUMBER=26,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:65
+label:IDENTIFIER
+name:con
+line:26
+code:con"];
+	56 -> 65	[key=1,
+		label=REACHING_DEF];
+	69	[ARGUMENT_INDEX=1,
+		CODE=desc,
+		COLUMN_NUMBER=21,
+		LINE_NUMBER=27,
+		NAME=desc,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_frame_desc*",
+		label="id:69
+label:IDENTIFIER
+name:desc
+line:27
+code:desc"];
+	56 -> 69	[key=1,
+		label=REACHING_DEF];
+	71	[ARGUMENT_INDEX=1,
+		CODE=con,
+		COLUMN_NUMBER=26,
+		LINE_NUMBER=28,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:71
+label:IDENTIFIER
+name:con
+line:28
+code:con"];
+	56 -> 71	[key=1,
+		label=REACHING_DEF];
+	72	[ARGUMENT_INDEX=-1,
+		CODE="return 0;",
+		COLUMN_NUMBER=5,
+		LINE_NUMBER=29,
+		ORDER=5,
+		label="id:72
+label:RETURN
+name:
+line:29
+code:return 0;"];
+	56 -> 72	[key=1,
+		label=REACHING_DEF];
+	73	[ARGUMENT_INDEX=-1,
+		CODE=0,
+		COLUMN_NUMBER=12,
+		LINE_NUMBER=29,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:73
+label:LITERAL
+name:
+line:29
+code:0"];
+	56 -> 73	[key=1,
+		label=REACHING_DEF];
+	57 -> 65	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	57 -> 71	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	64	[ARGUMENT_INDEX=1,
+		CODE="con->v2",
+		COLUMN_NUMBER=37,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=26,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:64
+label:CALL
+name:<operator>.indirectFieldAccess
+line:26
+code:con->v2"];
+	57 -> 64	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	147	[CODE="struct ceph_connection *con",
+		COLUMN_NUMBER=28,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=25,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_connection*",
+		label="id:147
+label:METHOD_PARAMETER_OUT
+name:con
+line:25
+code:struct ceph_connection *con"];
+	57 -> 147	[VARIABLE=con,
+		key=1,
+		label=REACHING_DEF];
+	65 -> 57	[key=0,
+		label=REF];
+	74	[CODE=RET,
+		COLUMN_NUMBER=1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		LINE_NUMBER=25,
+		ORDER=3,
+		TYPE_FULL_NAME=int,
+		label="id:74
+label:METHOD_RETURN
+name:
+line:25
+code:RET"];
+	69 -> 74	[VARIABLE=desc,
+		key=0,
+		label=REACHING_DEF];
+	59	[CODE="struct ceph_frame_desc* desc",
+		COLUMN_NUMBER=28,
+		LINE_NUMBER=26,
+		NAME=desc,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_frame_desc*",
+		label="id:59
+label:LOCAL
+name:desc
+line:26
+code:struct ceph_frame_desc* desc"];
+	69 -> 59	[key=0,
+		label=REF];
+	68	[ARGUMENT_INDEX=-1,
+		CODE="decode_preamble(desc)",
+		COLUMN_NUMBER=5,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=27,
+		METHOD_FULL_NAME=decode_preamble,
+		NAME=decode_preamble,
+		ORDER=3,
+		TYPE_FULL_NAME="<empty>",
+		label="id:68
+label:CALL
+name:decode_preamble
+line:27
+code:decode_preamble(desc)"];
+	69 -> 68	[VARIABLE=desc,
+		key=2,
+		label=REACHING_DEF];
+	71 -> 57	[key=0,
+		label=REF];
+	71 -> 147	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	71 -> 74	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	70	[ARGUMENT_INDEX=-1,
+		CODE="prepare_read_control(con)",
+		COLUMN_NUMBER=5,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=28,
+		METHOD_FULL_NAME=prepare_read_control,
+		NAME=prepare_read_control,
+		ORDER=4,
+		TYPE_FULL_NAME="<empty>",
+		label="id:70
+label:CALL
+name:prepare_read_control
+line:28
+code:prepare_read_control(con)"];
+	71 -> 70	[VARIABLE=con,
+		key=2,
+		label=REACHING_DEF];
+	72 -> 74	[VARIABLE="<RET>",
+		key=2,
+		label=REACHING_DEF];
+	73 -> 72	[VARIABLE=0,
+		key=2,
+		label=REACHING_DEF];
+	64 -> 131	[key=0,
+		label=CALL];
+	60	[ARGUMENT_INDEX=-1,
+		CODE="*desc = &con->v2.in_desc",
+		COLUMN_NUMBER=28,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=26,
+		METHOD_FULL_NAME="<operator>.assignment",
+		NAME="<operator>.assignment",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		label="id:60
+label:CALL
+name:<operator>.assignment
+line:26
+code:*desc = &con->v2.in_desc"];
+	60 -> 121	[key=0,
+		label=CALL];
+	60 -> 74	[VARIABLE="*desc = &con->v2.in_desc",
+		key=0,
+		label=REACHING_DEF];
+	61	[ARGUMENT_INDEX=1,
+		CODE=desc,
+		COLUMN_NUMBER=29,
+		LINE_NUMBER=26,
+		NAME=desc,
+		ORDER=1,
+		TYPE_FULL_NAME="ceph_frame_desc*",
+		label="id:61
+label:IDENTIFIER
+name:desc
+line:26
+code:desc"];
+	61 -> 69	[VARIABLE=desc,
+		key=0,
+		label=REACHING_DEF];
+	61 -> 60	[VARIABLE=desc,
+		key=0,
+		label=REACHING_DEF];
+	61 -> 59	[key=0,
+		label=REF];
+	62	[ARGUMENT_INDEX=2,
+		CODE="&con->v2.in_desc",
+		COLUMN_NUMBER=36,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=26,
+		METHOD_FULL_NAME="<operator>.addressOf",
+		NAME="<operator>.addressOf",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		label="id:62
+label:CALL
+name:<operator>.addressOf
+line:26
+code:&con->v2.in_desc"];
+	62 -> 60	[VARIABLE="&con->v2.in_desc",
+		key=2,
+		label=REACHING_DEF];
+	62 -> 74	[VARIABLE="&con->v2.in_desc",
+		key=0,
+		label=REACHING_DEF];
+	62 -> 61	[VARIABLE="&con->v2.in_desc",
+		key=0,
+		label=REACHING_DEF];
+	141	[AST_PARENT_FULL_NAME="<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="<empty>",
+		FILENAME="<empty>",
+		FULL_NAME="<operator>.addressOf",
+		IS_EXTERNAL=true,
+		NAME="<operator>.addressOf",
+		ORDER=0,
+		label="id:141
+label:METHOD
+name:<operator>.addressOf
+line:
+code:<empty>"];
+	62 -> 141	[key=0,
+		label=CALL];
+	142	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:142
+label:METHOD_PARAMETER_IN
+name:p1
+line:
+code:p1"];
+	141 -> 142	[key=1,
+		label=REACHING_DEF];
+	63	[ARGUMENT_INDEX=1,
+		CODE="con->v2.in_desc",
+		COLUMN_NUMBER=37,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=26,
+		METHOD_FULL_NAME="<operator>.fieldAccess",
+		NAME="<operator>.fieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:63
+label:CALL
+name:<operator>.fieldAccess
+line:26
+code:con->v2.in_desc"];
+	63 -> 136	[key=0,
+		label=CALL];
+	63 -> 62	[VARIABLE="con->v2.in_desc",
+		key=3,
+		label=REACHING_DEF];
+	68 -> 23	[key=0,
+		label=CALL];
+	68 -> 74	[VARIABLE="decode_preamble(desc)",
+		key=0,
+		label=REACHING_DEF];
+	70 -> 37	[key=0,
+		label=CALL];
+	70 -> 74	[VARIABLE="prepare_read_control(con)",
+		key=0,
+		label=REACHING_DEF];
+	75	[METHOD_FULL_NAME=handle_preamble,
+		NAME=handle_preamble,
+		SIGNATURE="int handle_preamble (ceph_connection*)",
+		label="id:75
+label:BINDING
+name:handle_preamble
+line:
+code:"];
+	75 -> 56	[key=0,
+		label=REF];
+	76	[AST_PARENT_FULL_NAME="struct_test.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="int main() {
+    struct ceph_connection con;
+    handle_preamble(&con);
+    return 0;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=main,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=32,
+		LINE_NUMBER_END=36,
+		NAME=main,
+		ORDER=7,
+		SIGNATURE="int main ()",
+		label="id:76
+label:METHOD
+name:main
+line:32
+code:int main() {
+    struct ceph_connection con;
+    handle_preamble(&con);
+    return 0;
+}"];
+	81	[ARGUMENT_INDEX=1,
+		CODE=con,
+		COLUMN_NUMBER=22,
+		LINE_NUMBER=34,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME=ceph_connection,
+		label="id:81
+label:IDENTIFIER
+name:con
+line:34
+code:con"];
+	76 -> 81	[key=3,
+		label=REACHING_DEF];
+	82	[ARGUMENT_INDEX=-1,
+		CODE="return 0;",
+		COLUMN_NUMBER=5,
+		LINE_NUMBER=35,
+		ORDER=3,
+		label="id:82
+label:RETURN
+name:
+line:35
+code:return 0;"];
+	76 -> 82	[key=1,
+		label=REACHING_DEF];
+	83	[ARGUMENT_INDEX=-1,
+		CODE=0,
+		COLUMN_NUMBER=12,
+		LINE_NUMBER=35,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		label="id:83
+label:LITERAL
+name:
+line:35
+code:0"];
+	76 -> 83	[key=1,
+		label=REACHING_DEF];
+	84	[CODE=RET,
+		COLUMN_NUMBER=1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		LINE_NUMBER=32,
+		ORDER=2,
+		TYPE_FULL_NAME=int,
+		label="id:84
+label:METHOD_RETURN
+name:
+line:32
+code:RET"];
+	81 -> 84	[VARIABLE=con,
+		key=0,
+		label=REACHING_DEF];
+	80	[ARGUMENT_INDEX=1,
+		CODE="&con",
+		COLUMN_NUMBER=21,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=34,
+		METHOD_FULL_NAME="<operator>.addressOf",
+		NAME="<operator>.addressOf",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		label="id:80
+label:CALL
+name:<operator>.addressOf
+line:34
+code:&con"];
+	81 -> 80	[VARIABLE=con,
+		key=2,
+		label=REACHING_DEF];
+	78	[CODE="struct ceph_connection con",
+		COLUMN_NUMBER=28,
+		LINE_NUMBER=33,
+		NAME=con,
+		ORDER=1,
+		TYPE_FULL_NAME=ceph_connection,
+		label="id:78
+label:LOCAL
+name:con
+line:33
+code:struct ceph_connection con"];
+	81 -> 78	[key=0,
+		label=REF];
+	82 -> 84	[VARIABLE="<RET>",
+		key=2,
+		label=REACHING_DEF];
+	83 -> 82	[VARIABLE=0,
+		key=2,
+		label=REACHING_DEF];
+	79	[ARGUMENT_INDEX=-1,
+		CODE="handle_preamble(&con)",
+		COLUMN_NUMBER=5,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=34,
+		METHOD_FULL_NAME=handle_preamble,
+		NAME=handle_preamble,
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		label="id:79
+label:CALL
+name:handle_preamble
+line:34
+code:handle_preamble(&con)"];
+	79 -> 56	[key=0,
+		label=CALL];
+	79 -> 84	[VARIABLE="handle_preamble(&con)",
+		key=0,
+		label=REACHING_DEF];
+	80 -> 141	[key=0,
+		label=CALL];
+	80 -> 79	[VARIABLE="&con",
+		key=2,
+		label=REACHING_DEF];
+	80 -> 84	[VARIABLE="&con",
+		key=0,
+		label=REACHING_DEF];
+	85	[METHOD_FULL_NAME=main,
+		NAME=main,
+		SIGNATURE="int main ()",
+		label="id:85
+label:BINDING
+name:main
+line:
+code:"];
+	85 -> 76	[key=0,
+		label=REF];
+	87	[FULL_NAME=ANY,
+		NAME=ANY,
+		TYPE_DECL_FULL_NAME=ANY,
+		label="id:87
+label:TYPE
+name:ANY
+line:
+code:"];
+	101	[AST_PARENT_FULL_NAME="<includes>:<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE=ANY,
+		FILENAME="<includes>",
+		FULL_NAME=ANY,
+		IS_EXTERNAL=true,
+		NAME=ANY,
+		ORDER=-1,
+		label="id:101
+label:TYPE_DECL
+name:ANY
+line:
+code:ANY"];
+	87 -> 101	[key=0,
+		label=REF];
+	88	[FULL_NAME=ceph_connection,
+		NAME=ceph_connection,
+		TYPE_DECL_FULL_NAME=ceph_connection,
+		label="id:88
+label:TYPE
+name:ceph_connection
+line:
+code:"];
+	19	[CODE="struct ceph_connection {
+    union {
+        struct ceph_connection_v2_info v2;
+    };
+}",
+		COLUMN_NUMBER=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=ceph_connection,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=9,
+		NAME=ceph_connection,
+		ORDER=3,
+		label="id:19
+label:TYPE_DECL
+name:ceph_connection
+line:9
+code:struct ceph_connection {
+    union {
+        struct ceph_connection_v2_info \
+v2;
+    };
+}"];
+	88 -> 19	[key=0,
+		label=REF];
+	89	[FULL_NAME="ceph_connection*",
+		NAME="ceph_connection*",
+		TYPE_DECL_FULL_NAME="ceph_connection*",
+		label="id:89
+label:TYPE
+name:ceph_connection*
+line:
+code:"];
+	89 -> 19	[key=0,
+		label=REF];
+	90	[FULL_NAME="ceph_connection.anonymous_composite_type_0",
+		NAME=anonymous_composite_type_0,
+		TYPE_DECL_FULL_NAME="ceph_connection.anonymous_composite_type_0",
+		label="id:90
+label:TYPE
+name:anonymous_composite_type_0
+line:
+code:"];
+	20	[CODE="union {
+        struct ceph_connection_v2_info v2;
+    }",
+		COLUMN_NUMBER=5,
+		FILENAME="struct_test.c",
+		FULL_NAME="ceph_connection.anonymous_composite_type_0",
+		IS_EXTERNAL=false,
+		LINE_NUMBER=10,
+		NAME="ceph_connection.anonymous_composite_type_0",
+		ORDER=1,
+		label="id:20
+label:TYPE_DECL
+name:ceph_connection.anonymous_composite_type_0
+line:10
+code:union {
+        struct ceph_connection_v2_info \
+v2;
+    }"];
+	90 -> 20	[key=0,
+		label=REF];
+	91	[FULL_NAME="ceph_connection.anonymous_composite_type_1.ceph_connection_v2_info",
+		NAME=ceph_connection_v2_info,
+		TYPE_DECL_FULL_NAME="ceph_connection.anonymous_composite_type_1.ceph_connection_v2_info",
+		label="id:91
+label:TYPE
+name:ceph_connection_v2_info
+line:
+code:"];
+	21	[ALIAS_TYPE_FULL_NAME=v2,
+		CODE="struct ceph_connection_v2_info",
+		COLUMN_NUMBER=9,
+		FILENAME="struct_test.c",
+		FULL_NAME="ceph_connection.anonymous_composite_type_1.ceph_connection_v2_info",
+		IS_EXTERNAL=false,
+		LINE_NUMBER=11,
+		NAME=ceph_connection_v2_info,
+		ORDER=1,
+		label="id:21
+label:TYPE_DECL
+name:ceph_connection_v2_info
+line:11
+code:struct ceph_connection_v2_info"];
+	91 -> 21	[key=0,
+		label=REF];
+	92	[FULL_NAME=ceph_connection_v2_info,
+		NAME=ceph_connection_v2_info,
+		TYPE_DECL_FULL_NAME=ceph_connection_v2_info,
+		label="id:92
+label:TYPE
+name:ceph_connection_v2_info
+line:
+code:"];
+	16	[CODE="struct ceph_connection_v2_info {
+    struct ceph_frame_desc in_desc;
+}",
+		COLUMN_NUMBER=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=ceph_connection_v2_info,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=5,
+		NAME=ceph_connection_v2_info,
+		ORDER=2,
+		label="id:16
+label:TYPE_DECL
+name:ceph_connection_v2_info
+line:5
+code:struct ceph_connection_v2_info {
+    struct ceph_frame_desc in_desc;
+}"];
+	92 -> 16	[key=0,
+		label=REF];
+	93	[FULL_NAME="ceph_connection_v2_info.ceph_frame_desc",
+		NAME=ceph_frame_desc,
+		TYPE_DECL_FULL_NAME="ceph_connection_v2_info.ceph_frame_desc",
+		label="id:93
+label:TYPE
+name:ceph_frame_desc
+line:
+code:"];
+	17	[ALIAS_TYPE_FULL_NAME=in_desc,
+		CODE="struct ceph_frame_desc",
+		COLUMN_NUMBER=5,
+		FILENAME="struct_test.c",
+		FULL_NAME="ceph_connection_v2_info.ceph_frame_desc",
+		IS_EXTERNAL=false,
+		LINE_NUMBER=6,
+		NAME=ceph_frame_desc,
+		ORDER=1,
+		label="id:17
+label:TYPE_DECL
+name:ceph_frame_desc
+line:6
+code:struct ceph_frame_desc"];
+	93 -> 17	[key=0,
+		label=REF];
+	94	[FULL_NAME=ceph_frame_desc,
+		NAME=ceph_frame_desc,
+		TYPE_DECL_FULL_NAME=ceph_frame_desc,
+		label="id:94
+label:TYPE
+name:ceph_frame_desc
+line:
+code:"];
+	8	[CODE="struct ceph_frame_desc {
+    int fd_lens[10];
+}",
+		COLUMN_NUMBER=1,
+		FILENAME="struct_test.c",
+		FULL_NAME=ceph_frame_desc,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=1,
+		NAME=ceph_frame_desc,
+		ORDER=1,
+		label="id:8
+label:TYPE_DECL
+name:ceph_frame_desc
+line:1
+code:struct ceph_frame_desc {
+    int fd_lens[10];
+}"];
+	94 -> 8	[key=0,
+		label=REF];
+	95	[FULL_NAME="ceph_frame_desc*",
+		NAME="ceph_frame_desc*",
+		TYPE_DECL_FULL_NAME="ceph_frame_desc*",
+		label="id:95
+label:TYPE
+name:ceph_frame_desc*
+line:
+code:"];
+	95 -> 8	[key=0,
+		label=REF];
+	96	[FULL_NAME=in_desc,
+		NAME=in_desc,
+		TYPE_DECL_FULL_NAME=in_desc,
+		label="id:96
+label:TYPE
+name:in_desc
+line:
+code:"];
+	104	[AST_PARENT_FULL_NAME="<includes>:<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE=in_desc,
+		FILENAME="<includes>",
+		FULL_NAME=in_desc,
+		IS_EXTERNAL=true,
+		NAME=in_desc,
+		ORDER=-1,
+		label="id:104
+label:TYPE_DECL
+name:in_desc
+line:
+code:in_desc"];
+	96 -> 104	[key=0,
+		label=REF];
+	97	[FULL_NAME=int,
+		NAME=int,
+		TYPE_DECL_FULL_NAME=int,
+		label="id:97
+label:TYPE
+name:int
+line:
+code:"];
+	105	[AST_PARENT_FULL_NAME="<includes>:<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE=int,
+		FILENAME="<includes>",
+		FULL_NAME=int,
+		IS_EXTERNAL=true,
+		NAME=int,
+		ORDER=-1,
+		label="id:105
+label:TYPE_DECL
+name:int
+line:
+code:int"];
+	97 -> 105	[key=0,
+		label=REF];
+	98	[FULL_NAME="int[10]",
+		NAME="int[10]",
+		TYPE_DECL_FULL_NAME="int[10]",
+		label="id:98
+label:TYPE
+name:int[10]
+line:
+code:"];
+	106	[AST_PARENT_FULL_NAME="<includes>:<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE="int[10]",
+		FILENAME="<includes>",
+		FULL_NAME="int[10]",
+		IS_EXTERNAL=true,
+		NAME="int[10]",
+		ORDER=-1,
+		label="id:106
+label:TYPE_DECL
+name:int[10]
+line:
+code:int[10]"];
+	98 -> 106	[key=0,
+		label=REF];
+	99	[FULL_NAME=v2,
+		NAME=v2,
+		TYPE_DECL_FULL_NAME=v2,
+		label="id:99
+label:TYPE
+name:v2
+line:
+code:"];
+	107	[AST_PARENT_FULL_NAME="<includes>:<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE=v2,
+		FILENAME="<includes>",
+		FULL_NAME=v2,
+		IS_EXTERNAL=true,
+		NAME=v2,
+		ORDER=-1,
+		label="id:107
+label:TYPE_DECL
+name:v2
+line:
+code:v2"];
+	99 -> 107	[key=0,
+		label=REF];
+	100	[FULL_NAME=void,
+		NAME=void,
+		TYPE_DECL_FULL_NAME=void,
+		label="id:100
+label:TYPE
+name:void
+line:
+code:"];
+	108	[AST_PARENT_FULL_NAME="<includes>:<global>",
+		AST_PARENT_TYPE=NAMESPACE_BLOCK,
+		CODE=void,
+		FILENAME="<includes>",
+		FULL_NAME=void,
+		IS_EXTERNAL=true,
+		NAME=void,
+		ORDER=-1,
+		label="id:108
+label:TYPE_DECL
+name:void
+line:
+code:void"];
+	100 -> 108	[key=0,
+		label=REF];
+	110	[CODE="<empty>",
+		FILENAME="<includes>",
+		FULL_NAME="<includes>:<global>",
+		NAME="<global>",
+		ORDER=1,
+		label="id:110
+label:NAMESPACE_BLOCK
+name:<global>
+line:
+code:<empty>"];
+	110 -> 116	[key=0,
+		label=REF];
+	120	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:120
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	118 -> 120	[VARIABLE=p1,
+		key=0,
+		label=REACHING_DEF];
+	148	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:148
+label:METHOD_PARAMETER_OUT
+name:p1
+line:
+code:p1"];
+	118 -> 148	[VARIABLE=p1,
+		key=1,
+		label=REACHING_DEF];
+	125	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:125
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	122 -> 125	[VARIABLE=p1,
+		key=0,
+		label=REACHING_DEF];
+	149	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:149
+label:METHOD_PARAMETER_OUT
+name:p1
+line:
+code:p1"];
+	122 -> 149	[VARIABLE=p1,
+		key=1,
+		label=REACHING_DEF];
+	123 -> 125	[VARIABLE=p2,
+		key=0,
+		label=REACHING_DEF];
+	150	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:150
+label:METHOD_PARAMETER_OUT
+name:p2
+line:
+code:p2"];
+	123 -> 150	[VARIABLE=p2,
+		key=1,
+		label=REACHING_DEF];
+	130	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:130
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	127 -> 130	[VARIABLE=p1,
+		key=0,
+		label=REACHING_DEF];
+	151	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:151
+label:METHOD_PARAMETER_OUT
+name:p1
+line:
+code:p1"];
+	127 -> 151	[VARIABLE=p1,
+		key=1,
+		label=REACHING_DEF];
+	128 -> 130	[VARIABLE=p2,
+		key=0,
+		label=REACHING_DEF];
+	152	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:152
+label:METHOD_PARAMETER_OUT
+name:p2
+line:
+code:p2"];
+	128 -> 152	[VARIABLE=p2,
+		key=1,
+		label=REACHING_DEF];
+	135	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:135
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	132 -> 135	[VARIABLE=p1,
+		key=0,
+		label=REACHING_DEF];
+	153	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:153
+label:METHOD_PARAMETER_OUT
+name:p1
+line:
+code:p1"];
+	132 -> 153	[VARIABLE=p1,
+		key=1,
+		label=REACHING_DEF];
+	133 -> 135	[VARIABLE=p2,
+		key=0,
+		label=REACHING_DEF];
+	154	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:154
+label:METHOD_PARAMETER_OUT
+name:p2
+line:
+code:p2"];
+	133 -> 154	[VARIABLE=p2,
+		key=1,
+		label=REACHING_DEF];
+	140	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:140
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	137 -> 140	[VARIABLE=p1,
+		key=0,
+		label=REACHING_DEF];
+	155	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:155
+label:METHOD_PARAMETER_OUT
+name:p1
+line:
+code:p1"];
+	137 -> 155	[VARIABLE=p1,
+		key=1,
+		label=REACHING_DEF];
+	138 -> 140	[VARIABLE=p2,
+		key=0,
+		label=REACHING_DEF];
+	156	[CODE=p2,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=2,
+		IS_VARIADIC=false,
+		NAME=p2,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:156
+label:METHOD_PARAMETER_OUT
+name:p2
+line:
+code:p2"];
+	138 -> 156	[VARIABLE=p2,
+		key=1,
+		label=REACHING_DEF];
+	144	[CODE=RET,
+		EVALUATION_STRATEGY=BY_VALUE,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		label="id:144
+label:METHOD_RETURN
+name:
+line:
+code:RET"];
+	142 -> 144	[VARIABLE=p1,
+		key=0,
+		label=REACHING_DEF];
+	157	[CODE=p1,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		NAME=p1,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		label="id:157
+label:METHOD_PARAMETER_OUT
+name:p1
+line:
+code:p1"];
+	142 -> 157	[VARIABLE=p1,
+		key=1,
+		label=REACHING_DEF];
+}
