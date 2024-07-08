@@ -1,0 +1,5 @@
+{
+  "patch_summary": "The patch hardens the checks for segment lengths in the libceph library, preventing potential buffer overruns due to negative control lengths.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows for buffer overruns in the prepare_read_control() function due to negative control lengths, potentially leading to arbitrary code execution."
+}

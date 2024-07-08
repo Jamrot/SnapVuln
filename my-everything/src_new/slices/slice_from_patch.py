@@ -90,7 +90,7 @@ def get_graph_filepath_from_dump_dir(graph_dump_dir, graph_type, graph_level="fi
 
 def get_all_meta_filepath(root_dir):
     meta_filepath_list = []
-    meta_filename_start = config.META_FILENAME_START
+    meta_filename_start = config.META_START
     for root, dirs, files in os.walk(root_dir):
         for filename in files:
             if not filename.endswith(".json") or not filename.startswith(meta_filename_start):
@@ -260,7 +260,7 @@ def slice_from_patch():
     url = config.LINUX
     hash_id = "a282a2f10539dce2aa619e71e1817570d557fc97"
     extractor = CriterionExtractor(url=url, commit_id=hash_id)
-    criterions = extractor.get_criterion_from_patch()
+    criterions = extractor.get_criteroin_from_patch()
     # TODO: get selected criterions
     extractor.save_criterion(criterions=criterions)
     # # # exit()

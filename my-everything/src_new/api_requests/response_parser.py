@@ -7,7 +7,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 from analysis.patch_analyzer import PatchAnalyzer
-import utils.get_path as get_path
 
 
 def read_parsed_response(response_filepath):

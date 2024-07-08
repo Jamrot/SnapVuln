@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_old/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L497: \tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
+            "L501: \tcrc = crc32c(0, p, crcp - p);\n",
+            "L502: \texpected_crc = get_unaligned_le32(crcp);\n",
+            "L503: \tif (crc != expected_crc) {\n",
+            "L509: \tmemset(desc, 0, sizeof(*desc));\n",
+            "L511: \tdesc->fd_tag = ceph_decode_8(&p);\n",
+            "L512: \tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
+            "L513: \tif (desc->fd_seg_cnt < 1 ||\n",
+            "L514: \t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
+            "L518: \tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
+            "L519: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L520: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L527: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L532: \tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+            "L536: \tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

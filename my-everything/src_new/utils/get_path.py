@@ -46,7 +46,7 @@ def get_criterion_savepath(commit_id, criterion):
     # code_filename = os.path.basename(file_path_old)
     code_filepath = os.path.join(module_dirpath, code_filename)
     # meta file
-    meta_filename = "-".join([config.META_FILENAME_START, basename])+'.json'
+    meta_filename = "-".join([config.META_START, basename])+'.json'
     meta_filepath = os.path.join(criterion_dir_path, meta_filename)
 
     return save_root, basename, code_filepath, module_dirpath, meta_filepath
@@ -79,7 +79,7 @@ def get_module_dirpath_from_criterion(criterion):
 def get_root_meta_filepath(commit_id):
     save_root = get_save_root(commit_id=commit_id)
     commit_id_short = get_commit_id_short(commit_id=commit_id)
-    root_meta_filename = "-".join(["root_"+config.META_FILENAME_START, commit_id_short])+'.json'
+    root_meta_filename = "-".join(["root_"+config.META_START, commit_id_short])+'.json'
     root_meta_filepath = os.path.join(save_root, root_meta_filename)
 
     return root_meta_filepath
@@ -87,7 +87,7 @@ def get_root_meta_filepath(commit_id):
 
 def get_all_meta_filepath_from_root(root_dir):
     meta_filepath_list = []
-    meta_filename_start = config.META_FILENAME_START
+    meta_filename_start = config.META_START
     for root, dirs, files in os.walk(root_dir):
         for filename in files:
             if not filename.endswith(".json") or not filename.startswith(meta_filename_start):
@@ -101,7 +101,7 @@ def get_all_meta_filepath_from_root(root_dir):
 def get_graph_dirpath_from_criterion(criterion, graph_level):
     save_root = criterion.get('save_root')
     module_dirpath, module_relpath = get_module_dirpath_from_criterion(criterion)
-    graph_dir = os.path.join(save_root, config.GRAPH_DIRNAME, module_relpath)
+    graph_dir = os.path.join(save_root, config.GRAPH_ROOT_DIRNAME, module_relpath)
     if not os.path.exists(graph_dir):
         os.makedirs(graph_dir)
     return graph_dir

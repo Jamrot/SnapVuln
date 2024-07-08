@@ -1,0 +1,804 @@
+{
+  "code": {
+    "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_new/net/ceph/messenger_v2.c": {
+      "388": {
+        "code": "static int head_onwire_len(int ctrl_len, bool secure)\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "393": {
+        "code": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "397": {
+        "code": "\t\tif (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "398": {
+        "code": "\t\t\trem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN;\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "399": {
+        "code": "\t\t\thead_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN;\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "404": {
+        "code": "\t\t\thead_len += ctrl_len + CEPH_CRC_LEN;\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "406": {
+        "code": "\treturn head_len;\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      }
+    }
+  },
+  "nodes": {
+    "1201": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "rem_len",
+      "COLUMN_NUMBER": "27",
+      "LINE_NUMBER": "399",
+      "NAME": "rem_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1200": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "padded_len(rem_len)",
+      "COLUMN_NUMBER": "16",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "399",
+      "METHOD_FULL_NAME": "padded_len",
+      "NAME": "padded_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1218": {
+      "CODE": "RET",
+      "COLUMN_NUMBER": "1",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "LINE_NUMBER": "388",
+      "ORDER": "4",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_RETURN"
+    },
+    "1199": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "padded_len(rem_len) + CEPH_GCM_TAG_LEN",
+      "COLUMN_NUMBER": "16",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "399",
+      "METHOD_FULL_NAME": "<operator>.addition",
+      "NAME": "<operator>.addition",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1197": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "head_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN",
+      "COLUMN_NUMBER": "4",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "399",
+      "METHOD_FULL_NAME": "<operator>.assignmentPlus",
+      "NAME": "<operator>.assignmentPlus",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1174": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1173": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN)",
+      "COLUMN_NUMBER": "2",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "BUG_ON",
+      "NAME": "BUG_ON",
+      "ORDER": "3",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1188": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "ctrl_len > CEPH_PREAMBLE_INLINE_LEN",
+      "COLUMN_NUMBER": "7",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "397",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1192": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "rem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN",
+      "COLUMN_NUMBER": "4",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "398",
+      "METHOD_FULL_NAME": "<operator>.assignment",
+      "NAME": "<operator>.assignment",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1193": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "rem_len",
+      "COLUMN_NUMBER": "4",
+      "LINE_NUMBER": "398",
+      "NAME": "rem_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1194": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ctrl_len - CEPH_PREAMBLE_INLINE_LEN",
+      "COLUMN_NUMBER": "14",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "398",
+      "METHOD_FULL_NAME": "<operator>.subtraction",
+      "NAME": "<operator>.subtraction",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1195": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "14",
+      "LINE_NUMBER": "398",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1196": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_PREAMBLE_INLINE_LEN",
+      "COLUMN_NUMBER": "25",
+      "LINE_NUMBER": "398",
+      "NAME": "CEPH_PREAMBLE_INLINE_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1198": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "head_len",
+      "COLUMN_NUMBER": "4",
+      "LINE_NUMBER": "399",
+      "NAME": "head_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1202": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_GCM_TAG_LEN",
+      "COLUMN_NUMBER": "38",
+      "LINE_NUMBER": "399",
+      "NAME": "CEPH_GCM_TAG_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "13101": {
+      "CODE": "int ctrl_len",
+      "COLUMN_NUMBER": "28",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "INDEX": "1",
+      "IS_VARIADIC": "false",
+      "LINE_NUMBER": "388",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_PARAMETER_OUT"
+    },
+    "1217": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "head_len",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "406",
+      "NAME": "head_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1176": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "393",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1175": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.lessThan",
+      "NAME": "<operator>.lessThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1179": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "25",
+      "LINE_NUMBER": "393",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1189": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "7",
+      "LINE_NUMBER": "397",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1214": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "16",
+      "LINE_NUMBER": "404",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1178": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "25",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1180": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "36",
+      "LINE_NUMBER": "393",
+      "NAME": "CEPH_MSG_MAX_CONTROL_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1190": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_PREAMBLE_INLINE_LEN",
+      "COLUMN_NUMBER": "18",
+      "LINE_NUMBER": "397",
+      "NAME": "CEPH_PREAMBLE_INLINE_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1213": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ctrl_len + CEPH_CRC_LEN",
+      "COLUMN_NUMBER": "16",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "404",
+      "METHOD_FULL_NAME": "<operator>.addition",
+      "NAME": "<operator>.addition",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1211": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "head_len += ctrl_len + CEPH_CRC_LEN",
+      "COLUMN_NUMBER": "4",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "404",
+      "METHOD_FULL_NAME": "<operator>.assignmentPlus",
+      "NAME": "<operator>.assignmentPlus",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1212": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "head_len",
+      "COLUMN_NUMBER": "4",
+      "LINE_NUMBER": "404",
+      "NAME": "head_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1216": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "return head_len;",
+      "COLUMN_NUMBER": "2",
+      "LINE_NUMBER": "406",
+      "ORDER": "5",
+      "filename": "messenger_v2.c",
+      "label": "RETURN"
+    },
+    "1167": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int head_onwire_len(int ctrl_len, bool secure)\n{\n\tint head_len;\n\tint rem_len;\n\n\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n\n\tif (secure) {\n\t\thead_len = CEPH_PREAMBLE_SECURE_LEN;\n\t\tif (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {\n\t\t\trem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN;\n\t\t\thead_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN;\n\t\t}\n\t} else {\n\t\thead_len = CEPH_PREAMBLE_PLAIN_LEN;\n\t\tif (ctrl_len)\n\t\t\thead_len += ctrl_len + CEPH_CRC_LEN;\n\t}\n\treturn head_len;\n}",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "1",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "head_onwire_len",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "388",
+      "LINE_NUMBER_END": "407",
+      "NAME": "head_onwire_len",
+      "ORDER": "28",
+      "SIGNATURE": "int head_onwire_len (int,bool)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    },
+    "1168": {
+      "CODE": "int ctrl_len",
+      "COLUMN_NUMBER": "28",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "INDEX": "1",
+      "IS_VARIADIC": "false",
+      "LINE_NUMBER": "388",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_PARAMETER_IN"
+    },
+    "1177": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "393",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    }
+  },
+  "edges": {
+    "1201->1200": {
+      "VARIABLE": "rem_len",
+      "label": "REACHING_DEF"
+    },
+    "1201->1218": {
+      "VARIABLE": "rem_len",
+      "label": "REACHING_DEF"
+    },
+    "1200->1218": {
+      "VARIABLE": "padded_len(rem_len)",
+      "label": "REACHING_DEF"
+    },
+    "1200->1199": {
+      "VARIABLE": "padded_len(rem_len)",
+      "label": "REACHING_DEF"
+    },
+    "1199->1218": {
+      "VARIABLE": "padded_len(rem_len) + CEPH_GCM_TAG_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1199->1197": {
+      "VARIABLE": "padded_len(rem_len) + CEPH_GCM_TAG_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1199->1198": {
+      "VARIABLE": "padded_len(rem_len) + CEPH_GCM_TAG_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1197->1218": {
+      "VARIABLE": "head_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1174->1218": {
+      "VARIABLE": "ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1174->1173": {
+      "VARIABLE": "ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1173->1218": {
+      "VARIABLE": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN)",
+      "label": "REACHING_DEF"
+    },
+    "1188->1201": {
+      "label": "CDG"
+    },
+    "1188->1200": {
+      "label": "CDG"
+    },
+    "1188->1218": {
+      "VARIABLE": "ctrl_len > CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1188->1199": {
+      "label": "CDG"
+    },
+    "1188->1197": {
+      "label": "CDG"
+    },
+    "1188->1192": {
+      "label": "CDG"
+    },
+    "1188->1193": {
+      "label": "CDG"
+    },
+    "1188->1194": {
+      "label": "CDG"
+    },
+    "1188->1195": {
+      "label": "CDG"
+    },
+    "1188->1196": {
+      "label": "CDG"
+    },
+    "1188->1198": {
+      "label": "CDG"
+    },
+    "1188->1202": {
+      "label": "CDG"
+    },
+    "1192->1218": {
+      "VARIABLE": "rem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1193->1201": {
+      "VARIABLE": "rem_len",
+      "label": "REACHING_DEF"
+    },
+    "1193->1192": {
+      "VARIABLE": "rem_len",
+      "label": "REACHING_DEF"
+    },
+    "1194->1218": {
+      "VARIABLE": "ctrl_len - CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1194->1192": {
+      "VARIABLE": "ctrl_len - CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1194->1193": {
+      "VARIABLE": "ctrl_len - CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1195->1218": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1195->1194": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1195->1196": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1195->13101": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1196->1218": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1196->1194": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1196->1195": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1198->1218": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1198->1197": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1198->1217": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1202->1218": {
+      "VARIABLE": "CEPH_GCM_TAG_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1202->1199": {
+      "VARIABLE": "CEPH_GCM_TAG_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1217->1216": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1176->1218": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1176->13101": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1176->1175": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1176->1179": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1176->1189": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1176->1214": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1175->1218": {
+      "VARIABLE": "ctrl_len < 0",
+      "label": "REACHING_DEF"
+    },
+    "1175->1174": {
+      "VARIABLE": "ctrl_len < 0",
+      "label": "REACHING_DEF"
+    },
+    "1175->1179": {
+      "label": "CDG"
+    },
+    "1175->1178": {
+      "VARIABLE": "ctrl_len < 0",
+      "label": "REACHING_DEF"
+    },
+    "1175->1180": {
+      "label": "CDG"
+    },
+    "1179->1218": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1179->13101": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1179->1189": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1179->1214": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1179->1178": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1189->1218": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1189->1188": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1189->1195": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1189->13101": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1189->1190": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1214->1218": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1214->13101": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1214->1213": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1178->1218": {
+      "VARIABLE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1178->1174": {
+      "VARIABLE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1178->1175": {
+      "VARIABLE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1180->1218": {
+      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1180->1179": {
+      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1180->1178": {
+      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1190->1218": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1190->1188": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1190->1196": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1190->1189": {
+      "VARIABLE": "CEPH_PREAMBLE_INLINE_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1213->1218": {
+      "VARIABLE": "ctrl_len + CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1213->1211": {
+      "VARIABLE": "ctrl_len + CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1213->1212": {
+      "VARIABLE": "ctrl_len + CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1211->1218": {
+      "VARIABLE": "head_len += ctrl_len + CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1212->1218": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1212->1217": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1212->1211": {
+      "VARIABLE": "head_len",
+      "label": "REACHING_DEF"
+    },
+    "1216->1218": {
+      "VARIABLE": "<RET>",
+      "label": "REACHING_DEF"
+    },
+    "1167->1201": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1195": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1196": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1198": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1202": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1217": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1176": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1179": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1189": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1214": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1180": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1190": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1212": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1168": {
+      "label": "REACHING_DEF"
+    },
+    "1167->1177": {
+      "label": "REACHING_DEF"
+    },
+    "1168->13101": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1168->1176": {
+      "VARIABLE": "ctrl_len",
+      "label": "REACHING_DEF"
+    },
+    "1177->1176": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    },
+    "1177->1175": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    }
+  }
+}

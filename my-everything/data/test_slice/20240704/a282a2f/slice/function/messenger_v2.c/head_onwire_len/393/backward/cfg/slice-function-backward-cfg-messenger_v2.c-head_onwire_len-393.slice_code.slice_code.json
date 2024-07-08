@@ -1,0 +1,157 @@
+{
+  "code": {
+    "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_new/net/ceph/messenger_v2.c": {
+      "388": {
+        "code": "static int head_onwire_len(int ctrl_len, bool secure)\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      },
+      "393": {
+        "code": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n",
+        "function": "static int head_onwire_len(int ctrl_len, bool secure)"
+      }
+    }
+  },
+  "nodes": {
+    "1174": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1173": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN)",
+      "COLUMN_NUMBER": "2",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "BUG_ON",
+      "NAME": "BUG_ON",
+      "ORDER": "3",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1179": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "25",
+      "LINE_NUMBER": "393",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1180": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "36",
+      "LINE_NUMBER": "393",
+      "NAME": "CEPH_MSG_MAX_CONTROL_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1178": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "25",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1176": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "393",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1177": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "393",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1175": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.lessThan",
+      "NAME": "<operator>.lessThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1167": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int head_onwire_len(int ctrl_len, bool secure)\n{\n\tint head_len;\n\tint rem_len;\n\n\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n\n\tif (secure) {\n\t\thead_len = CEPH_PREAMBLE_SECURE_LEN;\n\t\tif (ctrl_len > CEPH_PREAMBLE_INLINE_LEN) {\n\t\t\trem_len = ctrl_len - CEPH_PREAMBLE_INLINE_LEN;\n\t\t\thead_len += padded_len(rem_len) + CEPH_GCM_TAG_LEN;\n\t\t}\n\t} else {\n\t\thead_len = CEPH_PREAMBLE_PLAIN_LEN;\n\t\tif (ctrl_len)\n\t\t\thead_len += ctrl_len + CEPH_CRC_LEN;\n\t}\n\treturn head_len;\n}",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "1",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "head_onwire_len",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "388",
+      "LINE_NUMBER_END": "407",
+      "NAME": "head_onwire_len",
+      "ORDER": "28",
+      "SIGNATURE": "int head_onwire_len (int,bool)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    }
+  },
+  "edges": {
+    "1174->1173": {
+      "label": "CFG"
+    },
+    "1179->1180": {
+      "label": "CFG"
+    },
+    "1180->1178": {
+      "label": "CFG"
+    },
+    "1178->1174": {
+      "label": "CFG"
+    },
+    "1176->1177": {
+      "label": "CFG"
+    },
+    "1177->1175": {
+      "label": "CFG"
+    },
+    "1175->1174": {
+      "label": "CFG"
+    },
+    "1175->1179": {
+      "label": "CFG"
+    },
+    "1167->1176": {
+      "label": "CFG"
+    }
+  }
+}

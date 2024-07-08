@@ -1,12 +1,14 @@
 import os
 LINUX = '/mnt/wsl2/home/jamrot/linux'
 
-DATA_ROOT = '/app/slicing-snapvuln/my-everything/data/test_slice/response'
+DATA_ROOT = '/app/slicing-snapvuln/my-everything/data/test_slice/20240704'
 
 CODE_ROOT_DIRNAME = 'code'
 OLD_CODE_DIRNAME = 'code_old'
 NEW_CODE_DIRNAME = 'code_new'
-GRAPH_DIRNAME = 'graph'
+GRAPH_ROOT_DIRNAME = 'graph'
+SLICE_ROOT_DIRNAME = 'slice'
+META_ROOT_DIRNAME = "meta"
 
 desc_tags_prefixes = [
     "Signed-off-by:", "Reported-by:", "Fixes:", "Link:", "Suggested-by:", "cc:",
@@ -30,8 +32,10 @@ PARSED_START = 'parsed'
 PARSED_DIR_END = '.parsed'
 PARSED_FILE_END = '.json'
 
+META_START = 'meta'
+META_FILE_END = '.json'
+
 CODE_FILENAME_START = 'file_code_old'
-META_FILENAME_START = 'meta'
 MODULE_DIRNAME_START = 'module'
 
 CODE_FILE_OVERWRITE = False
@@ -65,7 +69,8 @@ PA_RESPONSE_FILEPATH = "my-everything/responses/parsed/PA/parsed_PA-a282a2f-2024
 SE_RESPONSE_FILEPATH = "my-everything/responses/parsed/SE/parsed_SE-a282a2f-20240617073944.json"
 
 # slicing
-PARSED_FILEPATH = "my-everything/data/test_slice/response/a282a2f-2/parsed/function.parsed/gpt-4-0613/sorted_parsed-a282a2f-function-gpt-4-0613-N20240624092357.json"
+# PARSED_FILEPATH = "my-everything/data/test_slice/response/a282a2f-2/parsed/function.parsed/gpt-4-0613/sorted_parsed-a282a2f-function-gpt-4-0613-N20240624092357.json"
+PARSED_FILEPATH = "my-everything/data/test_slice/response/a282a2f/parsed/function.parsed/gpt-4-0613/parsed-a282a2f-function-gpt-4-0613-N20240624092357.json"
 
 
 # time

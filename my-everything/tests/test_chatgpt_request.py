@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # parsed_savepath = slicing_strategy.do_slicing_strategy(commit_id, stamp)
     # parsed_savepath = integrity_analysis.do_IA_analysis(commit_id, stamp, slice_depth)
     # parsed_savepath = core_operations.do_analysis(commit_id, stamp, slice_depth)
-    parsed_savepath = further_slicing.do_analysis(commit_id, stamp, slice_depth)
+    parsed_savepath = further_slicing.do_further_slicing(commit_id, stamp, slice_depth)
     # patch_analysis.test()
     # stmt_extraction.test()
     # slicing_strategy.test()

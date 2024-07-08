@@ -1,0 +1,32 @@
+{
+  "sliced_code_cause_vulnerability": {
+    "includes_all_codes": "YES",
+    "justification": "The sliced code includes all the code that causes the vulnerability. It includes the functions 'head_onwire_len', '__tail_onwire_len', and 'decode_preamble' where the buffer overrun due to negative control lengths occurs."
+  },
+  "sliced_code_core_operations": {
+    "core_operation_codes": [
+      {
+        "core_operation": "Input Validation",
+        "sliced_code": "L393: \tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\nL413: \tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\nL414: \t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\nL415: \t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);\nL529: \tif (desc->fd_lens[0] < 0 ||\nL530: \t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN);\n"
+      },
+      {
+        "core_operation": "Memory Allocation",
+        "sliced_code": "NONE"
+      },
+      {
+        "core_operation": "Error Handling",
+        "sliced_code": "L520: \t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT);\n"
+      },
+      {
+        "core_operation": "Code Execution Control",
+        "sliced_code": "NONE"
+      }
+    ],
+    "includes_all_core_operations": "NO",
+    "justification": "The sliced code does not include all the core operations that lead to the vulnerability. It includes the code for 'Input Validation' and 'Error Handling', but it does not include the code for 'Memory Allocation' and 'Code Execution Control'."
+  },
+  "final_determination": {
+    "contains_all_relevant_code": "NO",
+    "justification": "While the sliced code includes all the code that causes the vulnerability, it does not include all the core operations that lead to the vulnerability. Specifically, it is missing the code for 'Memory Allocation' and 'Code Execution Control'."
+  }
+}

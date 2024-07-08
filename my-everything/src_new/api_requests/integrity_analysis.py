@@ -7,7 +7,7 @@ import time
 import config.config as config
 import api_requests.chatgpt_request as chatgpt_request
 import api_requests.response_parser as response_parser
-import utils.get_path as get_path
+import utils.get_path_new as get_path
 
 import logging
 logger = logging.getLogger(__name__)
@@ -28,7 +28,9 @@ def get_IA_prompts(prompt_filepath, parsed_data, commit_id, slice_depth):
     commit_clean_desc, commit_diff_code, commit_info = response_parser.get_patch(commit_id)
 
     # get sliced code
-    collate_slice_dotpath = get_path.get_collate_slice_savepath(commit_id=commit_id, slice_depth=slice_depth)
+    save_root = get_path.get_save_rootpath(commit_id=commit_id)
+    slice_root = get_path.get_slice_rootpath(save_root=save_root)
+    collate_slice_dotpath = get_path.get_collate_slice_savepath(slice_root=slice_root, slice_depth=slice_depth)
     collate_slice_jsonpath = collate_slice_dotpath.replace(config.SLICE_DOT_FILE_END, config.SLICE_CODE_FILE_END_JSON)
     with open(collate_slice_jsonpath, 'r') as f:
         collate_slice_json = json.load(f)
@@ -75,8 +77,8 @@ def save_IA_parsed(parsed_response, commit_id, stamp):
     return parsed_savepath
 
 
-def do_IA_analysis(commit_id, stamp, slice_depth):
-    task = "IA"
+def do_integrity_analysis(commit_id, stamp, slice_depth):
+    task = "integrity_analysis"
 
     # get prompts
     parsed_save_path = get_path.get_parsed_data_savepath(commit_id=commit_id, level=slice_depth, stamp=stamp)
@@ -95,12 +97,12 @@ def do_IA_analysis(commit_id, stamp, slice_depth):
 
     # save response
     timestamp = response_parser.get_response_timestamp(response_info=response_info)
-    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
     # save parsed response
     parsed_response = parse_IA_response(response_info=response_info)
-    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_filepath)
 
     # return parsed_filepath

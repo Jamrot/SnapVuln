@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 import config.config as config
 import api_requests.chatgpt_request as chatgpt_request
 import api_requests.response_parser as response_parser
-import utils.get_path as get_path
+import utils.get_path_new as get_path
 
 
-def get_SE_prompts(prompt_filepath, parsed_data, commit_id):
+def get_prompts(prompt_filepath, parsed_data, commit_id):
     
     with open(prompt_filepath, 'r') as f:
         all_prompts = json.load(f)    
@@ -97,13 +97,13 @@ def save_SE_parsed(parsed_response, parsed_savepath):
 
 
 def do_stmt_extraction(commit_id, stamp):
-    task = "SE"
+    task = "statement_extraction"
 
     # get prompts
     prompt_filepath = config.PROMPT_FILEPATH
     parsed_savepath = get_path.get_parsed_data_savepath(commit_id=commit_id, level='function', stamp=stamp)
     parsed_data = response_parser.read_parsed(parsed_savepath)
-    messages = get_SE_prompts(prompt_filepath=prompt_filepath, parsed_data=parsed_data, commit_id=commit_id)
+    messages = get_prompts(prompt_filepath=prompt_filepath, parsed_data=parsed_data, commit_id=commit_id)
 
     # get response
     response_info, request_content = chatgpt_request.chatgpt_request(
@@ -114,12 +114,12 @@ def do_stmt_extraction(commit_id, stamp):
 
     # save response
     timestamp = response_parser.get_response_timestamp(response_info)
-    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
     # save parsed response
     parsed_data = parse_SE_response(response_info=response_info)
-    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_parsed_response(response_dict=parsed_data, parsed_filepath=parsed_filepath)
 
     # save parsed data

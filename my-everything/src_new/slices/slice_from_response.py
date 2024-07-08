@@ -277,7 +277,7 @@ def slice_from_response():
     url = config.LINUX
     commit_id = config.COMMIT_ID
     extractor = CriterionExtractor(url=url, commit_id=commit_id)
-    criterions = extractor.get_criterion_from_patch()
+    criterions = extractor.get_criteroin_from_patch()
     all_meta_filepath = get_path.get_root_meta_filepath(commit_id=commit_id)
     extractor._save_criterion_meta(criterions=criterions, meta_filepath=all_meta_filepath)
 

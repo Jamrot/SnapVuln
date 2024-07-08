@@ -3,7 +3,7 @@ import config.config as config
 import os
 import json
 import logging
-import utils.get_path as get_path
+import utils.get_path_new as get_path
 import copy
 import shutil
 import re
@@ -14,17 +14,12 @@ logger = logging.getLogger(__name__)
 class CriterionExtractor:
     """A class to extract and save criterions from a patch."""
 
-    def __init__(self, url, commit_id):
-        """Initializes CriterionExtractor to creates a PatchAnalyzer instance.
+    def __init__(self):
+        # commit_id = commit_id
+        # self.patch_analyzer = PatchAnalyzer(url, commit_id)
+        pass
 
-        Parameters:
-            url (str): The URL of the Git repository.
-            hash_id (str): The commit hash ID.
-        """
-        self.commit_id = commit_id
-        self.patch_analyzer = PatchAnalyzer(url, commit_id)
-
-    def get_criterion_from_patch(self):
+    def get_criteroin_from_patch(self, url, commit_id):
         """Extracts criterions from a patch using the given PatchAnalyzer.
 
         Returns:
@@ -39,7 +34,8 @@ class CriterionExtractor:
                 - file_code: {'old': str, 'new': str}
                 - modification: str
         """
-        info = self.patch_analyzer.get_commit_info()
+        patch_analyzer = PatchAnalyzer(url, commit_id)
+        info = patch_analyzer.get_commit_info()
         criterions = []
         for commit_id in info:
             commit = info[commit_id]
@@ -83,7 +79,7 @@ class CriterionExtractor:
                         })
         return criterions
     
-    def get_criterion_from_response(self, parsed_response):
+    def get_criterion_from_response(self, parsed_response, commit_id):
         criterions = []
         further_stmts = parsed_response.get("further_slicing", {})
         for stmt in further_stmts:
@@ -122,7 +118,7 @@ class CriterionExtractor:
                     "line": line_num,
                     "code": stmt_code_extract
                 },
-                "commit_id": self.commit_id,
+                "commit_id": commit_id,
                 "file_path": {
                     "old": filepath,
                     "new": filepath,
@@ -135,11 +131,25 @@ class CriterionExtractor:
             }
 
             # absoulte path of the code file
-            save_root, criterion_dir, code_filepath, module_dirpath, meta_filepath = get_path.get_criterion_savepath(commit_id=self.commit_id, criterion=criterion)
+            save_root = get_path.get_save_rootpath(commit_id=commit_id)
+            src_relpath = get_path.get_src_relpath(modification=modification, file_path_dict=criterion['file_path'])
+            code_basename = os.path.basename(src_relpath)
+            
+            # code file
+            code_root = get_path.get_code_rootpath(save_root=save_root)
+            code_filepath = get_path.get_code_savepath(code_root=code_root, src_relpath=src_relpath)
+
+            # module dir
+            module_dirpath = os.path.dirname(code_filepath)
+
+            # meta file
+            meta_root = get_path.get_meta_rootpath(save_root=save_root)
+            meta_filepath = get_path.get_mata_savepath(meta_root=meta_root, src_relpath=src_relpath, code_basename=code_basename, funcname=funcname_clean, linenum=line_num, modification=modification)
+
             criterion['save_root'] = save_root
-            criterion['save_filename_base'] = criterion_dir
             criterion['save_file_code_filepath'] = code_filepath
             criterion['save_module_dirpath'] = module_dirpath
+            criterion['save_meta_filepath'] = meta_filepath
 
             # check if the extracted funcname is correct
             funcname, func_start, func_end = self._get_funcname_from_line(file_path=code_filepath, line_num=line_num)        
@@ -272,33 +282,47 @@ class CriterionExtractor:
                 - modification: str
         """
         for criterion in criterions:
-            criterion_line = criterion['criterion']['line']
-            file_code = criterion['file_code']
-            file_code_old = file_code['old']
-            file_code_new = file_code['new']
+            line_num = criterion['criterion']['line']
             commit_id = criterion['commit_id']
             func_name = criterion['func_name']
-            file_path_old = criterion['file_path']['old']
-            file_path_new = criterion['file_path']['new']
             modification = criterion['modification']
             
-            save_root, criterion_dir, code_filepath, module_dirpath, meta_filepath = get_path.get_criterion_savepath(commit_id=commit_id, criterion=criterion)
+            save_root = get_path.get_save_rootpath(commit_id=commit_id)
+            src_relpath = get_path.get_src_relpath(modification=modification, file_path_dict=criterion['file_path'])
+            code_basename = os.path.basename(src_relpath)
+            
+            # code file
+            code_root = get_path.get_code_rootpath(save_root=save_root)
+            code_filepath = get_path.get_code_savepath(code_root=code_root, src_relpath=src_relpath)
+
+            # module dir
+            module_dirpath = os.path.dirname(code_filepath)
+
+            # meta file
+            meta_root = get_path.get_meta_rootpath(save_root=save_root)
+            meta_filepath = get_path.get_mata_savepath(meta_root=meta_root, src_relpath=src_relpath, code_basename=code_basename, funcname=func_name, linenum=line_num, modification=modification)
 
             criterion['save_root'] = save_root
-            criterion['save_filename_base'] = criterion_dir
+            criterion['save_file_code_filepath'] = code_filepath
+            criterion['save_module_dirpath'] = module_dirpath
+            criterion['save_meta_filepath'] = meta_filepath
+
+            if modification=='DELETE':
+                repo_version = criterion['version']['old']
+                repo_file_path = criterion['file_path']['old']
+                repo_module_dirpath = self._get_module_path(repo_file_path)
+                repo_filecode = criterion['file_code']['old']
+            elif modification=='ADD':
+                repo_version = criterion['version']['new']
+                repo_file_path = criterion['file_path']['new']
+                repo_module_dirpath = self._get_module_path(repo_file_path)
+                repo_filecode = criterion['file_code']['new']
 
             if save_module:
-                self._save_module(criterion=criterion, module_dirpath=module_dirpath, overwrite=config.MODULE_OVERWRITE)
-                criterion['save_module_dirpath'] = module_dirpath
+                self._save_module(repo_version=repo_version, repo_module_path=repo_module_dirpath, module_dirpath=module_dirpath, overwrite=config.MODULE_OVERWRITE)
 
             if save_file:
-                if not os.path.exists(code_filepath):
-                    logger.warning(f"Code file not exist: {code_filepath}")
-                    if modification=='DELETE':
-                        self._save_file(file_code_old, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
-                    elif modification=='ADD':
-                        self._save_file(file_code_new, code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
-                criterion['save_file_code_filepath'] = code_filepath
+                self._save_file(file_content=repo_filecode, file_path=code_filepath, overwrite=config.CODE_FILE_OVERWRITE)
             
             if save_meta:
                 self._save_criterion_meta([criterion], meta_filepath)
@@ -306,22 +330,15 @@ class CriterionExtractor:
         return criterions
 
     
-    def _save_module(self, criterion, module_dirpath, overwrite=False):
+    def _save_module(self, repo_version, repo_module_path, module_dirpath, overwrite=False):
         """copy local_module_path to module_dirpath, default to overwrite."""
-        modification = criterion['modification']
-        if modification=='DELETE':
-            file_path = criterion['file_path']['old']
-            version = criterion['version']['old']
-        elif modification=='ADD':
-            file_path = criterion['file_path']['new']
-            version = criterion['version']['new']
-
         # checkout the version
-        os.system(f"git -C {config.LINUX} checkout {version} -- {file_path}")
-
-        local_module_path = self._get_module_path(file_path)
-        if not os.path.exists(local_module_path):
-            logger.error(f"Cannot find local_module_path: {local_module_path}")
+        if not os.path.exists(repo_module_path):
+            logger.error(f"[Save module failed] Cannot find repo_module_path: {repo_module_path}")
+            return
+        os.system(f"git -C {config.LINUX} checkout {repo_version} -- {repo_module_path}")
+        logger.info(f"Checked out {repo_version} to {repo_module_path}")
+        logger.debug(f"cmd: git -C {config.LINUX} checkout {repo_version} -- {repo_module_path}")
 
         if os.path.exists(module_dirpath):
             if overwrite:
@@ -329,15 +346,15 @@ class CriterionExtractor:
                     logger.warning(f"[Remove module directory] Module directory exists (not empty): {module_dirpath}")
                 shutil.rmtree(module_dirpath)
             else:
-                logger.warning(f"Module directory already exists and overwrite is not enabled: {module_dirpath}")
+                logger.info(f"Module directory already exists and overwrite is not enabled: {module_dirpath}")
                 return
 
-        shutil.copytree(local_module_path, module_dirpath)
-        logger.info(f"Copied {local_module_path} to {module_dirpath}")
+        shutil.copytree(repo_module_path, module_dirpath)
+        logger.info(f"Copied {repo_module_path} to {module_dirpath}")
         
 
-    def _get_module_path(self, file_path, root=config.LINUX):
-        module_dir = os.path.dirname(file_path)
+    def _get_module_path(self, repo_file_path, root=config.LINUX):
+        module_dir = os.path.dirname(repo_file_path)
         module_path = os.path.join(root, module_dir)
         return module_path
 
@@ -361,27 +378,22 @@ class CriterionExtractor:
             del criterion['file_code']
             del criterion['func_code']
             meta.append(criterion)
-            # meta.append({
-            #     'criterion': criterion['criterion'],
-            #     'commit_id': criterion['commit_id'],
-            #     'version': criterion['version'],
-            #     'file_path': criterion['file_path'],
-            #     'func_name': criterion['func_name'],
-            #     'func_line': criterion['func_line'],
-            # })
             
         with open(meta_filepath, 'w') as f:
             f.write(json.dumps(meta, indent=2))
 
         logger.info(f"Meta file saved to {meta_filepath}")
 
+    
     def _save_file(self, file_content, file_path, overwrite=False):
         if os.path.exists(file_path):
             if overwrite:
                 logger.warning(f"Overwrite file: {file_path}")
             else:
-                logger.warning(f"No overwrite file: {file_path}")
+                logger.info(f"file already exists and not overwrite: {file_path}")
                 return
+        else:
+            logger.error(f"[File save failed] Cannot find file: {file_path}")
 
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path))
@@ -395,7 +407,7 @@ def test():
     url = config.LINUX
     hash_id = "97bf6f81b29a8efaf5d0983251a7450e5794370d"
     extractor = CriterionExtractor(url, hash_id)
-    criterions = extractor.get_criterion_from_patch()
+    criterions = extractor.get_criteroin_from_patch()
     extractor.save_criterion(criterions)
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 import config.config as config
 import api_requests.chatgpt_request as chatgpt_request
 import api_requests.response_parser as response_parser
-import utils.get_path as get_path
+import utils.get_path_new as get_path
 
 
 def get_SS_prompts(prompt_filepath, parsed_data, commit_id):
@@ -59,7 +59,7 @@ def parse_SS_response(response_info):
 
 
 def save_SS_parsed(parsed_response, commit_id, stamp):
-    parsed_savepath = get_path.get_parsed_data_savepath(commit_id=commit_id, level='function', stamp=stamp)+"-1.json"
+    parsed_savepath = get_path.get_parsed_data_savepath(commit_id=commit_id, level='function', stamp=stamp)
 
     stmts_slicing_strategy = parsed_response.get("statements_slicing_strategy", "")
 
@@ -73,7 +73,7 @@ def save_SS_parsed(parsed_response, commit_id, stamp):
 
 
 def do_slicing_strategy(commit_id, stamp):
-    task = "SS"
+    task = "slicing_strategy"
 
     # get prompts
     parsed_save_path = get_path.get_parsed_data_savepath(commit_id=commit_id, level='function', stamp=stamp)
@@ -92,12 +92,12 @@ def do_slicing_strategy(commit_id, stamp):
 
     # save response
     timestamp = response_parser.get_response_timestamp(response_info=response_info)
-    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
     # save parsed response
     parsed_response = parse_SS_response(response_info=response_info)
-    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_filepath)
 
     # save parsed data

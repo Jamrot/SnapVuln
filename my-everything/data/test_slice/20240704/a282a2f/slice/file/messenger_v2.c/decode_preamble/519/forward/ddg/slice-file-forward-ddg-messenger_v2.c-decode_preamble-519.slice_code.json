@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_old/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L519: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L520: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L527: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L532: \tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+            "L533: \t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);\n",
+            "L536: \tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+            "L537: \t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);\n",
+            "L540: \tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+            "L541: \t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);\n",
+            "L544: \tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+            "L545: \t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

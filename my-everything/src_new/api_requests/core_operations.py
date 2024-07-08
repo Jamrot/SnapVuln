@@ -7,7 +7,7 @@ import time
 import config.config as config
 import api_requests.chatgpt_request as chatgpt_request
 import api_requests.response_parser as response_parser
-import utils.get_path as get_path
+import utils.get_path_new as get_path
 
 import logging
 logger = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ def save_parsed(parsed_response, commit_id, stamp):
     return parsed_savepath
 
 
-def do_analysis(commit_id, stamp, slice_depth):
+def do_core_operations(commit_id, stamp, slice_depth):
     task = "core_operations"
 
     # get prompts
@@ -86,12 +86,12 @@ def do_analysis(commit_id, stamp, slice_depth):
 
     # save response
     timestamp = response_parser.get_response_timestamp(response_info=response_info)
-    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
     # save parsed response
     parsed_response = parse_response(response_info=response_info)
-    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    parsed_filepath = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_filepath)
 
     # return parsed_filepath

@@ -7,7 +7,7 @@ import time
 import config.config as config
 import api_requests.chatgpt_request as chatgpt_request
 import api_requests.response_parser as response_parser
-import utils.get_path as get_path
+import utils.get_path_new as get_path
 
 
 def get_PA_prompt(prompt_filepath, commit_id):
@@ -60,7 +60,7 @@ def save_PA_parsed(parsed_response, parsed_savepath):
 
 
 def do_patch_analysis(commit_id, stamp=None):
-    task = "PA"  
+    task = "patch_analysis"  
 
     # get prompts
     prompt_filepath = config.PROMPT_FILEPATH    
@@ -75,13 +75,13 @@ def do_patch_analysis(commit_id, stamp=None):
     )
 
     # save response
-    timestamp = response_parser.get_response_timestamp(response_info=response_info)
-    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    # timestamp = response_parser.get_response_timestamp(response_info=response_info)
+    response_filepath = get_path.get_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_response(response=response_info, response_filepath=response_filepath, request_content=request_content)
 
     # save parsed response
     parsed_response = parse_PA_response(response_info=response_info)
-    parsed_response_path = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=timestamp)
+    parsed_response_path = get_path.get_parsed_response_filepath(task=task, commit_id=commit_id, timestamp=stamp)
     response_parser.save_parsed_response(response_dict=parsed_response, parsed_filepath=parsed_response_path)
 
     parsed_savepath = get_path.get_parsed_data_savepath(commit_id=commit_id, level='function', stamp=stamp)
