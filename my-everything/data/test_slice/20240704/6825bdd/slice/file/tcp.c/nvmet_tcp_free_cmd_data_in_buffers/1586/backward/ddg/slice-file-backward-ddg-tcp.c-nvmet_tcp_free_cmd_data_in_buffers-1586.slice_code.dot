@@ -1,0 +1,342 @@
+strict digraph "" {
+	node [label="\N"];
+	5079	[ARGUMENT_INDEX=1,
+		CODE="queue->rcv_state",
+		COLUMN_NUMBER=2,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1606,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5084	[ARGUMENT_INDEX=1,
+		CODE=queue,
+		COLUMN_NUMBER=32,
+		LINE_NUMBER=1608,
+		NAME=queue,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5079 -> 5084	[VARIABLE="queue->rcv_state",
+		label=REACHING_DEF];
+	5096	[ARGUMENT_INDEX=1,
+		CODE=queue,
+		COLUMN_NUMBER=37,
+		LINE_NUMBER=1611,
+		NAME=queue,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5079 -> 5096	[VARIABLE="queue->rcv_state",
+		label=REACHING_DEF];
+	5084 -> 5096	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5087	[ARGUMENT_INDEX=1,
+		CODE="queue->nvme_sq",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1609,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5084 -> 5087	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5092	[ARGUMENT_INDEX=1,
+		CODE="queue->io_work",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1610,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5084 -> 5092	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5095	[ARGUMENT_INDEX=-1,
+		CODE="nvmet_tcp_free_cmd_data_in_buffers(queue)",
+		COLUMN_NUMBER=2,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1611,
+		METHOD_FULL_NAME=nvmet_tcp_free_cmd_data_in_buffers,
+		NAME=nvmet_tcp_free_cmd_data_in_buffers,
+		ORDER=11,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5096 -> 5095	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5087 -> 5096	[VARIABLE="queue->nvme_sq",
+		label=REACHING_DEF];
+	5092 -> 5096	[VARIABLE="queue->io_work",
+		label=REACHING_DEF];
+	5052	[AST_PARENT_FULL_NAME="tcp.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static void nvmet_tcp_release_queue_work(struct work_struct *w)
+{
+	struct nvmet_tcp_queue *queue =
+		container_of(w, struct nvmet_\
+tcp_queue, release_work);
+
+	mutex_lock(&nvmet_tcp_queue_mutex);
+	list_del_init(&queue->queue_list);
+	mutex_unlock(&nvmet_tcp_queue_\
+mutex);
+
+	nvmet_tcp_restore_socket_callbacks(queue);
+	cancel_delayed_work_sync(&queue->tls_handshake_tmo_work);
+	cancel_work_sync(&\
+queue->io_work);
+	/* stop accepting incoming data */
+	queue->rcv_state = NVMET_TCP_RECV_ERR;
+
+	nvmet_tcp_uninit_data_in_cmds(queue);
+	\
+nvmet_sq_destroy(&queue->nvme_sq);
+	cancel_work_sync(&queue->io_work);
+	nvmet_tcp_free_cmd_data_in_buffers(queue);
+	/* ->sock will \
+be released by fput() */
+	fput(queue->sock->file);
+	nvmet_tcp_free_cmds(queue);
+	if (queue->hdr_digest || queue->data_digest)
+		\
+nvmet_tcp_free_crypto(queue);
+	ida_free(&nvmet_tcp_queue_ida, queue->idx);
+	page_frag_cache_drain(&queue->pf_cache);
+	kfree(queue);
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="tcp.c",
+		FULL_NAME=nvmet_tcp_release_queue_work,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=1593,
+		LINE_NUMBER_END=1620,
+		NAME=nvmet_tcp_release_queue_work,
+		ORDER=91,
+		SIGNATURE="void nvmet_tcp_release_queue_work (work_struct*)",
+		filename="tcp.c",
+		label=METHOD];
+	5052 -> 5084	[label=REACHING_DEF];
+	5052 -> 5096	[label=REACHING_DEF];
+	5067	[ARGUMENT_INDEX=1,
+		CODE=queue,
+		COLUMN_NUMBER=37,
+		LINE_NUMBER=1602,
+		NAME=queue,
+		ORDER=1,
+		TYPE_FULL_NAME=ANY,
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5052 -> 5067	[label=REACHING_DEF];
+	5082	[ARGUMENT_INDEX=2,
+		CODE=NVMET_TCP_RECV_ERR,
+		COLUMN_NUMBER=21,
+		LINE_NUMBER=1606,
+		NAME=NVMET_TCP_RECV_ERR,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5052 -> 5082	[label=REACHING_DEF];
+	5067 -> 5084	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5070	[ARGUMENT_INDEX=1,
+		CODE="queue->tls_handshake_tmo_work",
+		COLUMN_NUMBER=28,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1603,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5067 -> 5070	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5075	[ARGUMENT_INDEX=1,
+		CODE="queue->io_work",
+		COLUMN_NUMBER=20,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1604,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5067 -> 5075	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5082 -> 5079	[VARIABLE=NVMET_TCP_RECV_ERR,
+		label=REACHING_DEF];
+	5007	[ARGUMENT_INDEX=2,
+		CODE="queue->cmds",
+		COLUMN_NUMBER=30,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1581,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5006	[ARGUMENT_INDEX=1,
+		CODE=cmd,
+		COLUMN_NUMBER=24,
+		LINE_NUMBER=1581,
+		NAME=cmd,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_cmd*",
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5007 -> 5006	[VARIABLE="queue->cmds",
+		label=REACHING_DEF];
+	5029	[ARGUMENT_INDEX=1,
+		CODE=cmd,
+		COLUMN_NUMBER=30,
+		LINE_NUMBER=1585,
+		NAME=cmd,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_cmd*",
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5006 -> 5029	[VARIABLE=cmd,
+		label=REACHING_DEF];
+	5025	[ARGUMENT_INDEX=1,
+		CODE=cmd,
+		COLUMN_NUMBER=39,
+		LINE_NUMBER=1584,
+		NAME=cmd,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_cmd*",
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5029 -> 5025	[VARIABLE=cmd,
+		label=REACHING_DEF];
+	5032	[ARGUMENT_INDEX=1,
+		CODE=cmd,
+		COLUMN_NUMBER=31,
+		LINE_NUMBER=1586,
+		NAME=cmd,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_cmd*",
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5029 -> 5032	[VARIABLE=cmd,
+		label=REACHING_DEF];
+	5025 -> 5029	[VARIABLE=cmd,
+		label=REACHING_DEF];
+	5032 -> 5025	[VARIABLE=cmd,
+		label=REACHING_DEF];
+	5031	[ARGUMENT_INDEX=1,
+		CODE="nvmet_tcp_free_cmd_buffers(cmd)",
+		COLUMN_NUMBER=4,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1586,
+		METHOD_FULL_NAME=nvmet_tcp_free_cmd_buffers,
+		NAME=nvmet_tcp_free_cmd_buffers,
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5032 -> 5031	[VARIABLE=cmd,
+		label=REACHING_DEF];
+	5002	[CODE="struct nvmet_tcp_queue *queue",
+		COLUMN_NUMBER=48,
+		EVALUATION_STRATEGY=BY_VALUE,
+		INDEX=1,
+		IS_VARIADIC=false,
+		LINE_NUMBER=1579,
+		NAME=queue,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_queue*",
+		filename="tcp.c",
+		label=METHOD_PARAMETER_IN];
+	5002 -> 5007	[VARIABLE=queue,
+		label=REACHING_DEF];
+	5070 -> 5084	[VARIABLE="queue->tls_handshake_tmo_work",
+		label=REACHING_DEF];
+	5070 -> 5096	[VARIABLE="queue->tls_handshake_tmo_work",
+		label=REACHING_DEF];
+	5075 -> 5084	[VARIABLE="queue->io_work",
+		label=REACHING_DEF];
+	5075 -> 5096	[VARIABLE="queue->io_work",
+		label=REACHING_DEF];
+	5075 -> 5092	[VARIABLE="queue->io_work",
+		label=REACHING_DEF];
+	5074	[ARGUMENT_INDEX=1,
+		CODE="&queue->io_work",
+		COLUMN_NUMBER=19,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1604,
+		METHOD_FULL_NAME="<operator>.addressOf",
+		NAME="<operator>.addressOf",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5075 -> 5074	[VARIABLE="queue->io_work",
+		label=REACHING_DEF];
+	5074 -> 5092	[VARIABLE="&queue->io_work",
+		label=REACHING_DEF];
+	5001	[AST_PARENT_FULL_NAME="tcp.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static void nvmet_tcp_free_cmd_data_in_buffers(struct nvmet_tcp_queue *queue)
+{
+	struct nvmet_tcp_cmd *cmd = queue->cmds;
+	int i;
+
+	\
+for (i = 0; i < queue->nr_cmds; i++, cmd++) {
+		if (nvmet_tcp_need_data_in(cmd))
+			nvmet_tcp_free_cmd_buffers(cmd);
+	}
+
+	if (!queue->\
+nr_cmds && nvmet_tcp_need_data_in(&queue->connect))
+		nvmet_tcp_free_cmd_buffers(&queue->connect);
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="tcp.c",
+		FULL_NAME=nvmet_tcp_free_cmd_data_in_buffers,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=1579,
+		LINE_NUMBER_END=1591,
+		NAME=nvmet_tcp_free_cmd_data_in_buffers,
+		ORDER=90,
+		SIGNATURE="void nvmet_tcp_free_cmd_data_in_buffers (nvmet_tcp_queue*)",
+		filename="tcp.c",
+		label=METHOD];
+	5095 -> 5001	[label=CALL];
+	5001 -> 5029	[label=REACHING_DEF];
+	5001 -> 5025	[label=REACHING_DEF];
+	5001 -> 5032	[label=REACHING_DEF];
+	5001 -> 5002	[label=REACHING_DEF];
+	5060	[ARGUMENT_INDEX=1,
+		CODE="queue->queue_list",
+		COLUMN_NUMBER=17,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1599,
+		METHOD_FULL_NAME="<operator>.indirectFieldAccess",
+		NAME="<operator>.indirectFieldAccess",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5060 -> 5084	[VARIABLE="queue->queue_list",
+		label=REACHING_DEF];
+	5060 -> 5096	[VARIABLE="queue->queue_list",
+		label=REACHING_DEF];
+	5060 -> 5067	[VARIABLE="queue->queue_list",
+		label=REACHING_DEF];
+}

@@ -27,20 +27,21 @@ from slices.slice_from_strategy import slice_from_strategy
 
 def main():
     commit_id = config.COMMIT_ID
-    stamp = get_time()
+    # stamp = get_time()
+    stamp = '20240708083706'
     # request patch analysis
-    parsed_savepath = do_patch_analysis(commit_id, stamp)
-    # request statements extraction
-    parsed_savepath = do_stmt_extraction(commit_id, stamp)
-    # request slicing strategy (function)
-    parsed_savepath = do_slicing_strategy(commit_id, stamp)
-    # slice (function)
+    # parsed_savepath = do_patch_analysis(commit_id, stamp)
+    # # request statements extraction
+    # parsed_savepath = do_stmt_extraction(commit_id, stamp)
+    # # # request slicing strategy (function)
+    # parsed_savepath = do_slicing_strategy(commit_id, stamp)
+    # # slice (function)
     slice_depth = 'function'
-    slice_from_strategy(slice_depth="function", match_criterion="patch", url=config.LINUX, commit_id=commit_id, parsed_filepath=parsed_savepath)
-    # request core operations
-    parsed_savepath = do_core_operations(commit_id, stamp, slice_depth)
-    # request integrity analysis
-    parsed_savepath = do_integrity_analysis(commit_id, stamp, slice_depth)
+    # slice_from_strategy(slice_depth="function", match_criterion="patch", url=config.LINUX, commit_id=commit_id, parsed_filepath=parsed_savepath)
+    # # request core operations
+    # parsed_savepath = do_core_operations(commit_id, stamp, slice_depth)
+    # # request integrity analysis
+    # parsed_savepath = do_integrity_analysis(commit_id, stamp, slice_depth)
     # request further slicing strategy (file)
     parsed_savepath = do_further_slicing(commit_id, stamp, slice_depth)
     # slice (file)

@@ -1,0 +1,84 @@
+strict digraph "" {
+	node [label="\N"];
+	1448	[AST_PARENT_FULL_NAME="messenger_v2.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static int decode_preamble(void *p, struct ceph_frame_desc *desc)
+{
+	void *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;
+	u32 crc, \
+expected_crc;
+	int i;
+
+	crc = crc32c(0, p, crcp - p);
+	expected_crc = get_unaligned_le32(crcp);
+	if (crc != expected_crc) {
+		pr_\
+err(\"bad preamble crc, calculated %u, expected %u\\n\",
+		       crc, expected_crc);
+		return -EBADMSG;
+	}
+
+	memset(desc, 0, sizeof(*\
+desc));
+
+	desc->fd_tag = ceph_decode_8(&p);
+	desc->fd_seg_cnt = ceph_decode_8(&p);
+	if (desc->fd_seg_cnt < 1 ||
+	    desc->fd_seg_\
+cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {
+		pr_err(\"bad segment count %d\\n\", desc->fd_seg_cnt);
+		return -EINVAL;
+	}
+	for (i = 0; i < \
+desc->fd_seg_cnt; i++) {
+		desc->fd_lens[i] = ceph_decode_32(&p);
+		desc->fd_aligns[i] = ceph_decode_16(&p);
+	}
+
+	/*
+	 * This would \
+fire for FRAME_TAG_WAIT (it has one empty
+	 * segment), but we should never get it as client.
+	 */
+	if (!desc->fd_lens[desc->fd_\
+seg_cnt - 1]) {
+		pr_err(\"last segment empty\\n\");
+		return -EINVAL;
+	}
+
+	if (desc->fd_l...",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="messenger_v2.c",
+		FULL_NAME=decode_preamble,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=495,
+		LINE_NUMBER_END=550,
+		NAME=decode_preamble,
+		ORDER=36,
+		SIGNATURE="int decode_preamble (void*,ceph_frame_desc*)",
+		filename="messenger_v2.c",
+		label=METHOD];
+	1572	[ARGUMENT_INDEX=1,
+		CODE="\"last segment empty\\n\"",
+		COLUMN_NUMBER=10,
+		LINE_NUMBER=528,
+		ORDER=1,
+		TYPE_FULL_NAME=char,
+		filename="messenger_v2.c",
+		label=LITERAL];
+	1448 -> 1572	[label=REACHING_DEF];
+	1571	[ARGUMENT_INDEX=-1,
+		CODE="pr_err(\"last segment empty\\n\")",
+		COLUMN_NUMBER=3,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=528,
+		METHOD_FULL_NAME=pr_err,
+		NAME=pr_err,
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1572 -> 1571	[VARIABLE="\"last segment empty\\n\"",
+		label=REACHING_DEF];
+}

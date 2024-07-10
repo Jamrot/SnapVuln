@@ -1,0 +1,117 @@
+digraph "" {
+	node [label="\N"];
+	5028	[ARGUMENT_INDEX=-1,
+		CODE="nvmet_tcp_need_data_in(cmd)",
+		COLUMN_NUMBER=7,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1585,
+		METHOD_FULL_NAME=nvmet_tcp_need_data_in,
+		NAME=nvmet_tcp_need_data_in,
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	347	[AST_PARENT_FULL_NAME="tcp.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static inline bool nvmet_tcp_need_data_in(struct nvmet_tcp_cmd *cmd)
+{
+	return nvmet_tcp_has_data_in(cmd) && !cmd->req.cqe->status;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="tcp.c",
+		FULL_NAME=nvmet_tcp_need_data_in,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=238,
+		LINE_NUMBER_END=241,
+		NAME=nvmet_tcp_need_data_in,
+		ORDER=30,
+		SIGNATURE="bool nvmet_tcp_need_data_in (nvmet_tcp_cmd*)",
+		filename="tcp.c",
+		label=METHOD];
+	5028 -> 347	[label=CALL];
+	5031	[ARGUMENT_INDEX=1,
+		CODE="nvmet_tcp_free_cmd_buffers(cmd)",
+		COLUMN_NUMBER=4,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1586,
+		METHOD_FULL_NAME=nvmet_tcp_free_cmd_buffers,
+		NAME=nvmet_tcp_free_cmd_buffers,
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5028 -> 5031	[label=CDG];
+	5032	[ARGUMENT_INDEX=1,
+		CODE=cmd,
+		COLUMN_NUMBER=31,
+		LINE_NUMBER=1586,
+		NAME=cmd,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_cmd*",
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5028 -> 5032	[label=CDG];
+	299	[AST_PARENT_FULL_NAME="tcp.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static void nvmet_tcp_free_cmd_buffers(struct nvmet_tcp_cmd *cmd);",
+		COLUMN_NUMBER=13,
+		COLUMN_NUMBER_END=65,
+		FILENAME="tcp.c",
+		FULL_NAME=nvmet_tcp_free_cmd_buffers,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=219,
+		LINE_NUMBER_END=219,
+		NAME=nvmet_tcp_free_cmd_buffers,
+		ORDER=27,
+		SIGNATURE="void nvmet_tcp_free_cmd_buffers (nvmet_tcp_cmd*)",
+		filename="tcp.c",
+		label=METHOD];
+	5031 -> 299	[label=CALL];
+	682	[AST_PARENT_FULL_NAME="tcp.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static void nvmet_tcp_free_cmd_buffers(struct nvmet_tcp_cmd *cmd)
+{
+	kfree(cmd->iov);
+	sgl_free(cmd->req.sg);
+	cmd->iov = NULL;
+	\
+cmd->req.sg = NULL;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="tcp.c",
+		FULL_NAME=nvmet_tcp_free_cmd_buffers,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=351,
+		LINE_NUMBER_END=357,
+		NAME=nvmet_tcp_free_cmd_buffers,
+		ORDER=41,
+		SIGNATURE="void nvmet_tcp_free_cmd_buffers (nvmet_tcp_cmd*)",
+		filename="tcp.c",
+		label=METHOD];
+	5031 -> 682	[label=CALL];
+	5016	[ARGUMENT_INDEX=2,
+		CODE="i < queue->nr_cmds",
+		COLUMN_NUMBER=14,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=1584,
+		METHOD_FULL_NAME="<operator>.lessThan",
+		NAME="<operator>.lessThan",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		filename="tcp.c",
+		label=CALL];
+	5016 -> 5028	[label=CDG];
+	5016 -> 5016	[label=CDG];
+	5029	[ARGUMENT_INDEX=1,
+		CODE=cmd,
+		COLUMN_NUMBER=30,
+		LINE_NUMBER=1585,
+		NAME=cmd,
+		ORDER=1,
+		TYPE_FULL_NAME="nvmet_tcp_cmd*",
+		filename="tcp.c",
+		label=IDENTIFIER];
+	5016 -> 5029	[label=CDG];
+}

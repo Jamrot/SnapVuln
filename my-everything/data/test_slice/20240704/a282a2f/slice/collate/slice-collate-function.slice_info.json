@@ -24,78 +24,90 @@
       "415": {
         "code": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);\n",
         "function": "static int __tail_onwire_len(int front_len, int middle_len, int data_len,"
-      },
-      "501": {
+      }
+    },
+    "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_old/net/ceph/messenger_v2.c": {
+      "495": {
         "code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "503": {
+      "497": {
         "code": "\tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "507": {
+      "501": {
         "code": "\tcrc = crc32c(0, p, crcp - p);\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "515": {
+      "509": {
         "code": "\tmemset(desc, 0, sizeof(*desc));\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "517": {
+      "511": {
         "code": "\tdesc->fd_tag = ceph_decode_8(&p);\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "518": {
+      "512": {
         "code": "\tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "519": {
+      "513": {
         "code": "\tif (desc->fd_seg_cnt < 1 ||\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "520": {
+      "514": {
         "code": "\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "524": {
+      "518": {
         "code": "\tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "525": {
+      "519": {
         "code": "\t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "526": {
+      "520": {
         "code": "\t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "529": {
-        "code": "\tif (desc->fd_lens[0] < 0 ||\n",
+      "527": {
+        "code": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       },
-      "530": {
-        "code": "\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+      "532": {
+        "code": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
         "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
       }
     }
   },
   "nodes": {
-    "1247": {
+    "1240": {
       "ARGUMENT_INDEX": "2",
-      "CODE": "data_len > CEPH_MSG_MAX_DATA_LEN",
-      "COLUMN_NUMBER": "25",
+      "CODE": "0",
+      "COLUMN_NUMBER": "22",
+      "LINE_NUMBER": "414",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1238": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "middle_len < 0",
+      "COLUMN_NUMBER": "9",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "415",
-      "METHOD_FULL_NAME": "<operator>.greaterThan",
-      "NAME": "<operator>.greaterThan",
+      "LINE_NUMBER": "414",
+      "METHOD_FULL_NAME": "<operator>.lessThan",
+      "NAME": "<operator>.lessThan",
       "ORDER": "2",
       "TYPE_FULL_NAME": "<empty>",
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1227": {
+    "1230": {
       "ARGUMENT_INDEX": "1",
-      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0",
       "COLUMN_NUMBER": "9",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
       "LINE_NUMBER": "413",
@@ -106,9 +118,91 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1228": {
+    "1232": {
       "ARGUMENT_INDEX": "1",
-      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0",
+      "CODE": "front_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.lessThan",
+      "NAME": "<operator>.lessThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1231": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1236": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len",
+      "COLUMN_NUMBER": "26",
+      "LINE_NUMBER": "413",
+      "NAME": "front_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1239": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "middle_len",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "414",
+      "NAME": "middle_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1237": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "38",
+      "LINE_NUMBER": "413",
+      "NAME": "CEPH_MSG_MAX_FRONT_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1235": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "front_len > CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "26",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1234": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "21",
+      "LINE_NUMBER": "413",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1227": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN",
       "COLUMN_NUMBER": "9",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
       "LINE_NUMBER": "413",
@@ -132,25 +226,28 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1246": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
-      "COLUMN_NUMBER": "20",
-      "LINE_NUMBER": "415",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "LITERAL"
-    },
-    "1244": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "data_len < 0",
+    "1229": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
       "COLUMN_NUMBER": "9",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "415",
-      "METHOD_FULL_NAME": "<operator>.lessThan",
-      "NAME": "<operator>.lessThan",
-      "ORDER": "2",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1228": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
       "TYPE_FULL_NAME": "<empty>",
       "filename": "messenger_v2.c",
       "label": "CALL"
@@ -166,19 +263,6 @@
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1229": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
-      "COLUMN_NUMBER": "9",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "413",
-      "METHOD_FULL_NAME": "<operator>.logicalOr",
-      "NAME": "<operator>.logicalOr",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
     "1248": {
       "ARGUMENT_INDEX": "1",
       "CODE": "data_len",
@@ -190,18 +274,15 @@
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1221": {
-      "CODE": "int front_len",
-      "COLUMN_NUMBER": "30",
-      "EVALUATION_STRATEGY": "BY_VALUE",
-      "INDEX": "1",
-      "IS_VARIADIC": "false",
-      "LINE_NUMBER": "410",
-      "NAME": "front_len",
-      "ORDER": "1",
+    "1246": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "415",
+      "ORDER": "2",
       "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
-      "label": "METHOD_PARAMETER_IN"
+      "label": "LITERAL"
     },
     "1233": {
       "ARGUMENT_INDEX": "1",
@@ -211,52 +292,6 @@
       "NAME": "front_len",
       "ORDER": "1",
       "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1232": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "front_len < 0",
-      "COLUMN_NUMBER": "9",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "413",
-      "METHOD_FULL_NAME": "<operator>.lessThan",
-      "NAME": "<operator>.lessThan",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1236": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "front_len",
-      "COLUMN_NUMBER": "26",
-      "LINE_NUMBER": "413",
-      "NAME": "front_len",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1249": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_MSG_MAX_DATA_LEN",
-      "COLUMN_NUMBER": "36",
-      "LINE_NUMBER": "415",
-      "NAME": "CEPH_MSG_MAX_DATA_LEN",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1243": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_MSG_MAX_MIDDLE_LEN",
-      "COLUMN_NUMBER": "40",
-      "LINE_NUMBER": "414",
-      "NAME": "CEPH_MSG_MAX_MIDDLE_LEN",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
@@ -273,49 +308,23 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1242": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "middle_len",
-      "COLUMN_NUMBER": "27",
+    "1243": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_MIDDLE_LEN",
+      "COLUMN_NUMBER": "40",
       "LINE_NUMBER": "414",
-      "NAME": "middle_len",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "int",
+      "NAME": "CEPH_MSG_MAX_MIDDLE_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1230": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0",
-      "COLUMN_NUMBER": "9",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "413",
-      "METHOD_FULL_NAME": "<operator>.logicalOr",
-      "NAME": "<operator>.logicalOr",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1231": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN",
-      "COLUMN_NUMBER": "9",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "413",
-      "METHOD_FULL_NAME": "<operator>.logicalOr",
-      "NAME": "<operator>.logicalOr",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1235": {
+    "1247": {
       "ARGUMENT_INDEX": "2",
-      "CODE": "front_len > CEPH_MSG_MAX_FRONT_LEN",
-      "COLUMN_NUMBER": "26",
+      "CODE": "data_len > CEPH_MSG_MAX_DATA_LEN",
+      "COLUMN_NUMBER": "25",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "413",
+      "LINE_NUMBER": "415",
       "METHOD_FULL_NAME": "<operator>.greaterThan",
       "NAME": "<operator>.greaterThan",
       "ORDER": "2",
@@ -323,12 +332,23 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1238": {
+    "1249": {
       "ARGUMENT_INDEX": "2",
-      "CODE": "middle_len < 0",
+      "CODE": "CEPH_MSG_MAX_DATA_LEN",
+      "COLUMN_NUMBER": "36",
+      "LINE_NUMBER": "415",
+      "NAME": "CEPH_MSG_MAX_DATA_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1244": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "data_len < 0",
       "COLUMN_NUMBER": "9",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "414",
+      "LINE_NUMBER": "415",
       "METHOD_FULL_NAME": "<operator>.lessThan",
       "NAME": "<operator>.lessThan",
       "ORDER": "2",
@@ -336,20 +356,10 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1240": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
-      "COLUMN_NUMBER": "22",
-      "LINE_NUMBER": "414",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "LITERAL"
-    },
-    "1239": {
+    "1242": {
       "ARGUMENT_INDEX": "1",
       "CODE": "middle_len",
-      "COLUMN_NUMBER": "9",
+      "COLUMN_NUMBER": "27",
       "LINE_NUMBER": "414",
       "NAME": "middle_len",
       "ORDER": "1",
@@ -374,219 +384,33 @@
       "filename": "messenger_v2.c",
       "label": "METHOD"
     },
-    "1222": {
-      "CODE": "int middle_len",
-      "COLUMN_NUMBER": "45",
-      "EVALUATION_STRATEGY": "BY_VALUE",
-      "INDEX": "2",
-      "IS_VARIADIC": "false",
-      "LINE_NUMBER": "410",
-      "NAME": "middle_len",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "METHOD_PARAMETER_IN"
-    },
-    "1223": {
-      "CODE": "int data_len",
-      "COLUMN_NUMBER": "61",
-      "EVALUATION_STRATEGY": "BY_VALUE",
-      "INDEX": "3",
-      "IS_VARIADIC": "false",
-      "LINE_NUMBER": "410",
-      "NAME": "data_len",
-      "ORDER": "3",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "METHOD_PARAMETER_IN"
-    },
-    "1234": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
-      "COLUMN_NUMBER": "21",
-      "LINE_NUMBER": "413",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "LITERAL"
-    },
-    "1237": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_MSG_MAX_FRONT_LEN",
-      "COLUMN_NUMBER": "38",
-      "LINE_NUMBER": "413",
-      "NAME": "CEPH_MSG_MAX_FRONT_LEN",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1581": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "p",
-      "COLUMN_NUMBER": "38",
-      "LINE_NUMBER": "525",
-      "NAME": "p",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "void*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1580": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "&p",
-      "COLUMN_NUMBER": "37",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "525",
-      "METHOD_FULL_NAME": "<operator>.addressOf",
-      "NAME": "<operator>.addressOf",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1590": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "p",
-      "COLUMN_NUMBER": "40",
-      "LINE_NUMBER": "526",
-      "NAME": "p",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "void*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1579": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "ceph_decode_32(&p)",
-      "COLUMN_NUMBER": "22",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "525",
-      "METHOD_FULL_NAME": "ceph_decode_32",
-      "NAME": "ceph_decode_32",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1589": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "&p",
-      "COLUMN_NUMBER": "39",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "526",
-      "METHOD_FULL_NAME": "<operator>.addressOf",
-      "NAME": "<operator>.addressOf",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1600": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "530",
-      "METHOD_FULL_NAME": "<operator>.greaterThan",
-      "NAME": "<operator>.greaterThan",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1592": {
-      "ARGUMENT_INDEX": "-1",
-      "CODE": "desc->fd_lens[0] < 0 ||\n\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "529",
-      "METHOD_FULL_NAME": "<operator>.logicalOr",
-      "NAME": "<operator>.logicalOr",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1593": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_lens[0] < 0",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "529",
-      "METHOD_FULL_NAME": "<operator>.lessThan",
-      "NAME": "<operator>.lessThan",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1536": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "ceph_decode_8(&p)",
-      "COLUMN_NUMBER": "21",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "518",
-      "METHOD_FULL_NAME": "ceph_decode_8",
-      "NAME": "ceph_decode_8",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1533": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_seg_cnt",
-      "COLUMN_NUMBER": "2",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "518",
-      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
-      "NAME": "<operator>.indirectFieldAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1542": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_seg_cnt",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "519",
-      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
-      "NAME": "<operator>.indirectFieldAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1498": {
+    "1466": {
       "ARGUMENT_INDEX": "1",
       "CODE": "0",
       "COLUMN_NUMBER": "15",
-      "LINE_NUMBER": "507",
+      "LINE_NUMBER": "501",
       "ORDER": "1",
       "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
       "label": "LITERAL"
     },
-    "1499": {
+    "1467": {
       "ARGUMENT_INDEX": "2",
       "CODE": "p",
       "COLUMN_NUMBER": "18",
-      "LINE_NUMBER": "507",
+      "LINE_NUMBER": "501",
       "NAME": "p",
       "ORDER": "2",
       "TYPE_FULL_NAME": "void*",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1500": {
+    "1468": {
       "ARGUMENT_INDEX": "3",
       "CODE": "crcp - p",
       "COLUMN_NUMBER": "21",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "507",
+      "LINE_NUMBER": "501",
       "METHOD_FULL_NAME": "<operator>.subtraction",
       "NAME": "<operator>.subtraction",
       "ORDER": "3",
@@ -594,344 +418,218 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1538": {
+    "1549": {
       "ARGUMENT_INDEX": "1",
       "CODE": "p",
-      "COLUMN_NUMBER": "36",
-      "LINE_NUMBER": "518",
+      "COLUMN_NUMBER": "38",
+      "LINE_NUMBER": "519",
       "NAME": "p",
       "ORDER": "1",
       "TYPE_FULL_NAME": "void*",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1531": {
+    "1558": {
       "ARGUMENT_INDEX": "1",
       "CODE": "p",
-      "COLUMN_NUMBER": "32",
-      "LINE_NUMBER": "517",
+      "COLUMN_NUMBER": "40",
+      "LINE_NUMBER": "520",
       "NAME": "p",
       "ORDER": "1",
       "TYPE_FULL_NAME": "void*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1499": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "p",
+      "COLUMN_NUMBER": "32",
+      "LINE_NUMBER": "511",
+      "NAME": "p",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "void*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1506": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "p",
+      "COLUMN_NUMBER": "36",
+      "LINE_NUMBER": "512",
+      "NAME": "p",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "void*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1454": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "crcp",
+      "COLUMN_NUMBER": "8",
+      "LINE_NUMBER": "497",
+      "NAME": "crcp",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "void*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1469": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "crcp",
+      "COLUMN_NUMBER": "21",
+      "LINE_NUMBER": "501",
+      "NAME": "crcp",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "void*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1470": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "p",
+      "COLUMN_NUMBER": "28",
+      "LINE_NUMBER": "501",
+      "NAME": "p",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "void*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1569": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "1",
+      "COLUMN_NUMBER": "40",
+      "LINE_NUMBER": "527",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1565": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "desc->fd_seg_cnt - 1",
+      "COLUMN_NUMBER": "21",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "527",
+      "METHOD_FULL_NAME": "<operator>.subtraction",
+      "NAME": "<operator>.subtraction",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1566": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_seg_cnt",
+      "COLUMN_NUMBER": "21",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "527",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1510": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_seg_cnt",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "513",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1515": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_seg_cnt",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "514",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1535": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "desc->fd_seg_cnt",
+      "COLUMN_NUMBER": "18",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "518",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1534": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "i",
+      "COLUMN_NUMBER": "14",
+      "LINE_NUMBER": "518",
+      "NAME": "i",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
     "1563": {
       "ARGUMENT_INDEX": "1",
-      "CODE": "i",
+      "CODE": "desc",
       "COLUMN_NUMBER": "7",
-      "LINE_NUMBER": "524",
-      "NAME": "i",
+      "LINE_NUMBER": "527",
+      "NAME": "desc",
       "ORDER": "1",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1566": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "i",
-      "COLUMN_NUMBER": "14",
-      "LINE_NUMBER": "524",
-      "NAME": "i",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "int",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
     "1567": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "desc->fd_seg_cnt",
-      "COLUMN_NUMBER": "18",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "524",
-      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
-      "NAME": "<operator>.indirectFieldAccess",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "<empty>",
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "21",
+      "LINE_NUMBER": "527",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
       "filename": "messenger_v2.c",
-      "label": "CALL"
+      "label": "IDENTIFIER"
     },
-    "1571": {
+    "1539": {
       "ARGUMENT_INDEX": "1",
       "CODE": "i",
       "COLUMN_NUMBER": "36",
-      "LINE_NUMBER": "524",
+      "LINE_NUMBER": "518",
       "NAME": "i",
       "ORDER": "1",
       "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1596": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc",
-      "COLUMN_NUMBER": "6",
-      "LINE_NUMBER": "529",
-      "NAME": "desc",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "ceph_frame_desc*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1537": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "&p",
-      "COLUMN_NUMBER": "35",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "518",
-      "METHOD_FULL_NAME": "<operator>.addressOf",
-      "NAME": "<operator>.addressOf",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1594": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_lens[0]",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "529",
-      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
-      "NAME": "<operator>.indirectIndexAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1601": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_lens[0]",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "530",
-      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
-      "NAME": "<operator>.indirectIndexAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1486": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "crcp",
-      "COLUMN_NUMBER": "8",
-      "LINE_NUMBER": "503",
-      "NAME": "crcp",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "void*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1501": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "crcp",
-      "COLUMN_NUMBER": "21",
-      "LINE_NUMBER": "507",
-      "NAME": "crcp",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "void*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1502": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "p",
-      "COLUMN_NUMBER": "28",
-      "LINE_NUMBER": "507",
-      "NAME": "p",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "void*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1574": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_lens[i]",
-      "COLUMN_NUMBER": "3",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "525",
-      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
-      "NAME": "<operator>.indirectIndexAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1595": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_lens",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "529",
-      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
-      "NAME": "<operator>.indirectFieldAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1530": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "&p",
-      "COLUMN_NUMBER": "31",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "517",
-      "METHOD_FULL_NAME": "<operator>.addressOf",
-      "NAME": "<operator>.addressOf",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1529": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "ceph_decode_8(&p)",
-      "COLUMN_NUMBER": "17",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "517",
-      "METHOD_FULL_NAME": "ceph_decode_8",
-      "NAME": "ceph_decode_8",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1606": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_MSG_MAX_CONTROL_LEN",
-      "COLUMN_NUMBER": "25",
-      "LINE_NUMBER": "530",
-      "NAME": "CEPH_MSG_MAX_CONTROL_LEN",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1520": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc",
-      "COLUMN_NUMBER": "9",
-      "LINE_NUMBER": "515",
-      "NAME": "desc",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "ceph_frame_desc*",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1547": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_seg_cnt",
-      "COLUMN_NUMBER": "6",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "520",
-      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
-      "NAME": "<operator>.indirectFieldAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1521": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
-      "COLUMN_NUMBER": "15",
-      "LINE_NUMBER": "515",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "LITERAL"
-    },
-    "1545": {
+    "1513": {
       "ARGUMENT_INDEX": "2",
       "CODE": "1",
       "COLUMN_NUMBER": "25",
-      "LINE_NUMBER": "519",
+      "LINE_NUMBER": "513",
       "ORDER": "2",
       "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
       "label": "LITERAL"
     },
-    "1550": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_FRAME_MAX_SEGMENT_COUNT",
-      "COLUMN_NUMBER": "25",
-      "LINE_NUMBER": "520",
-      "NAME": "CEPH_FRAME_MAX_SEGMENT_COUNT",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1526": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "desc->fd_tag",
-      "COLUMN_NUMBER": "2",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "517",
-      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
-      "NAME": "<operator>.indirectFieldAccess",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1487": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN",
-      "COLUMN_NUMBER": "15",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "503",
-      "METHOD_FULL_NAME": "<operator>.subtraction",
-      "NAME": "<operator>.subtraction",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1482": {
-      "CODE": "struct ceph_frame_desc *desc",
-      "COLUMN_NUMBER": "37",
-      "EVALUATION_STRATEGY": "BY_VALUE",
-      "INDEX": "2",
-      "IS_VARIADIC": "false",
-      "LINE_NUMBER": "501",
-      "NAME": "desc",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ceph_frame_desc*",
-      "filename": "messenger_v2.c",
-      "label": "METHOD_PARAMETER_IN"
-    },
-    "1523": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "*desc",
-      "COLUMN_NUMBER": "25",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "515",
-      "METHOD_FULL_NAME": "<operator>.indirection",
-      "NAME": "<operator>.indirection",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1491": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_CRC_LEN",
-      "COLUMN_NUMBER": "39",
-      "LINE_NUMBER": "503",
-      "NAME": "CEPH_CRC_LEN",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1488": {
+    "1456": {
       "ARGUMENT_INDEX": "1",
       "CODE": "p + CEPH_PREAMBLE_LEN",
       "COLUMN_NUMBER": "15",
       "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "503",
+      "LINE_NUMBER": "497",
       "METHOD_FULL_NAME": "<operator>.addition",
       "NAME": "<operator>.addition",
       "ORDER": "1",
@@ -939,100 +637,400 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1481": {
+    "1455": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN",
+      "COLUMN_NUMBER": "15",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "497",
+      "METHOD_FULL_NAME": "<operator>.subtraction",
+      "NAME": "<operator>.subtraction",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1449": {
       "CODE": "void *p",
       "COLUMN_NUMBER": "28",
       "EVALUATION_STRATEGY": "BY_VALUE",
       "INDEX": "1",
       "IS_VARIADIC": "false",
-      "LINE_NUMBER": "501",
+      "LINE_NUMBER": "495",
       "NAME": "p",
       "ORDER": "1",
       "TYPE_FULL_NAME": "void*",
       "filename": "messenger_v2.c",
       "label": "METHOD_PARAMETER_IN"
     },
-    "1489": {
+    "1457": {
       "ARGUMENT_INDEX": "1",
       "CODE": "p",
       "COLUMN_NUMBER": "15",
-      "LINE_NUMBER": "503",
+      "LINE_NUMBER": "497",
       "NAME": "p",
       "ORDER": "1",
       "TYPE_FULL_NAME": "void*",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1564": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
-      "COLUMN_NUMBER": "11",
-      "LINE_NUMBER": "524",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "LITERAL"
-    },
-    "1599": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
+    "1491": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "*desc",
       "COLUMN_NUMBER": "25",
-      "LINE_NUMBER": "529",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "509",
+      "METHOD_FULL_NAME": "<operator>.indirection",
+      "NAME": "<operator>.indirection",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
       "filename": "messenger_v2.c",
-      "label": "LITERAL"
+      "label": "CALL"
     },
-    "1480": {
-      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
-      "AST_PARENT_TYPE": "TYPE_DECL",
-      "CODE": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n{\n\tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n\tu32 crc, expected_crc;\n\tint i;\n\n\tcrc = crc32c(0, p, crcp - p);\n\texpected_crc = get_unaligned_le32(crcp);\n\tif (crc != expected_crc) {\n\t\tpr_err(\"bad preamble crc, calculated %u, expected %u\\\\n\",\n\t\t       crc, expected_crc);\n\t\treturn -EBADMSG;\n\t}\n\n\tmemset(desc, 0, sizeof(*desc));\n\n\tdesc->fd_tag = ceph_decode_8(&p);\n\tdesc->fd_seg_cnt = ceph_decode_8(&p);\n\tif (desc->fd_seg_cnt < 1 ||\n\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n\t\tpr_err(\"bad segment count %d\\\\n\", desc->fd_seg_cnt);\n\t\treturn -EINVAL;\n\t}\n\tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n\t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n\t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n\t}\n\n\tif (desc->fd_lens[0] < 0 ||\n\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n\t\tpr_err(\"bad control segment length %d\\\\n\", desc->fd_lens[0]);\n\t\treturn -EINVAL;\n\t}\n\tif (desc->fd_lens[1] < 0 ||\n\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRO...",
-      "COLUMN_NUMBER": "1",
-      "COLUMN_NUMBER_END": "1",
-      "FILENAME": "messenger_v2.c",
-      "FULL_NAME": "decode_preamble",
-      "IS_EXTERNAL": "false",
-      "LINE_NUMBER": "501",
-      "LINE_NUMBER_END": "561",
-      "NAME": "decode_preamble",
-      "ORDER": "36",
-      "SIGNATURE": "int decode_preamble (void*,ceph_frame_desc*)",
+    "1488": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "509",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
       "filename": "messenger_v2.c",
-      "label": "METHOD"
+      "label": "IDENTIFIER"
     },
-    "1490": {
+    "1562": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_lens",
+      "COLUMN_NUMBER": "7",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "527",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1458": {
       "ARGUMENT_INDEX": "2",
       "CODE": "CEPH_PREAMBLE_LEN",
       "COLUMN_NUMBER": "19",
-      "LINE_NUMBER": "503",
+      "LINE_NUMBER": "497",
       "NAME": "CEPH_PREAMBLE_LEN",
       "ORDER": "2",
       "TYPE_FULL_NAME": "ANY",
       "filename": "messenger_v2.c",
       "label": "IDENTIFIER"
     },
-    "1598": {
+    "1505": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "&p",
+      "COLUMN_NUMBER": "35",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "512",
+      "METHOD_FULL_NAME": "<operator>.addressOf",
+      "NAME": "<operator>.addressOf",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1504": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ceph_decode_8(&p)",
+      "COLUMN_NUMBER": "21",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "512",
+      "METHOD_FULL_NAME": "ceph_decode_8",
+      "NAME": "ceph_decode_8",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1548": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "&p",
+      "COLUMN_NUMBER": "37",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "519",
+      "METHOD_FULL_NAME": "<operator>.addressOf",
+      "NAME": "<operator>.addressOf",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1501": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_seg_cnt",
+      "COLUMN_NUMBER": "2",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "512",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1547": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ceph_decode_32(&p)",
+      "COLUMN_NUMBER": "22",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "519",
+      "METHOD_FULL_NAME": "ceph_decode_32",
+      "NAME": "ceph_decode_32",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1557": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "&p",
+      "COLUMN_NUMBER": "39",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "520",
+      "METHOD_FULL_NAME": "<operator>.addressOf",
+      "NAME": "<operator>.addressOf",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1450": {
+      "CODE": "struct ceph_frame_desc *desc",
+      "COLUMN_NUMBER": "37",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "INDEX": "2",
+      "IS_VARIADIC": "false",
+      "LINE_NUMBER": "495",
+      "NAME": "desc",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_PARAMETER_IN"
+    },
+    "1531": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "i",
+      "COLUMN_NUMBER": "7",
+      "LINE_NUMBER": "518",
+      "NAME": "i",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1497": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ceph_decode_8(&p)",
+      "COLUMN_NUMBER": "17",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "511",
+      "METHOD_FULL_NAME": "ceph_decode_8",
+      "NAME": "ceph_decode_8",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1494": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_tag",
+      "COLUMN_NUMBER": "2",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "511",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1459": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CRC_LEN",
+      "COLUMN_NUMBER": "39",
+      "LINE_NUMBER": "497",
+      "NAME": "CEPH_CRC_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1542": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_lens[i]",
+      "COLUMN_NUMBER": "3",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "519",
+      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
+      "NAME": "<operator>.indirectIndexAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1498": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "&p",
+      "COLUMN_NUMBER": "31",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "511",
+      "METHOD_FULL_NAME": "<operator>.addressOf",
+      "NAME": "<operator>.addressOf",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1518": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_FRAME_MAX_SEGMENT_COUNT",
+      "COLUMN_NUMBER": "25",
+      "LINE_NUMBER": "514",
+      "NAME": "CEPH_FRAME_MAX_SEGMENT_COUNT",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1448": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n{\n\tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n\tu32 crc, expected_crc;\n\tint i;\n\n\tcrc = crc32c(0, p, crcp - p);\n\texpected_crc = get_unaligned_le32(crcp);\n\tif (crc != expected_crc) {\n\t\tpr_err(\"bad preamble crc, calculated %u, expected %u\\\\n\",\n\t\t       crc, expected_crc);\n\t\treturn -EBADMSG;\n\t}\n\n\tmemset(desc, 0, sizeof(*desc));\n\n\tdesc->fd_tag = ceph_decode_8(&p);\n\tdesc->fd_seg_cnt = ceph_decode_8(&p);\n\tif (desc->fd_seg_cnt < 1 ||\n\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n\t\tpr_err(\"bad segment count %d\\\\n\", desc->fd_seg_cnt);\n\t\treturn -EINVAL;\n\t}\n\tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n\t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n\t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n\t}\n\n\t/*\n\t * This would fire for FRAME_TAG_WAIT (it has one empty\n\t * segment), but we should never get it as client.\n\t */\n\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n\t\tpr_err(\"last segment empty\\\\n\");\n\t\treturn -EINVAL;\n\t}\n\n\tif (desc->fd_l...",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "1",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "decode_preamble",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "495",
+      "LINE_NUMBER_END": "550",
+      "NAME": "decode_preamble",
+      "ORDER": "36",
+      "SIGNATURE": "int decode_preamble (void*,ceph_frame_desc*)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    },
+    "1489": {
       "ARGUMENT_INDEX": "2",
       "CODE": "0",
-      "COLUMN_NUMBER": "20",
-      "LINE_NUMBER": "529",
+      "COLUMN_NUMBER": "15",
+      "LINE_NUMBER": "509",
       "ORDER": "2",
       "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
       "label": "LITERAL"
     },
-    "1178": {
+    "1532": {
       "ARGUMENT_INDEX": "2",
-      "CODE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
-      "COLUMN_NUMBER": "25",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "393",
-      "METHOD_FULL_NAME": "<operator>.greaterThan",
-      "NAME": "<operator>.greaterThan",
+      "CODE": "0",
+      "COLUMN_NUMBER": "11",
+      "LINE_NUMBER": "518",
       "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1561": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_lens[desc->fd_seg_cnt - 1]",
+      "COLUMN_NUMBER": "7",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "527",
+      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
+      "NAME": "<operator>.indirectIndexAccess",
+      "ORDER": "1",
       "TYPE_FULL_NAME": "<empty>",
       "filename": "messenger_v2.c",
       "label": "CALL"
+    },
+    "1560": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "!desc->fd_lens[desc->fd_seg_cnt - 1]",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "527",
+      "METHOD_FULL_NAME": "<operator>.logicalNot",
+      "NAME": "<operator>.logicalNot",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1580": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "6",
+      "LINE_NUMBER": "532",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1579": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_lens",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "532",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1578": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc->fd_lens[0]",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "532",
+      "METHOD_FULL_NAME": "<operator>.indirectIndexAccess",
+      "NAME": "<operator>.indirectIndexAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1577": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "532",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1582": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "532",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1583": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "25",
+      "LINE_NUMBER": "532",
+      "NAME": "CEPH_MSG_MAX_CONTROL_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
     },
     "1174": {
       "ARGUMENT_INDEX": "1",
@@ -1042,19 +1040,6 @@
       "LINE_NUMBER": "393",
       "METHOD_FULL_NAME": "<operator>.logicalOr",
       "NAME": "<operator>.logicalOr",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "<empty>",
-      "filename": "messenger_v2.c",
-      "label": "CALL"
-    },
-    "1175": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "ctrl_len < 0",
-      "COLUMN_NUMBER": "9",
-      "DISPATCH_TYPE": "STATIC_DISPATCH",
-      "LINE_NUMBER": "393",
-      "METHOD_FULL_NAME": "<operator>.lessThan",
-      "NAME": "<operator>.lessThan",
       "ORDER": "1",
       "TYPE_FULL_NAME": "<empty>",
       "filename": "messenger_v2.c",
@@ -1073,49 +1058,6 @@
       "filename": "messenger_v2.c",
       "label": "CALL"
     },
-    "1180": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "CEPH_MSG_MAX_CONTROL_LEN",
-      "COLUMN_NUMBER": "36",
-      "LINE_NUMBER": "393",
-      "NAME": "CEPH_MSG_MAX_CONTROL_LEN",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "ANY",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1179": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "ctrl_len",
-      "COLUMN_NUMBER": "25",
-      "LINE_NUMBER": "393",
-      "NAME": "ctrl_len",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
-    "1177": {
-      "ARGUMENT_INDEX": "2",
-      "CODE": "0",
-      "COLUMN_NUMBER": "20",
-      "LINE_NUMBER": "393",
-      "ORDER": "2",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "LITERAL"
-    },
-    "1176": {
-      "ARGUMENT_INDEX": "1",
-      "CODE": "ctrl_len",
-      "COLUMN_NUMBER": "9",
-      "LINE_NUMBER": "393",
-      "NAME": "ctrl_len",
-      "ORDER": "1",
-      "TYPE_FULL_NAME": "int",
-      "filename": "messenger_v2.c",
-      "label": "IDENTIFIER"
-    },
     "1167": {
       "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
       "AST_PARENT_TYPE": "TYPE_DECL",
@@ -1133,720 +1075,632 @@
       "filename": "messenger_v2.c",
       "label": "METHOD"
     },
-    "1168": {
-      "CODE": "int ctrl_len",
-      "COLUMN_NUMBER": "28",
-      "EVALUATION_STRATEGY": "BY_VALUE",
-      "INDEX": "1",
-      "IS_VARIADIC": "false",
-      "LINE_NUMBER": "388",
+    "1176": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "393",
       "NAME": "ctrl_len",
       "ORDER": "1",
       "TYPE_FULL_NAME": "int",
       "filename": "messenger_v2.c",
-      "label": "METHOD_PARAMETER_IN"
+      "label": "IDENTIFIER"
+    },
+    "1177": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "393",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1175": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.lessThan",
+      "NAME": "<operator>.lessThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1179": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "ctrl_len",
+      "COLUMN_NUMBER": "25",
+      "LINE_NUMBER": "393",
+      "NAME": "ctrl_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1180": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "36",
+      "LINE_NUMBER": "393",
+      "NAME": "CEPH_MSG_MAX_CONTROL_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1178": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+      "COLUMN_NUMBER": "25",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "393",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
     }
   },
   "edges": {
-    "1247->1227": {
-      "VARIABLE": "data_len > CEPH_MSG_MAX_DATA_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1247->1228": {
-      "VARIABLE": "data_len > CEPH_MSG_MAX_DATA_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1227->1226": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1228->1247": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1228->1227": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1246->1244": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1246->1245": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1244->1228": {
-      "VARIABLE": "data_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1244->1229": {
-      "VARIABLE": "data_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1245->1244": {
-      "VARIABLE": "data_len",
-      "label": "REACHING_DEF"
-    },
-    "1245->1248": {
-      "VARIABLE": "data_len",
-      "label": "REACHING_DEF"
-    },
-    "1229->1228": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1229->1244": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1248->1247": {
-      "VARIABLE": "data_len",
-      "label": "REACHING_DEF"
-    },
-    "1221->1233": {
-      "VARIABLE": "front_len",
-      "label": "REACHING_DEF"
-    },
-    "1233->1232": {
-      "VARIABLE": "front_len",
-      "label": "REACHING_DEF"
-    },
-    "1233->1236": {
-      "VARIABLE": "front_len",
-      "label": "REACHING_DEF"
-    },
-    "1232->1231": {
-      "VARIABLE": "front_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1232->1235": {
-      "VARIABLE": "front_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1236->1235": {
-      "VARIABLE": "front_len",
-      "label": "REACHING_DEF"
-    },
-    "1249->1247": {
-      "VARIABLE": "CEPH_MSG_MAX_DATA_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1249->1248": {
-      "VARIABLE": "CEPH_MSG_MAX_DATA_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1243->1241": {
-      "VARIABLE": "CEPH_MSG_MAX_MIDDLE_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1243->1242": {
-      "VARIABLE": "CEPH_MSG_MAX_MIDDLE_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1241->1229": {
-      "VARIABLE": "middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1241->1230": {
-      "VARIABLE": "middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1242->1241": {
-      "VARIABLE": "middle_len",
-      "label": "REACHING_DEF"
-    },
-    "1230->1229": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1230->1241": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1231->1230": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1231->1238": {
-      "VARIABLE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1235->1232": {
-      "VARIABLE": "front_len > CEPH_MSG_MAX_FRONT_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1235->1231": {
-      "VARIABLE": "front_len > CEPH_MSG_MAX_FRONT_LEN",
-      "label": "REACHING_DEF"
+    "1240->1238": {
+      "label": "CFG"
     },
     "1238->1230": {
-      "VARIABLE": "middle_len < 0",
-      "label": "REACHING_DEF"
+      "label": "CFG"
     },
-    "1238->1231": {
-      "VARIABLE": "middle_len < 0",
-      "label": "REACHING_DEF"
+    "1230->1229": {
+      "label": "CFG"
     },
-    "1240->1238": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
+    "1230->1242": {
+      "label": "CFG"
     },
-    "1240->1239": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
+    "1232->1231": {
+      "label": "CFG"
     },
-    "1239->1242": {
-      "VARIABLE": "middle_len",
-      "label": "REACHING_DEF"
+    "1232->1236": {
+      "label": "CFG"
     },
-    "1239->1238": {
-      "VARIABLE": "middle_len",
-      "label": "REACHING_DEF"
+    "1231->1230": {
+      "label": "CFG"
     },
-    "1220->1246": {
-      "label": "REACHING_DEF"
+    "1231->1239": {
+      "label": "CFG"
     },
-    "1220->1245": {
-      "label": "REACHING_DEF"
+    "1236->1237": {
+      "label": "CFG"
     },
-    "1220->1248": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1221": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1233": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1236": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1249": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1243": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1242": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1240": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1239": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1222": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1223": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1234": {
-      "label": "REACHING_DEF"
-    },
-    "1220->1237": {
-      "label": "REACHING_DEF"
-    },
-    "1222->1242": {
-      "VARIABLE": "middle_len",
-      "label": "REACHING_DEF"
-    },
-    "1222->1239": {
-      "VARIABLE": "middle_len",
-      "label": "REACHING_DEF"
-    },
-    "1223->1245": {
-      "VARIABLE": "data_len",
-      "label": "REACHING_DEF"
-    },
-    "1223->1248": {
-      "VARIABLE": "data_len",
-      "label": "REACHING_DEF"
-    },
-    "1234->1233": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1234->1232": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1237->1236": {
-      "VARIABLE": "CEPH_MSG_MAX_FRONT_LEN",
-      "label": "REACHING_DEF"
+    "1239->1240": {
+      "label": "CFG"
     },
     "1237->1235": {
-      "VARIABLE": "CEPH_MSG_MAX_FRONT_LEN",
-      "label": "REACHING_DEF"
+      "label": "CFG"
     },
-    "1581->1580": {
-      "VARIABLE": "p",
-      "label": "REACHING_DEF"
+    "1235->1231": {
+      "label": "CFG"
     },
-    "1581->1590": {
-      "VARIABLE": "p",
-      "label": "REACHING_DEF"
+    "1234->1232": {
+      "label": "CFG"
     },
-    "1580->1590": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
+    "1227->1226": {
+      "label": "CFG"
     },
-    "1580->1579": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
+    "1229->1228": {
+      "label": "CFG"
     },
-    "1580->1589": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
+    "1229->1245": {
+      "label": "CFG"
     },
-    "1590->1581": {
-      "VARIABLE": "p",
-      "label": "REACHING_DEF"
+    "1228->1227": {
+      "label": "CFG"
     },
-    "1590->1589": {
-      "VARIABLE": "p",
-      "label": "REACHING_DEF"
+    "1228->1248": {
+      "label": "CFG"
     },
-    "1579->1574": {
-      "VARIABLE": "ceph_decode_32(&p)",
-      "label": "REACHING_DEF"
+    "1245->1246": {
+      "label": "CFG"
     },
-    "1589->1581": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
+    "1248->1249": {
+      "label": "CFG"
     },
-    "1589->1580": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
+    "1246->1244": {
+      "label": "CFG"
     },
-    "1600->1592": {
-      "VARIABLE": "desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
+    "1233->1234": {
+      "label": "CFG"
     },
-    "1600->1593": {
-      "VARIABLE": "desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
+    "1241->1229": {
+      "label": "CFG"
     },
-    "1593->1600": {
-      "VARIABLE": "desc->fd_lens[0] < 0",
-      "label": "REACHING_DEF"
+    "1243->1241": {
+      "label": "CFG"
     },
-    "1593->1592": {
-      "VARIABLE": "desc->fd_lens[0] < 0",
-      "label": "REACHING_DEF"
+    "1247->1227": {
+      "label": "CFG"
     },
-    "1536->1533": {
-      "VARIABLE": "ceph_decode_8(&p)",
-      "label": "REACHING_DEF"
+    "1249->1247": {
+      "label": "CFG"
     },
-    "1533->1542": {
-      "VARIABLE": "desc->fd_seg_cnt",
-      "label": "REACHING_DEF"
+    "1244->1228": {
+      "label": "CFG"
     },
-    "1542->1567": {
-      "VARIABLE": "desc->fd_seg_cnt",
-      "label": "REACHING_DEF"
+    "1242->1243": {
+      "label": "CFG"
     },
-    "1542->1547": {
-      "VARIABLE": "desc->fd_seg_cnt",
-      "label": "REACHING_DEF"
+    "1220->1233": {
+      "label": "CFG"
     },
-    "1498->1499": {
+    "1466->1467": {
       "VARIABLE": "0",
       "label": "REACHING_DEF"
     },
-    "1498->1500": {
+    "1466->1468": {
       "VARIABLE": "0",
       "label": "REACHING_DEF"
     },
-    "1499->1581": {
+    "1467->1468": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1499->1590": {
+    "1467->1549": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1499->1500": {
+    "1467->1558": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1499->1538": {
+    "1467->1499": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1499->1531": {
+    "1467->1506": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1500->1499": {
+    "1468->1467": {
       "VARIABLE": "crcp - p",
       "label": "REACHING_DEF"
     },
-    "1538->1581": {
+    "1549->1558": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1538->1590": {
+    "1549->1548": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1538->1537": {
+    "1558->1549": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1531->1581": {
+    "1558->1557": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1531->1590": {
+    "1499->1549": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1531->1538": {
+    "1499->1558": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1531->1530": {
+    "1499->1506": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1563->1566": {
-      "VARIABLE": "i",
+    "1499->1498": {
+      "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1566->1567": {
-      "VARIABLE": "i",
+    "1506->1549": {
+      "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1566->1571": {
-      "VARIABLE": "i",
+    "1506->1558": {
+      "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1567->1566": {
-      "VARIABLE": "desc->fd_seg_cnt",
+    "1506->1505": {
+      "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1567->1596": {
-      "VARIABLE": "desc->fd_seg_cnt",
-      "label": "REACHING_DEF"
-    },
-    "1571->1566": {
-      "VARIABLE": "i",
-      "label": "REACHING_DEF"
-    },
-    "1537->1581": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
-    },
-    "1537->1580": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
-    },
-    "1537->1536": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
-    },
-    "1594->1593": {
-      "VARIABLE": "desc->fd_lens[0]",
-      "label": "REACHING_DEF"
-    },
-    "1594->1601": {
-      "VARIABLE": "desc->fd_lens[0]",
-      "label": "REACHING_DEF"
-    },
-    "1601->1600": {
-      "VARIABLE": "desc->fd_lens[0]",
-      "label": "REACHING_DEF"
-    },
-    "1486->1501": {
+    "1454->1469": {
       "VARIABLE": "crcp",
       "label": "REACHING_DEF"
     },
-    "1501->1500": {
+    "1469->1468": {
       "VARIABLE": "crcp",
       "label": "REACHING_DEF"
     },
-    "1501->1502": {
+    "1469->1470": {
       "VARIABLE": "crcp",
       "label": "REACHING_DEF"
     },
-    "1502->1499": {
+    "1470->1467": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1502->1500": {
+    "1470->1468": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1502->1501": {
+    "1470->1469": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1574->1595": {
-      "VARIABLE": "desc->fd_lens[i]",
-      "label": "REACHING_DEF"
-    },
-    "1530->1538": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
-    },
-    "1530->1537": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
-    },
-    "1530->1529": {
-      "VARIABLE": "&p",
-      "label": "REACHING_DEF"
-    },
-    "1529->1526": {
-      "VARIABLE": "ceph_decode_8(&p)",
-      "label": "REACHING_DEF"
-    },
-    "1606->1600": {
-      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1606->1601": {
-      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1520->1542": {
-      "VARIABLE": "desc",
-      "label": "REACHING_DEF"
-    },
-    "1520->1567": {
-      "VARIABLE": "desc",
-      "label": "REACHING_DEF"
-    },
-    "1520->1596": {
-      "VARIABLE": "desc",
-      "label": "REACHING_DEF"
-    },
-    "1520->1595": {
-      "VARIABLE": "desc",
-      "label": "REACHING_DEF"
-    },
-    "1520->1547": {
-      "VARIABLE": "desc",
-      "label": "REACHING_DEF"
-    },
-    "1547->1567": {
-      "VARIABLE": "desc->fd_seg_cnt",
-      "label": "REACHING_DEF"
-    },
-    "1521->1520": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1545->1542": {
+    "1569->1565": {
       "VARIABLE": "1",
       "label": "REACHING_DEF"
     },
-    "1550->1547": {
-      "VARIABLE": "CEPH_FRAME_MAX_SEGMENT_COUNT",
+    "1569->1566": {
+      "VARIABLE": "1",
       "label": "REACHING_DEF"
     },
-    "1526->1596": {
-      "VARIABLE": "desc->fd_tag",
+    "1566->1565": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1487->1486": {
-      "VARIABLE": "p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN",
+    "1510->1515": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1482->1520": {
-      "VARIABLE": "desc",
+    "1510->1535": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1523->1596": {
-      "VARIABLE": "*desc",
+    "1515->1535": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1523->1520": {
-      "VARIABLE": "*desc",
+    "1535->1566": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1491->1487": {
-      "VARIABLE": "CEPH_CRC_LEN",
+    "1535->1534": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1491->1488": {
-      "VARIABLE": "CEPH_CRC_LEN",
+    "1535->1563": {
+      "VARIABLE": "desc->fd_seg_cnt",
       "label": "REACHING_DEF"
     },
-    "1488->1487": {
+    "1535->1567": {
+      "VARIABLE": "desc->fd_seg_cnt",
+      "label": "REACHING_DEF"
+    },
+    "1534->1535": {
+      "VARIABLE": "i",
+      "label": "REACHING_DEF"
+    },
+    "1534->1539": {
+      "VARIABLE": "i",
+      "label": "REACHING_DEF"
+    },
+    "1539->1534": {
+      "VARIABLE": "i",
+      "label": "REACHING_DEF"
+    },
+    "1513->1510": {
+      "VARIABLE": "1",
+      "label": "REACHING_DEF"
+    },
+    "1456->1455": {
       "VARIABLE": "p + CEPH_PREAMBLE_LEN",
       "label": "REACHING_DEF"
     },
-    "1481->1489": {
+    "1455->1454": {
+      "VARIABLE": "p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1449->1457": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1489->1502": {
+    "1457->1470": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1489->1488": {
+    "1457->1456": {
       "VARIABLE": "p",
       "label": "REACHING_DEF"
     },
-    "1564->1563": {
-      "VARIABLE": "0",
+    "1491->1563": {
+      "VARIABLE": "*desc",
       "label": "REACHING_DEF"
     },
-    "1599->1593": {
-      "VARIABLE": "0",
+    "1491->1567": {
+      "VARIABLE": "*desc",
       "label": "REACHING_DEF"
     },
-    "1599->1594": {
-      "VARIABLE": "0",
+    "1491->1488": {
+      "VARIABLE": "*desc",
       "label": "REACHING_DEF"
     },
-    "1480->1581": {
+    "1488->1566": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1590": {
+    "1488->1510": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1498": {
+    "1488->1515": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1499": {
+    "1488->1535": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1538": {
+    "1488->1563": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1531": {
+    "1488->1567": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1566": {
+    "1488->1562": {
+      "VARIABLE": "desc",
       "label": "REACHING_DEF"
     },
-    "1480->1571": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1596": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1501": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1502": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1606": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1520": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1521": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1545": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1550": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1482": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1491": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1481": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1489": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1564": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1599": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1490": {
-      "label": "REACHING_DEF"
-    },
-    "1480->1598": {
-      "label": "REACHING_DEF"
-    },
-    "1490->1488": {
+    "1458->1456": {
       "VARIABLE": "CEPH_PREAMBLE_LEN",
       "label": "REACHING_DEF"
     },
-    "1178->1174": {
-      "VARIABLE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+    "1505->1549": {
+      "VARIABLE": "&p",
       "label": "REACHING_DEF"
     },
-    "1178->1175": {
-      "VARIABLE": "ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
+    "1505->1504": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1505->1548": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1504->1501": {
+      "VARIABLE": "ceph_decode_8(&p)",
+      "label": "REACHING_DEF"
+    },
+    "1548->1558": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1548->1547": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1548->1557": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1501->1510": {
+      "VARIABLE": "desc->fd_seg_cnt",
+      "label": "REACHING_DEF"
+    },
+    "1547->1542": {
+      "VARIABLE": "ceph_decode_32(&p)",
+      "label": "REACHING_DEF"
+    },
+    "1557->1549": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1557->1548": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1450->1488": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1531->1534": {
+      "VARIABLE": "i",
+      "label": "REACHING_DEF"
+    },
+    "1497->1494": {
+      "VARIABLE": "ceph_decode_8(&p)",
+      "label": "REACHING_DEF"
+    },
+    "1494->1563": {
+      "VARIABLE": "desc->fd_tag",
+      "label": "REACHING_DEF"
+    },
+    "1494->1567": {
+      "VARIABLE": "desc->fd_tag",
+      "label": "REACHING_DEF"
+    },
+    "1459->1456": {
+      "VARIABLE": "CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1459->1455": {
+      "VARIABLE": "CEPH_CRC_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1542->1562": {
+      "VARIABLE": "desc->fd_lens[i]",
+      "label": "REACHING_DEF"
+    },
+    "1498->1506": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1498->1505": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1498->1497": {
+      "VARIABLE": "&p",
+      "label": "REACHING_DEF"
+    },
+    "1518->1515": {
+      "VARIABLE": "CEPH_FRAME_MAX_SEGMENT_COUNT",
+      "label": "REACHING_DEF"
+    },
+    "1448->1466": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1467": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1549": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1558": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1499": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1506": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1469": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1470": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1569": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1534": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1563": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1567": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1539": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1513": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1449": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1457": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1488": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1458": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1450": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1459": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1518": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1489": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1532": {
+      "label": "REACHING_DEF"
+    },
+    "1489->1488": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    },
+    "1532->1531": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    },
+    "1561->1560": {
+      "VARIABLE": "desc->fd_lens[desc->fd_seg_cnt - 1]",
+      "label": "REACHING_DEF"
+    },
+    "1566->1580": {
+      "VARIABLE": "desc->fd_seg_cnt",
+      "label": "REACHING_DEF"
+    },
+    "1491->1580": {
+      "VARIABLE": "*desc",
+      "label": "REACHING_DEF"
+    },
+    "1488->1580": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1488->1579": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1494->1580": {
+      "VARIABLE": "desc->fd_tag",
+      "label": "REACHING_DEF"
+    },
+    "1542->1579": {
+      "VARIABLE": "desc->fd_lens[i]",
+      "label": "REACHING_DEF"
+    },
+    "1578->1577": {
+      "VARIABLE": "desc->fd_lens[0]",
+      "label": "REACHING_DEF"
+    },
+    "1448->1580": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1582": {
+      "label": "REACHING_DEF"
+    },
+    "1448->1583": {
+      "label": "REACHING_DEF"
+    },
+    "1583->1578": {
+      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1583->1577": {
+      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
+      "label": "REACHING_DEF"
+    },
+    "1561->1579": {
+      "VARIABLE": "desc->fd_lens[desc->fd_seg_cnt - 1]",
       "label": "REACHING_DEF"
     },
     "1174->1173": {
-      "VARIABLE": "ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1175->1178": {
-      "VARIABLE": "ctrl_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1175->1174": {
-      "VARIABLE": "ctrl_len < 0",
-      "label": "REACHING_DEF"
-    },
-    "1180->1178": {
-      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1180->1179": {
-      "VARIABLE": "CEPH_MSG_MAX_CONTROL_LEN",
-      "label": "REACHING_DEF"
-    },
-    "1179->1178": {
-      "VARIABLE": "ctrl_len",
-      "label": "REACHING_DEF"
-    },
-    "1177->1175": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1177->1176": {
-      "VARIABLE": "0",
-      "label": "REACHING_DEF"
-    },
-    "1176->1175": {
-      "VARIABLE": "ctrl_len",
-      "label": "REACHING_DEF"
-    },
-    "1176->1179": {
-      "VARIABLE": "ctrl_len",
-      "label": "REACHING_DEF"
-    },
-    "1167->1180": {
-      "label": "REACHING_DEF"
-    },
-    "1167->1179": {
-      "label": "REACHING_DEF"
-    },
-    "1167->1177": {
-      "label": "REACHING_DEF"
+      "label": "CFG"
     },
     "1167->1176": {
-      "label": "REACHING_DEF"
+      "label": "CFG"
     },
-    "1167->1168": {
-      "label": "REACHING_DEF"
+    "1176->1177": {
+      "label": "CFG"
     },
-    "1168->1176": {
-      "VARIABLE": "ctrl_len",
-      "label": "REACHING_DEF"
+    "1177->1175": {
+      "label": "CFG"
+    },
+    "1175->1174": {
+      "label": "CFG"
+    },
+    "1175->1179": {
+      "label": "CFG"
+    },
+    "1179->1180": {
+      "label": "CFG"
+    },
+    "1180->1178": {
+      "label": "CFG"
+    },
+    "1178->1174": {
+      "label": "CFG"
     }
   }
 }

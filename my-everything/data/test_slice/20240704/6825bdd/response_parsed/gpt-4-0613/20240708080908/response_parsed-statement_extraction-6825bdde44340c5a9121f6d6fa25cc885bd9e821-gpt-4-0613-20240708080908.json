@@ -1,0 +1,14 @@
+{
+  "delete_statements": [
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1585 | DELETE",
+      "statement": "\t\tif (nvmet_tcp_need_data_in(cmd))",
+      "justification": "This statement is a condition check for whether data is needed in the command. It is not directly related to the memory leak issue and is therefore redundant."
+    },
+    {
+      "statement_info": "drivers/nvme/target/tcp.c | nvmet_tcp_free_cmd_data_in_buffers | 1588 | DELETE",
+      "statement": "",
+      "justification": "This is an empty statement, which is not related to the memory leak issue and is therefore redundant."
+    }
+  ]
+}

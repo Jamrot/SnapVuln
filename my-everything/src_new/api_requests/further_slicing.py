@@ -2,7 +2,7 @@ import json
 import os
 import logging
 from tqdm import tqdm
-import time
+import re
 
 import config.config as config
 import api_requests.chatgpt_request as chatgpt_request
@@ -11,6 +11,14 @@ import utils.get_path_new as get_path
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def replace_diff_code(diff_code):
+    diff_code = re.sub(r'diff --git a/([^ ]+)', r'diff --git a/{}/{}'.format(config.CODE_ROOT_DIRNAME, config.OLD_CODE_DIRNAME), diff_code)
+    diff_code = re.sub(r'diff --git b/([^ ]+)', r'diff --git b/{}/{}'.format(config.CODE_ROOT_DIRNAME, config.NEW_CODE_DIRNAME), diff_code)
+    diff_code = re.sub(r'--- a/([^ ]+)', r'--- a/{}/{}'.format(config.CODE_ROOT_DIRNAME, config.OLD_CODE_DIRNAME), diff_code)
+    diff_code = re.sub(r'\+\+\+ b/([^ ]+)', r'\+\+\+ b/{}/{}'.format(config.CODE_ROOT_DIRNAME, config.NEW_CODE_DIRNAME), diff_code)
+    return diff_code
 
 
 def get_prompts(prompt_filepath, parsed_data, commit_id, slice_depth=""):
@@ -25,6 +33,9 @@ def get_prompts(prompt_filepath, parsed_data, commit_id, slice_depth=""):
     vulnerability_summary = parsed_data.get("vulnerability_summary", "")
 
     commit_clean_desc, commit_diff_code, commit_info = response_parser.get_patch(commit_id)
+
+    # change diff code filepath
+    commit_diff_code = replace_diff_code(commit_diff_code)
 
     # get sliced code
     save_root = get_path.get_save_rootpath(commit_id=commit_id)

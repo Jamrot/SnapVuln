@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_old/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int handle_preamble(struct ceph_connection *con)",
+          "lines": [
+            "L2727: static int handle_preamble(struct ceph_connection *con)\n",
+            "L2729: \tstruct ceph_frame_desc *desc = &con->v2.in_desc;\n",
+            "L2732: \tif (con_secure(con)) {\n",
+            "L2733: \t\tret = decrypt_preamble(con);\n",
+            "L2734: \t\tif (ret) {\n",
+            "L2741: \tret = decode_preamble(con->v2.in_buf, desc);\n"
+          ]
+        },
+        {
+          "function_name": "static int populate_in_iter(struct ceph_connection *con)",
+          "lines": [
+            "L2854: static int populate_in_iter(struct ceph_connection *con)\n",
+            "L2858: \tdout(\"%s con %p state %d in_state %d\\n\", __func__, con, con->state,\n",
+            "L2859: \t     con->v2.in_state);\n",
+            "L2860: \tWARN_ON(iov_iter_count(&con->v2.in_iter));\n",
+            "L2862: \tif (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {\n",
+            "L2864: \t} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {\n",
+            "L2866: \t} else if ((con->state >= CEPH_CON_S_V2_HELLO &&\n",
+            "L2867: \t\t    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||\n",
+            "L2868: \t\t   con->state == CEPH_CON_S_OPEN) {\n",
+            "L2869: \t\tswitch (con->v2.in_state) {\n",
+            "L2870: \t\tcase IN_S_HANDLE_PREAMBLE:\n",
+            "L2871: \t\t\tret = handle_preamble(con);\n"
+          ]
+        },
+        {
+          "function_name": "int ceph_con_v2_try_read(struct ceph_connection *con)",
+          "lines": [
+            "L2917: int ceph_con_v2_try_read(struct ceph_connection *con)\n",
+            "L2921: \tdout(\"%s con %p state %d need %zu\\n\", __func__, con, con->state,\n",
+            "L2922: \t     iov_iter_count(&con->v2.in_iter));\n",
+            "L2924: \tif (con->state == CEPH_CON_S_PREOPEN)\n",
+            "L2932: \tif (WARN_ON(!iov_iter_count(&con->v2.in_iter)))\n",
+            "L2936: \t\tret = ceph_tcp_recv(con);\n",
+            "L2937: \t\tif (ret <= 0)\n",
+            "L2940: \t\tret = populate_in_iter(con);\n",
+            "L2941: \t\tif (ret <= 0) {\n"
+          ]
+        },
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L497: \tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
+            "L501: \tcrc = crc32c(0, p, crcp - p);\n",
+            "L502: \texpected_crc = get_unaligned_le32(crcp);\n",
+            "L503: \tif (crc != expected_crc) {\n",
+            "L509: \tmemset(desc, 0, sizeof(*desc));\n",
+            "L511: \tdesc->fd_tag = ceph_decode_8(&p);\n",
+            "L512: \tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
+            "L513: \tif (desc->fd_seg_cnt < 1 ||\n",
+            "L514: \t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
+            "L518: \tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
+            "L519: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L520: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L527: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L532: \tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

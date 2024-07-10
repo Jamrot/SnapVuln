@@ -1,0 +1,25 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L519",
+      "statement": "desc->fd_lens[i] = ceph_decode_32(&p);",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is responsible for decoding the segment lengths, which are later used in the checks that were patched. A forward slice from this statement will help identify how these values are used and potentially misused, leading to the buffer overflow."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L520",
+      "statement": "desc->fd_aligns[i] = ceph_decode_16(&p);",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is responsible for decoding the segment alignments, which might be related to the buffer allocation and overflow. A forward slice from this statement will help identify how these values are used and potentially misused."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L513",
+      "statement": "if (desc->fd_seg_cnt < 1 || desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is a control statement that checks the segment count. A backward slice from this statement will help identify the conditions and data that lead to this check, which might be related to the buffer allocation and overflow."
+    }
+  ]
+}

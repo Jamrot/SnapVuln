@@ -1,0 +1,100 @@
+{
+  "patch_summary": "The patch hardens the checks for segment lengths in the libceph library, preventing potential buffer overruns due to negative control lengths.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows for buffer overruns due to insufficient checks on segment lengths, potentially leading to arbitrary code execution.",
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"last segment empty\\n\");"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 414 | ADD",
+      "modification": "ADD",
+      "statement": "\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 415 | ADD",
+      "modification": "ADD",
+      "statement": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);"
+    }
+  ],
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "The statement is a condition check. A backward slice from this point will help identify the data and control dependencies that lead to this check. Control Flow Graph is suitable as it can represent the flow of control in the program."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "The statement is a condition check that has been removed. A forward slice from this point will help identify the impact of this removal on the rest of the program. Data Dependency Graph is suitable as it can represent the data dependencies in the program."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "The statement is a condition check. A backward slice from this point will help identify the data and control dependencies that lead to this check. Control Flow Graph is suitable as it can represent the flow of control in the program."
+    }
+  ]
+}

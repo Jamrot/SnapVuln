@@ -1,0 +1,24 @@
+{
+  "core_operations": [
+    {
+      "core_operation": "Memory Allocation",
+      "justification": "Improper allocation of memory buffers can lead to insufficient space for data, causing buffer overruns."
+    },
+    {
+      "core_operation": "Input Handling",
+      "justification": "Insufficient validation of input lengths can allow data to exceed buffer boundaries."
+    },
+    {
+      "core_operation": "Boundary Checking",
+      "justification": "Lack of or improper boundary checks on segment lengths can result in writing beyond allocated memory."
+    },
+    {
+      "core_operation": "Data Copying",
+      "justification": "Operations that copy data into buffers without verifying the size can lead to buffer overflows."
+    },
+    {
+      "core_operation": "Pointer Arithmetic",
+      "justification": "Incorrect pointer arithmetic can lead to writing data outside the intended memory region."
+    }
+  ]
+}

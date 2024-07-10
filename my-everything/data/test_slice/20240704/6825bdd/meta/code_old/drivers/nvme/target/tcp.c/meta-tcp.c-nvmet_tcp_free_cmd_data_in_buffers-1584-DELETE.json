@@ -1,0 +1,29 @@
+[
+  {
+    "criterion": {
+      "line": 1584,
+      "code": "\tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {"
+    },
+    "commit_id": "6825bdde44340c5a9121f6d6fa25cc885bd9e821",
+    "version": {
+      "old": "25bb3534ee21e39eb9301c4edd7182eb83cb0d07",
+      "new": "6825bdde44340c5a9121f6d6fa25cc885bd9e821"
+    },
+    "file_path": {
+      "old": "drivers/nvme/target/tcp.c",
+      "new": "drivers/nvme/target/tcp.c"
+    },
+    "func_name": "nvmet_tcp_free_cmd_data_in_buffers",
+    "func_line": {
+      "start": 1580,
+      "end": 1588
+    },
+    "modification": "DELETE",
+    "direction": "backward",
+    "graph": "cfg",
+    "save_root": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/6825bdd",
+    "save_file_code_filepath": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/6825bdd/code/code_old/drivers/nvme/target/tcp.c",
+    "save_module_dirpath": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/6825bdd/code/code_old/drivers/nvme/target",
+    "save_meta_filepath": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/6825bdd/meta/code_old/drivers/nvme/target/tcp.c/meta-tcp.c-nvmet_tcp_free_cmd_data_in_buffers-1584-DELETE.json"
+  }
+]

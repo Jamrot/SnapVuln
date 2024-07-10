@@ -1,0 +1,84 @@
+{
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement adds a check to ensure that the control length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement adds a check to ensure that the front length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 414 | ADD",
+      "statement": "\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||",
+      "reason": "This statement adds a check to ensure that the middle length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 415 | ADD",
+      "statement": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "reason": "This statement adds a check to ensure that the data length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement adds a check to ensure that the control segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 530 | ADD",
+      "statement": "\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement adds a check to ensure that the control segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | ADD",
+      "statement": "\t\tpr_err(\"bad control segment length %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length is invalid, aiding in debugging and preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement adds a check to ensure that the front segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 535 | ADD",
+      "statement": "\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement adds a check to ensure that the front segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | ADD",
+      "statement": "\t\tpr_err(\"bad front segment length %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length is invalid, aiding in debugging and preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement adds a check to ensure that the middle segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | ADD",
+      "statement": "\t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement adds a check to ensure that the middle segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541 | ADD",
+      "statement": "\t\tpr_err(\"bad middle segment length %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length is invalid, aiding in debugging and preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement adds a check to ensure that the data segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545 | ADD",
+      "statement": "\t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement adds a check to ensure that the data segment length is within valid bounds, preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 546 | ADD",
+      "statement": "\t\tpr_err(\"bad data segment length %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length is invalid, aiding in debugging and preventing buffer overruns."
+    }
+  ]
+}

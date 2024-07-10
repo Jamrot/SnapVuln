@@ -1,0 +1,195 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int decrypt_tail(struct ceph_connection *con)",
+          "lines": [
+            "L1042: static int decrypt_tail(struct ceph_connection *con)\n",
+            "L1049: \ttail_len = tail_onwire_len(con->in_msg, true);\n"
+          ]
+        },
+        {
+          "function_name": "static int prepare_message_secure(struct ceph_connection *con)",
+          "lines": [
+            "L1564: static int prepare_message_secure(struct ceph_connection *con)\n",
+            "L1574: \tret = prepare_head_secure_small(con, con->v2.out_buf,\n",
+            "L1579: \ttail_len = tail_onwire_len(con->out_msg, true);\n"
+          ]
+        },
+        {
+          "function_name": "static int prepare_message(struct ceph_connection *con)",
+          "lines": [
+            "L1628: static int prepare_message(struct ceph_connection *con)\n",
+            "L1630: \tint lens[] = {\n",
+            "L1632: \t\tfront_len(con->out_msg),\n",
+            "L1633: \t\tmiddle_len(con->out_msg),\n",
+            "L1634: \t\tdata_len(con->out_msg)\n",
+            "L1639: \tdout(\"%s con %p msg %p logical %d+%d+%d+%d\\n\", __func__, con,\n",
+            "L1640: \t     con->out_msg, lens[0], lens[1], lens[2], lens[3]);\n",
+            "L1642: \tif (con->in_seq > con->in_seq_acked) {\n",
+            "L1643: \t\tdout(\"%s con %p in_seq_acked %llu -> %llu\\n\", __func__, con,\n",
+            "L1644: \t\t     con->in_seq_acked, con->in_seq);\n",
+            "L1645: \t\tcon->in_seq_acked = con->in_seq;\n",
+            "L1648: \treset_out_kvecs(con);\n",
+            "L1652: \t\t     con->in_seq_acked);\n",
+            "L1654: \tif (con_secure(con)) {\n",
+            "L1655: \t\tret = prepare_message_secure(con);\n"
+          ]
+        },
+        {
+          "function_name": "static int prepare_read_tail_secure(struct ceph_connection *con)",
+          "lines": [
+            "L1884: static int prepare_read_tail_secure(struct ceph_connection *con)\n",
+            "L1890: \ttail_len = tail_onwire_len(con->in_msg, true);\n"
+          ]
+        },
+        {
+          "function_name": "static void prepare_skip_message(struct ceph_connection *con)",
+          "lines": [
+            "L1914: static void prepare_skip_message(struct ceph_connection *con)\n",
+            "L1919: \tdout(\"%s con %p %d+%d+%d\\n\", __func__, con, desc->fd_lens[1],\n",
+            "L1920: \t     desc->fd_lens[2], desc->fd_lens[3]);\n",
+            "L1922: \ttail_len = __tail_onwire_len(desc->fd_lens[1], desc->fd_lens[2],\n",
+            "L1923: \t\t\t\t     desc->fd_lens[3], con_secure(con));\n"
+          ]
+        },
+        {
+          "function_name": "static int __handle_control(struct ceph_connection *con, void *p)",
+          "lines": [
+            "L2698: static int __handle_control(struct ceph_connection *con, void *p)\n",
+            "L2707: \tret = process_message_header(con, p, end);\n",
+            "L2711: \t\tprepare_skip_message(con);\n",
+            "L2715: \tmsg = con->in_msg;  /* set in process_message_header() */\n",
+            "L2732: \tif (con_secure(con))\n",
+            "L2733: \t\treturn prepare_read_tail_secure(con);\n"
+          ]
+        },
+        {
+          "function_name": "static int handle_preamble(struct ceph_connection *con)",
+          "lines": [
+            "L2738: static int handle_preamble(struct ceph_connection *con)\n",
+            "L2740: \tstruct ceph_frame_desc *desc = &con->v2.in_desc;\n",
+            "L2743: \tif (con_secure(con)) {\n",
+            "L2744: \t\tret = decrypt_preamble(con);\n",
+            "L2752: \tret = decode_preamble(con->v2.in_buf, desc);\n",
+            "L2761: \tdout(\"%s con %p tag %d seg_cnt %d %d+%d+%d+%d\\n\", __func__,\n",
+            "L2762: \t     con, desc->fd_tag, desc->fd_seg_cnt, desc->fd_lens[0],\n",
+            "L2763: \t     desc->fd_lens[1], desc->fd_lens[2], desc->fd_lens[3]);\n",
+            "L2765: \tif (!con_secure(con))\n",
+            "L2771: \treturn __handle_control(con, CTRL_BODY(con->v2.in_buf));\n"
+          ]
+        },
+        {
+          "function_name": "static int handle_control(struct ceph_connection *con)",
+          "lines": [
+            "L2774: static int handle_control(struct ceph_connection *con)\n",
+            "L2776: \tint ctrl_len = con->v2.in_desc.fd_lens[0];\n",
+            "L2780: \tWARN_ON(con_secure(con));\n",
+            "L2782: \tret = verify_control_crc(con);\n",
+            "L2788: \tif (con->state == CEPH_CON_S_V2_AUTH) {\n",
+            "L2789: \t\tbuf = alloc_conn_buf(con, ctrl_len);\n",
+            "L2790: \t\tif (!buf)\n",
+            "L2793: \t\tmemcpy(buf, con->v2.in_kvecs[0].iov_base, ctrl_len);\n",
+            "L2794: \t\treturn __handle_control(con, buf);\n",
+            "L2797: \treturn __handle_control(con, con->v2.in_kvecs[0].iov_base);\n"
+          ]
+        },
+        {
+          "function_name": "static int handle_control_remainder(struct ceph_connection *con)",
+          "lines": [
+            "L2800: static int handle_control_remainder(struct ceph_connection *con)\n",
+            "L2804: \tWARN_ON(!con_secure(con));\n",
+            "L2806: \tret = decrypt_control_remainder(con);\n",
+            "L2813: \treturn __handle_control(con, con->v2.in_kvecs[0].iov_base -\n",
+            "L2814: \t\t\t\t     CEPH_PREAMBLE_INLINE_LEN);\n"
+          ]
+        },
+        {
+          "function_name": "static int handle_epilogue(struct ceph_connection *con)",
+          "lines": [
+            "L2817: static int handle_epilogue(struct ceph_connection *con)\n",
+            "L2822: \tif (con_secure(con)) {\n",
+            "L2823: \t\tret = decrypt_tail(con);\n"
+          ]
+        },
+        {
+          "function_name": "static int populate_in_iter(struct ceph_connection *con)",
+          "lines": [
+            "L2865: static int populate_in_iter(struct ceph_connection *con)\n",
+            "L2869: \tdout(\"%s con %p state %d in_state %d\\n\", __func__, con, con->state,\n",
+            "L2870: \t     con->v2.in_state);\n",
+            "L2873: \tif (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {\n",
+            "L2875: \t} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {\n",
+            "L2877: \t} else if ((con->state >= CEPH_CON_S_V2_HELLO &&\n",
+            "L2878: \t\t    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||\n",
+            "L2879: \t\t   con->state == CEPH_CON_S_OPEN) {\n",
+            "L2882: \t\t\tret = handle_preamble(con);\n",
+            "L2885: \t\t\tret = handle_control(con);\n",
+            "L2888: \t\t\tret = handle_control_remainder(con);\n",
+            "L2902: \t\t\tret = handle_epilogue(con);\n"
+          ]
+        },
+        {
+          "function_name": "int ceph_con_v2_try_read(struct ceph_connection *con)",
+          "lines": [
+            "L2928: int ceph_con_v2_try_read(struct ceph_connection *con)\n",
+            "L2932: \tdout(\"%s con %p state %d need %zu\\n\", __func__, con, con->state,\n",
+            "L2933: \t     iov_iter_count(&con->v2.in_iter));\n",
+            "L2935: \tif (con->state == CEPH_CON_S_PREOPEN)\n",
+            "L2947: \t\tret = ceph_tcp_recv(con);\n",
+            "L2951: \t\tret = populate_in_iter(con);\n"
+          ]
+        },
+        {
+          "function_name": "static int populate_out_iter(struct ceph_connection *con)",
+          "lines": [
+            "L3068: static int populate_out_iter(struct ceph_connection *con)\n",
+            "L3072: \tdout(\"%s con %p state %d out_state %d\\n\", __func__, con, con->state,\n",
+            "L3073: \t     con->v2.out_state);\n",
+            "L3076: \tif (con->state != CEPH_CON_S_OPEN) {\n",
+            "L3099: \t\tfinish_message(con);\n",
+            "L3109: \tif (ceph_con_flag_test_and_clear(con, CEPH_CON_F_KEEPALIVE_PENDING)) {\n",
+            "L3115: \t} else if (!list_empty(&con->out_queue)) {\n",
+            "L3116: \t\tceph_con_get_out_msg(con);\n",
+            "L3117: \t\tret = prepare_message(con);\n"
+          ]
+        },
+        {
+          "function_name": "int ceph_con_v2_try_write(struct ceph_connection *con)",
+          "lines": [
+            "L3146: int ceph_con_v2_try_write(struct ceph_connection *con)\n",
+            "L3150: \tdout(\"%s con %p state %d have %zu\\n\", __func__, con, con->state,\n",
+            "L3151: \t     iov_iter_count(&con->v2.out_iter));\n",
+            "L3154: \tif (con->state == CEPH_CON_S_PREOPEN) {\n",
+            "L3162: \t\tcon->v2.global_seq = ceph_get_global_seq(con->msgr, 0);\n",
+            "L3166: \t\tret = prepare_read_banner_prefix(con);\n",
+            "L3173: \t\treset_out_kvecs(con);\n",
+            "L3174: \t\tret = prepare_banner(con);\n",
+            "L3181: \t\tret = ceph_tcp_connect(con);\n",
+            "L3190: \t\tret = populate_out_iter(con);\n",
+            "L3200: \t\tret = ceph_tcp_send(con);\n",
+            "L3204: \t\tret = populate_out_iter(con);\n"
+          ]
+        },
+        {
+          "function_name": "static int __tail_onwire_len(int front_len, int middle_len, int data_len,",
+          "lines": [
+            "L410: static int __tail_onwire_len(int front_len, int middle_len, int data_len,\n",
+            "L413: \tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n",
+            "L414: \t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n"
+          ]
+        },
+        {
+          "function_name": "static int tail_onwire_len(const struct ceph_msg *msg, bool secure)",
+          "lines": [
+            "L428: static int tail_onwire_len(const struct ceph_msg *msg, bool secure)\n",
+            "L430: \treturn __tail_onwire_len(front_len(msg), middle_len(msg),\n",
+            "L431: \t\t\t\t data_len(msg), secure);\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "core_operations": [
+    {
+      "core_operation": "Input Validation",
+      "justification": "The vulnerability is due to insufficient checks on segment lengths. This indicates a lack of proper input validation, which is a core operation that leads to buffer overflow vulnerabilities."
+    },
+    {
+      "core_operation": "Memory Allocation",
+      "justification": "Buffer overflow vulnerabilities occur when more data is written into a buffer than it can handle. This is related to the memory allocation process, where the size of the buffer is determined."
+    },
+    {
+      "core_operation": "Error Handling",
+      "justification": "The system does not properly handle the error when a buffer overrun occurs, potentially leading to arbitrary code execution. Proper error handling mechanisms should be in place to prevent such outcomes."
+    }
+  ]
+}

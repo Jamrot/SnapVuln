@@ -1,0 +1,28 @@
+{
+  "sliced_code_cause_vulnerability": {
+    "includes_all_codes": "YES",
+    "justification": "The sliced code includes all the code that causes the vulnerability. It includes the functions 'head_onwire_len', '__tail_onwire_len', and 'decode_preamble' where the buffer overflow can occur due to insufficient checks for negative control lengths."
+  },
+  "sliced_code_core_operations": {
+    "core_operation_codes": [
+      {
+        "core_operation": "Input Validation",
+        "sliced_code": "code/code_new/net/ceph/messenger_v2.c: L393, L413-L415, code/code_old/net/ceph/messenger_v2.c: L513-L514, L519"
+      },
+      {
+        "core_operation": "Buffer Management",
+        "sliced_code": "code/code_new/net/ceph/messenger_v2.c: L393, L413-L415, code/code_old/net/ceph/messenger_v2.c: L519"
+      },
+      {
+        "core_operation": "Error Handling",
+        "sliced_code": "code/code_old/net/ceph/messenger_v2.c: L513-L514"
+      }
+    ],
+    "includes_all_core_operations": "YES",
+    "justification": "The sliced code includes all the core operations that lead to the vulnerability. It includes the code for input validation, buffer management, and error handling."
+  },
+  "final_determination": {
+    "contains_all_relevant_code": "YES",
+    "justification": "The sliced code includes all the code that causes the vulnerability and all the specific core operations that lead to the vulnerability. Therefore, it contains all the relevant code."
+  }
+}

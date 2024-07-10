@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_old/drivers/nvme/target/tcp.c",
+      "functions": [
+        {
+          "function_name": "static void nvmet_tcp_free_cmd_data_in_buffers(struct nvmet_tcp_queue *queue)",
+          "lines": [
+            "L1579: static void nvmet_tcp_free_cmd_data_in_buffers(struct nvmet_tcp_queue *queue)\n",
+            "L1581: \tstruct nvmet_tcp_cmd *cmd = queue->cmds;\n",
+            "L1584: \tfor (i = 0; i < queue->nr_cmds; i++, cmd++) {\n",
+            "L1585: \t\tif (nvmet_tcp_need_data_in(cmd))\n",
+            "L1586: \t\t\tnvmet_tcp_free_cmd_buffers(cmd);\n"
+          ]
+        },
+        {
+          "function_name": "static void nvmet_tcp_release_queue_work(struct work_struct *w)",
+          "lines": [
+            "L1593: static void nvmet_tcp_release_queue_work(struct work_struct *w)\n",
+            "L1599: \tlist_del_init(&queue->queue_list);\n",
+            "L1602: \tnvmet_tcp_restore_socket_callbacks(queue);\n",
+            "L1603: \tcancel_delayed_work_sync(&queue->tls_handshake_tmo_work);\n",
+            "L1604: \tcancel_work_sync(&queue->io_work);\n",
+            "L1606: \tqueue->rcv_state = NVMET_TCP_RECV_ERR;\n",
+            "L1608: \tnvmet_tcp_uninit_data_in_cmds(queue);\n",
+            "L1609: \tnvmet_sq_destroy(&queue->nvme_sq);\n",
+            "L1610: \tcancel_work_sync(&queue->io_work);\n",
+            "L1611: \tnvmet_tcp_free_cmd_data_in_buffers(queue);\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1074 @@
+{
+  "code": {
+    "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_new/net/ceph/messenger_v2.c": {
+      "2738": {
+        "code": "static int handle_preamble(struct ceph_connection *con)\n",
+        "function": "static int handle_preamble(struct ceph_connection *con)"
+      },
+      "2740": {
+        "code": "\tstruct ceph_frame_desc *desc = &con->v2.in_desc;\n",
+        "function": "static int handle_preamble(struct ceph_connection *con)"
+      },
+      "2752": {
+        "code": "\tret = decode_preamble(con->v2.in_buf, desc);\n",
+        "function": "static int handle_preamble(struct ceph_connection *con)"
+      },
+      "2865": {
+        "code": "static int populate_in_iter(struct ceph_connection *con)\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2869": {
+        "code": "\tdout(\"%s con %p state %d in_state %d\\n\", __func__, con, con->state,\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2870": {
+        "code": "\t     con->v2.in_state);\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2873": {
+        "code": "\tif (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2875": {
+        "code": "\t} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2877": {
+        "code": "\t} else if ((con->state >= CEPH_CON_S_V2_HELLO &&\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2878": {
+        "code": "\t\t    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2879": {
+        "code": "\t\t   con->state == CEPH_CON_S_OPEN) {\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2882": {
+        "code": "\t\t\tret = handle_preamble(con);\n",
+        "function": "static int populate_in_iter(struct ceph_connection *con)"
+      },
+      "2928": {
+        "code": "int ceph_con_v2_try_read(struct ceph_connection *con)\n",
+        "function": "int ceph_con_v2_try_read(struct ceph_connection *con)"
+      },
+      "2932": {
+        "code": "\tdout(\"%s con %p state %d need %zu\\n\", __func__, con, con->state,\n",
+        "function": "int ceph_con_v2_try_read(struct ceph_connection *con)"
+      },
+      "2933": {
+        "code": "\t     iov_iter_count(&con->v2.in_iter));\n",
+        "function": "int ceph_con_v2_try_read(struct ceph_connection *con)"
+      },
+      "2935": {
+        "code": "\tif (con->state == CEPH_CON_S_PREOPEN)\n",
+        "function": "int ceph_con_v2_try_read(struct ceph_connection *con)"
+      },
+      "2947": {
+        "code": "\t\tret = ceph_tcp_recv(con);\n",
+        "function": "int ceph_con_v2_try_read(struct ceph_connection *con)"
+      },
+      "2951": {
+        "code": "\t\tret = populate_in_iter(con);\n",
+        "function": "int ceph_con_v2_try_read(struct ceph_connection *con)"
+      },
+      "501": {
+        "code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "515": {
+        "code": "\tmemset(desc, 0, sizeof(*desc));\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      }
+    }
+  },
+  "nodes": {
+    "9477": {
+      "ARGUMENT_INDEX": "3",
+      "CODE": "con",
+      "COLUMN_NUMBER": "50",
+      "LINE_NUMBER": "2932",
+      "NAME": "con",
+      "ORDER": "3",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9478": {
+      "ARGUMENT_INDEX": "4",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "55",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2932",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "4",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9481": {
+      "ARGUMENT_INDEX": "5",
+      "CODE": "iov_iter_count(&con->v2.in_iter)",
+      "COLUMN_NUMBER": "7",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2933",
+      "METHOD_FULL_NAME": "iov_iter_count",
+      "NAME": "iov_iter_count",
+      "ORDER": "5",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9490": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2935",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9517": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con",
+      "COLUMN_NUMBER": "23",
+      "LINE_NUMBER": "2947",
+      "NAME": "con",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9528": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con",
+      "COLUMN_NUMBER": "26",
+      "LINE_NUMBER": "2951",
+      "NAME": "con",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9339": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "handle_preamble(con)",
+      "COLUMN_NUMBER": "10",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2882",
+      "METHOD_FULL_NAME": "handle_preamble",
+      "NAME": "handle_preamble",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "8868": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int handle_preamble(struct ceph_connection *con)\n{\n\tstruct ceph_frame_desc *desc = &con->v2.in_desc;\n\tint ret;\n\n\tif (con_secure(con)) {\n\t\tret = decrypt_preamble(con);\n\t\tif (ret) {\n\t\t\tif (ret == -EBADMSG)\n\t\t\t\tcon->error_msg = \"integrity error, bad preamble auth tag\";\n\t\t\treturn ret;\n\t\t}\n\t}\n\n\tret = decode_preamble(con->v2.in_buf, desc);\n\tif (ret) {\n\t\tif (ret == -EBADMSG)\n\t\t\tcon->error_msg = \"integrity error, bad crc\";\n\t\telse\n\t\t\tcon->error_msg = \"protocol error, bad preamble\";\n\t\treturn ret;\n\t}\n\n\tdout(\"%s con %p tag %d seg_cnt %d %d+%d+%d+%d\\\\n\", __func__,\n\t     con, desc->fd_tag, desc->fd_seg_cnt, desc->fd_lens[0],\n\t     desc->fd_lens[1], desc->fd_lens[2], desc->fd_lens[3]);\n\n\tif (!con_secure(con))\n\t\treturn prepare_read_control(con);\n\n\tif (desc->fd_lens[0] > CEPH_PREAMBLE_INLINE_LEN)\n\t\treturn prepare_read_control_remainder(con);\n\n\treturn __handle_control(con, CTRL_BODY(con->v2.in_buf));\n}",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "30",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "handle_preamble",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "2738",
+      "LINE_NUMBER_END": "2771",
+      "NAME": "handle_preamble",
+      "ORDER": "106",
+      "SIGNATURE": "int handle_preamble (ceph_connection*)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    },
+    "8913": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "40",
+      "LINE_NUMBER": "2752",
+      "NAME": "desc",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9311": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "14",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2877",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9316": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "7",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2878",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9321": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2879",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9340": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con",
+      "COLUMN_NUMBER": "26",
+      "LINE_NUMBER": "2882",
+      "NAME": "con",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9482": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "&con->v2.in_iter",
+      "COLUMN_NUMBER": "22",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2933",
+      "METHOD_FULL_NAME": "<operator>.addressOf",
+      "NAME": "<operator>.addressOf",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9476": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "__func__",
+      "COLUMN_NUMBER": "40",
+      "LINE_NUMBER": "2932",
+      "NAME": "__func__",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9257": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int populate_in_iter(struct ceph_connection *con)\n{\n\tint ret;\n\n\tdout(\"%s con %p state %d in_state %d\\\\n\", __func__, con, con->state,\n\t     con->v2.in_state);\n\tWARN_ON(iov_iter_count(&con->v2.in_iter));\n\n\tif (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {\n\t\tret = process_banner_prefix(con);\n\t} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {\n\t\tret = process_banner_payload(con);\n\t} else if ((con->state >= CEPH_CON_S_V2_HELLO &&\n\t\t    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||\n\t\t   con->state == CEPH_CON_S_OPEN) {\n\t\tswitch (con->v2.in_state) {\n\t\tcase IN_S_HANDLE_PREAMBLE:\n\t\t\tret = handle_preamble(con);\n\t\t\tbreak;\n\t\tcase IN_S_HANDLE_CONTROL:\n\t\t\tret = handle_control(con);\n\t\t\tbreak;\n\t\tcase IN_S_HANDLE_CONTROL_REMAINDER:\n\t\t\tret = handle_control_remainder(con);\n\t\t\tbreak;\n\t\tcase IN_S_PREPARE_READ_DATA:\n\t\t\tret = prepare_read_data(con);\n\t\t\tbreak;\n\t\tcase IN_S_PREPARE_READ_DATA_CONT:\n\t\t\tprepare_read_data_cont(con);\n\t\t\tret = 0;\n\t\t\tbreak;\n\t\tcase IN_S_PREPARE_READ_ENC_PAGE:\n\t\t\tprepa...",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "7",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "populate_in_iter",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "2865",
+      "LINE_NUMBER_END": "2881",
+      "NAME": "populate_in_iter",
+      "ORDER": "111",
+      "SIGNATURE": "int populate_in_iter (ceph_connection*)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    },
+    "9258": {
+      "CODE": "struct ceph_connection *con",
+      "COLUMN_NUMBER": "29",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "INDEX": "1",
+      "IS_VARIADIC": "false",
+      "LINE_NUMBER": "2865",
+      "NAME": "con",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_PARAMETER_IN"
+    },
+    "9262": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "\"%s con %p state %d in_state %d\\\\n\"",
+      "COLUMN_NUMBER": "7",
+      "LINE_NUMBER": "2869",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "char",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "9263": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "__func__",
+      "COLUMN_NUMBER": "43",
+      "LINE_NUMBER": "2869",
+      "NAME": "__func__",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9264": {
+      "ARGUMENT_INDEX": "3",
+      "CODE": "con",
+      "COLUMN_NUMBER": "53",
+      "LINE_NUMBER": "2869",
+      "NAME": "con",
+      "ORDER": "3",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9286": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CON_S_V2_BANNER_PREFIX",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "2873",
+      "NAME": "CEPH_CON_S_V2_BANNER_PREFIX",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9299": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CON_S_V2_BANNER_PAYLOAD",
+      "COLUMN_NUMBER": "27",
+      "LINE_NUMBER": "2875",
+      "NAME": "CEPH_CON_S_V2_BANNER_PAYLOAD",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9314": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CON_S_V2_HELLO",
+      "COLUMN_NUMBER": "28",
+      "LINE_NUMBER": "2877",
+      "NAME": "CEPH_CON_S_V2_HELLO",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9319": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CON_S_V2_SESSION_RECONNECT",
+      "COLUMN_NUMBER": "21",
+      "LINE_NUMBER": "2878",
+      "NAME": "CEPH_CON_S_V2_SESSION_RECONNECT",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9324": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CON_S_OPEN",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "2879",
+      "NAME": "CEPH_CON_S_OPEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9265": {
+      "ARGUMENT_INDEX": "4",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "58",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2869",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "4",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9268": {
+      "ARGUMENT_INDEX": "5",
+      "CODE": "con->v2.in_state",
+      "COLUMN_NUMBER": "7",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2870",
+      "METHOD_FULL_NAME": "<operator>.fieldAccess",
+      "NAME": "<operator>.fieldAccess",
+      "ORDER": "5",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9296": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "13",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2875",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9283": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->state",
+      "COLUMN_NUMBER": "6",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2873",
+      "METHOD_FULL_NAME": "<operator>.indirectFieldAccess",
+      "NAME": "<operator>.indirectFieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "8908": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->v2.in_buf",
+      "COLUMN_NUMBER": "24",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2752",
+      "METHOD_FULL_NAME": "<operator>.fieldAccess",
+      "NAME": "<operator>.fieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "8907": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "decode_preamble(con->v2.in_buf, desc)",
+      "COLUMN_NUMBER": "8",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2752",
+      "METHOD_FULL_NAME": "decode_preamble",
+      "NAME": "decode_preamble",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1480": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n{\n\tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n\tu32 crc, expected_crc;\n\tint i;\n\n\tcrc = crc32c(0, p, crcp - p);\n\texpected_crc = get_unaligned_le32(crcp);\n\tif (crc != expected_crc) {\n\t\tpr_err(\"bad preamble crc, calculated %u, expected %u\\\\n\",\n\t\t       crc, expected_crc);\n\t\treturn -EBADMSG;\n\t}\n\n\tmemset(desc, 0, sizeof(*desc));\n\n\tdesc->fd_tag = ceph_decode_8(&p);\n\tdesc->fd_seg_cnt = ceph_decode_8(&p);\n\tif (desc->fd_seg_cnt < 1 ||\n\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n\t\tpr_err(\"bad segment count %d\\\\n\", desc->fd_seg_cnt);\n\t\treturn -EINVAL;\n\t}\n\tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n\t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n\t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n\t}\n\n\tif (desc->fd_lens[0] < 0 ||\n\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n\t\tpr_err(\"bad control segment length %d\\\\n\", desc->fd_lens[0]);\n\t\treturn -EINVAL;\n\t}\n\tif (desc->fd_lens[1] < 0 ||\n\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRO...",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "1",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "decode_preamble",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "501",
+      "LINE_NUMBER_END": "561",
+      "NAME": "decode_preamble",
+      "ORDER": "36",
+      "SIGNATURE": "int decode_preamble (void*,ceph_frame_desc*)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    },
+    "8874": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "&con->v2.in_desc",
+      "COLUMN_NUMBER": "33",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2740",
+      "METHOD_FULL_NAME": "<operator>.addressOf",
+      "NAME": "<operator>.addressOf",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "8873": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "26",
+      "LINE_NUMBER": "2740",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9475": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "\"%s con %p state %d need %zu\\\\n\"",
+      "COLUMN_NUMBER": "7",
+      "LINE_NUMBER": "2932",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "char",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "8875": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->v2.in_desc",
+      "COLUMN_NUMBER": "34",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2740",
+      "METHOD_FULL_NAME": "<operator>.fieldAccess",
+      "NAME": "<operator>.fieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1520": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "9",
+      "LINE_NUMBER": "515",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1519": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "memset(desc, 0, sizeof(*desc))",
+      "COLUMN_NUMBER": "2",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "515",
+      "METHOD_FULL_NAME": "memset",
+      "NAME": "memset",
+      "ORDER": "9",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1522": {
+      "ARGUMENT_INDEX": "3",
+      "CODE": "sizeof(*desc)",
+      "COLUMN_NUMBER": "18",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "515",
+      "METHOD_FULL_NAME": "<operator>.sizeOf",
+      "NAME": "<operator>.sizeOf",
+      "ORDER": "3",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1482": {
+      "CODE": "struct ceph_frame_desc *desc",
+      "COLUMN_NUMBER": "37",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "INDEX": "2",
+      "IS_VARIADIC": "false",
+      "LINE_NUMBER": "501",
+      "NAME": "desc",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_PARAMETER_IN"
+    },
+    "1521": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "0",
+      "COLUMN_NUMBER": "15",
+      "LINE_NUMBER": "515",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1524": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "desc",
+      "COLUMN_NUMBER": "26",
+      "LINE_NUMBER": "515",
+      "NAME": "desc",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_frame_desc*",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1523": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "*desc",
+      "COLUMN_NUMBER": "25",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "515",
+      "METHOD_FULL_NAME": "<operator>.indirection",
+      "NAME": "<operator>.indirection",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9471": {
+      "CODE": "struct ceph_connection *con",
+      "COLUMN_NUMBER": "26",
+      "EVALUATION_STRATEGY": "BY_VALUE",
+      "INDEX": "1",
+      "IS_VARIADIC": "false",
+      "LINE_NUMBER": "2928",
+      "NAME": "con",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "ceph_connection*",
+      "filename": "messenger_v2.c",
+      "label": "METHOD_PARAMETER_IN"
+    },
+    "9527": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "populate_in_iter(con)",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2951",
+      "METHOD_FULL_NAME": "populate_in_iter",
+      "NAME": "populate_in_iter",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9493": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_CON_S_PREOPEN",
+      "COLUMN_NUMBER": "20",
+      "LINE_NUMBER": "2935",
+      "NAME": "CEPH_CON_S_PREOPEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "9483": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "con->v2.in_iter",
+      "COLUMN_NUMBER": "23",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "2933",
+      "METHOD_FULL_NAME": "<operator>.fieldAccess",
+      "NAME": "<operator>.fieldAccess",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "9470": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "int ceph_con_v2_try_read(struct ceph_connection *con)\n{\n\tint ret;\n\n\tdout(\"%s con %p state %d need %zu\\\\n\", __func__, con, con->state,\n\t     iov_iter_count(&con->v2.in_iter));\n\n\tif (con->state == CEPH_CON_S_PREOPEN)\n\t\treturn 0;\n\n\t/*\n\t * We should always have something pending here.  If not,\n\t * avoid calling populate_in_iter() as if we read something\n\t * (ceph_tcp_recv() would immediately return 1).\n\t */\n\tif (WARN_ON(!iov_iter_count(&con->v2.in_iter)))\n\t\treturn -ENODATA;\n\n\tfor (;;) {\n\t\tret = ceph_tcp_recv(con);\n\t\tif (ret <= 0)\n\t\t\treturn ret;\n\n\t\tret = populate_in_iter(con);\n\t\tif (ret <= 0) {\n\t\t\tif (ret && ret != -EAGAIN && !con->error_msg)\n\t\t\t\tcon->error_msg = \"read processing error\";\n\t\t\treturn ret;\n\t\t}\n\t}\n}",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "1",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "ceph_con_v2_try_read",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "2928",
+      "LINE_NUMBER_END": "2958",
+      "NAME": "ceph_con_v2_try_read",
+      "ORDER": "112",
+      "SIGNATURE": "int ceph_con_v2_try_read (ceph_connection*)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    }
+  },
+  "edges": {
+    "9477->9478": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9477->9481": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9477->9490": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9477->9517": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9478->9477": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9478->9481": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9478->9490": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9481->9477": {
+      "VARIABLE": "iov_iter_count(&con->v2.in_iter)",
+      "label": "REACHING_DEF"
+    },
+    "9481->9478": {
+      "VARIABLE": "iov_iter_count(&con->v2.in_iter)",
+      "label": "REACHING_DEF"
+    },
+    "9490->9517": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9490->9528": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9517->9528": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9528->9517": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9528->9527": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9339->8868": {
+      "label": "CALL"
+    },
+    "8868->8913": {
+      "label": "REACHING_DEF"
+    },
+    "8913->8907": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "9311->9316": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9311->9321": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9311->9340": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9316->9321": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9316->9340": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9321->9340": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9340->9339": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9482->9481": {
+      "VARIABLE": "&con->v2.in_iter",
+      "label": "REACHING_DEF"
+    },
+    "9476->9477": {
+      "VARIABLE": "__func__",
+      "label": "REACHING_DEF"
+    },
+    "9476->9478": {
+      "VARIABLE": "__func__",
+      "label": "REACHING_DEF"
+    },
+    "9476->9481": {
+      "VARIABLE": "__func__",
+      "label": "REACHING_DEF"
+    },
+    "9257->9340": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9258": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9262": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9263": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9264": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9286": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9299": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9314": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9319": {
+      "label": "REACHING_DEF"
+    },
+    "9257->9324": {
+      "label": "REACHING_DEF"
+    },
+    "9258->9264": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9258->9265": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9262->9263": {
+      "VARIABLE": "\"%s con %p state %d in_state %d\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "9262->9264": {
+      "VARIABLE": "\"%s con %p state %d in_state %d\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "9262->9265": {
+      "VARIABLE": "\"%s con %p state %d in_state %d\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "9262->9268": {
+      "VARIABLE": "\"%s con %p state %d in_state %d\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "9263->9264": {
+      "VARIABLE": "__func__",
+      "label": "REACHING_DEF"
+    },
+    "9263->9265": {
+      "VARIABLE": "__func__",
+      "label": "REACHING_DEF"
+    },
+    "9263->9268": {
+      "VARIABLE": "__func__",
+      "label": "REACHING_DEF"
+    },
+    "9264->9311": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9316": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9321": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9340": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9263": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9265": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9268": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9296": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9264->9283": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9286->9283": {
+      "VARIABLE": "CEPH_CON_S_V2_BANNER_PREFIX",
+      "label": "REACHING_DEF"
+    },
+    "9299->9296": {
+      "VARIABLE": "CEPH_CON_S_V2_BANNER_PAYLOAD",
+      "label": "REACHING_DEF"
+    },
+    "9314->9311": {
+      "VARIABLE": "CEPH_CON_S_V2_HELLO",
+      "label": "REACHING_DEF"
+    },
+    "9319->9316": {
+      "VARIABLE": "CEPH_CON_S_V2_SESSION_RECONNECT",
+      "label": "REACHING_DEF"
+    },
+    "9324->9321": {
+      "VARIABLE": "CEPH_CON_S_OPEN",
+      "label": "REACHING_DEF"
+    },
+    "9265->9263": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9265->9264": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9265->9268": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9265->9283": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9268->9263": {
+      "VARIABLE": "con->v2.in_state",
+      "label": "REACHING_DEF"
+    },
+    "9268->9264": {
+      "VARIABLE": "con->v2.in_state",
+      "label": "REACHING_DEF"
+    },
+    "9268->9265": {
+      "VARIABLE": "con->v2.in_state",
+      "label": "REACHING_DEF"
+    },
+    "9296->9311": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "9283->9296": {
+      "VARIABLE": "con->state",
+      "label": "REACHING_DEF"
+    },
+    "8908->8907": {
+      "VARIABLE": "con->v2.in_buf",
+      "label": "REACHING_DEF"
+    },
+    "8907->1480": {
+      "label": "CALL"
+    },
+    "1480->1520": {
+      "label": "REACHING_DEF"
+    },
+    "1480->1482": {
+      "label": "REACHING_DEF"
+    },
+    "1480->1521": {
+      "label": "REACHING_DEF"
+    },
+    "1480->1524": {
+      "label": "REACHING_DEF"
+    },
+    "8874->8873": {
+      "VARIABLE": "&con->v2.in_desc",
+      "label": "REACHING_DEF"
+    },
+    "8873->8913": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "9475->9477": {
+      "VARIABLE": "\"%s con %p state %d need %zu\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "9475->9478": {
+      "VARIABLE": "\"%s con %p state %d need %zu\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "9475->9481": {
+      "VARIABLE": "\"%s con %p state %d need %zu\\\\n\"",
+      "label": "REACHING_DEF"
+    },
+    "8875->8874": {
+      "VARIABLE": "con->v2.in_desc",
+      "label": "REACHING_DEF"
+    },
+    "1520->1519": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1520->1522": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1482->1520": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1482->1524": {
+      "VARIABLE": "desc",
+      "label": "REACHING_DEF"
+    },
+    "1521->1520": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    },
+    "1521->1519": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    },
+    "1521->1522": {
+      "VARIABLE": "0",
+      "label": "REACHING_DEF"
+    },
+    "1523->1520": {
+      "VARIABLE": "*desc",
+      "label": "REACHING_DEF"
+    },
+    "1523->1522": {
+      "VARIABLE": "*desc",
+      "label": "REACHING_DEF"
+    },
+    "9471->9477": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9471->9478": {
+      "VARIABLE": "con",
+      "label": "REACHING_DEF"
+    },
+    "9527->9257": {
+      "label": "CALL"
+    },
+    "9493->9490": {
+      "VARIABLE": "CEPH_CON_S_PREOPEN",
+      "label": "REACHING_DEF"
+    },
+    "9483->9482": {
+      "VARIABLE": "con->v2.in_iter",
+      "label": "REACHING_DEF"
+    },
+    "9470->9477": {
+      "label": "REACHING_DEF"
+    },
+    "9470->9517": {
+      "label": "REACHING_DEF"
+    },
+    "9470->9528": {
+      "label": "REACHING_DEF"
+    },
+    "9470->9476": {
+      "label": "REACHING_DEF"
+    },
+    "9470->9475": {
+      "label": "REACHING_DEF"
+    },
+    "9470->9471": {
+      "label": "REACHING_DEF"
+    },
+    "9470->9493": {
+      "label": "REACHING_DEF"
+    }
+  }
+}

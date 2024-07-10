@@ -1,0 +1,24 @@
+{
+  "delete_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 416 | ADD",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 394 | ADD",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | DELETE",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 549 | ADD",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+strict digraph "" {
+	node [label="\N"];
+	1234	[ARGUMENT_INDEX=2,
+		CODE=0,
+		COLUMN_NUMBER=21,
+		LINE_NUMBER=413,
+		ORDER=2,
+		TYPE_FULL_NAME=int,
+		filename="messenger_v2.c",
+		label=LITERAL];
+	1232	[ARGUMENT_INDEX=1,
+		CODE="front_len < 0",
+		COLUMN_NUMBER=9,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=413,
+		METHOD_FULL_NAME="<operator>.lessThan",
+		NAME="<operator>.lessThan",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1234 -> 1232	[label=CFG];
+	1231	[ARGUMENT_INDEX=1,
+		CODE="front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN",
+		COLUMN_NUMBER=9,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=413,
+		METHOD_FULL_NAME="<operator>.logicalOr",
+		NAME="<operator>.logicalOr",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1232 -> 1231	[label=CFG];
+	1236	[ARGUMENT_INDEX=1,
+		CODE=front_len,
+		COLUMN_NUMBER=26,
+		LINE_NUMBER=413,
+		NAME=front_len,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		filename="messenger_v2.c",
+		label=IDENTIFIER];
+	1232 -> 1236	[label=CFG];
+	1230	[ARGUMENT_INDEX=1,
+		CODE="front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||
+	       middle_len < 0",
+		COLUMN_NUMBER=9,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=413,
+		METHOD_FULL_NAME="<operator>.logicalOr",
+		NAME="<operator>.logicalOr",
+		ORDER=1,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1231 -> 1230	[label=CFG];
+	1239	[ARGUMENT_INDEX=1,
+		CODE=middle_len,
+		COLUMN_NUMBER=9,
+		LINE_NUMBER=414,
+		NAME=middle_len,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		filename="messenger_v2.c",
+		label=IDENTIFIER];
+	1231 -> 1239	[label=CFG];
+	1242	[ARGUMENT_INDEX=1,
+		CODE=middle_len,
+		COLUMN_NUMBER=27,
+		LINE_NUMBER=414,
+		NAME=middle_len,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		filename="messenger_v2.c",
+		label=IDENTIFIER];
+	1230 -> 1242	[label=CFG];
+	1240	[ARGUMENT_INDEX=2,
+		CODE=0,
+		COLUMN_NUMBER=22,
+		LINE_NUMBER=414,
+		ORDER=2,
+		TYPE_FULL_NAME=int,
+		filename="messenger_v2.c",
+		label=LITERAL];
+	1239 -> 1240	[label=CFG];
+	1237	[ARGUMENT_INDEX=2,
+		CODE=CEPH_MSG_MAX_FRONT_LEN,
+		COLUMN_NUMBER=38,
+		LINE_NUMBER=413,
+		NAME=CEPH_MSG_MAX_FRONT_LEN,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		filename="messenger_v2.c",
+		label=IDENTIFIER];
+	1235	[ARGUMENT_INDEX=2,
+		CODE="front_len > CEPH_MSG_MAX_FRONT_LEN",
+		COLUMN_NUMBER=26,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=413,
+		METHOD_FULL_NAME="<operator>.greaterThan",
+		NAME="<operator>.greaterThan",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1237 -> 1235	[label=CFG];
+	1235 -> 1231	[label=CFG];
+	1243	[ARGUMENT_INDEX=2,
+		CODE=CEPH_MSG_MAX_MIDDLE_LEN,
+		COLUMN_NUMBER=40,
+		LINE_NUMBER=414,
+		NAME=CEPH_MSG_MAX_MIDDLE_LEN,
+		ORDER=2,
+		TYPE_FULL_NAME=ANY,
+		filename="messenger_v2.c",
+		label=IDENTIFIER];
+	1242 -> 1243	[label=CFG];
+	1241	[ARGUMENT_INDEX=2,
+		CODE="middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
+		COLUMN_NUMBER=27,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=414,
+		METHOD_FULL_NAME="<operator>.greaterThan",
+		NAME="<operator>.greaterThan",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1243 -> 1241	[label=CFG];
+	1220	[AST_PARENT_FULL_NAME="messenger_v2.c:<global>",
+		AST_PARENT_TYPE=TYPE_DECL,
+		CODE="static int __tail_onwire_len(int front_len, int middle_len, int data_len,
+			     bool secure)
+{
+	BUG_ON(front_len < 0 || front_\
+len > CEPH_MSG_MAX_FRONT_LEN ||
+	       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||
+	       data_len < 0 || data_len > \
+CEPH_MSG_MAX_DATA_LEN);
+
+	if (!front_len && !middle_len && !data_len)
+		return 0;
+
+	if (!secure)
+		return front_len + middle_len + \
+data_len +
+		       CEPH_EPILOGUE_PLAIN_LEN;
+
+	return padded_len(front_len) + padded_len(middle_len) +
+	       padded_len(data_len) + \
+CEPH_EPILOGUE_SECURE_LEN;
+}",
+		COLUMN_NUMBER=1,
+		COLUMN_NUMBER_END=1,
+		FILENAME="messenger_v2.c",
+		FULL_NAME=__tail_onwire_len,
+		IS_EXTERNAL=false,
+		LINE_NUMBER=410,
+		LINE_NUMBER_END=426,
+		NAME=__tail_onwire_len,
+		ORDER=29,
+		SIGNATURE="int __tail_onwire_len (int,int,int,bool)",
+		filename="messenger_v2.c",
+		label=METHOD];
+	1233	[ARGUMENT_INDEX=1,
+		CODE=front_len,
+		COLUMN_NUMBER=9,
+		LINE_NUMBER=413,
+		NAME=front_len,
+		ORDER=1,
+		TYPE_FULL_NAME=int,
+		filename="messenger_v2.c",
+		label=IDENTIFIER];
+	1220 -> 1233	[label=CFG];
+	1233 -> 1234	[label=CFG];
+	1238	[ARGUMENT_INDEX=2,
+		CODE="middle_len < 0",
+		COLUMN_NUMBER=9,
+		DISPATCH_TYPE=STATIC_DISPATCH,
+		LINE_NUMBER=414,
+		METHOD_FULL_NAME="<operator>.lessThan",
+		NAME="<operator>.lessThan",
+		ORDER=2,
+		TYPE_FULL_NAME="<empty>",
+		filename="messenger_v2.c",
+		label=CALL];
+	1238 -> 1230	[label=CFG];
+	1240 -> 1238	[label=CFG];
+	1236 -> 1237	[label=CFG];
+}

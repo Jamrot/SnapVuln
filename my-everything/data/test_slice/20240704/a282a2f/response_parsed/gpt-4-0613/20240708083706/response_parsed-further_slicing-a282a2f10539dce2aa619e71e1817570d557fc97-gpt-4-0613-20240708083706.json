@@ -1,0 +1,11 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L519",
+      "statement": "desc->fd_lens[i] = ceph_decode_32(&p);",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "The selected statement is where the length of the buffer is determined. A forward slice from this point will help us understand how this value is used in subsequent operations, potentially leading to the buffer overflow. The Data Dependency Graph is chosen because we are interested in how the data (buffer length) influences the program's behavior."
+    }
+  ]
+}

@@ -50,12 +50,12 @@ COMMIT_ID = "a282a2f10539dce2aa619e71e1817570d557fc97"
 
 # prompt
 PROMPT_FILEPATH = "my-everything/prompts/prompt-dump.json"
-PROMPT_STMT_EXTRACTION = "stmt_extraction"
+PROMPT_STMT_EXTRACTION = "stmt_extraction-del"
 PROMPT_PATCH_ANALYSIS = "patch_analysis"
 PROMPT_SLICING_STRATEGY = "slicing_strategy_stmt"
 PROMPT_CORE_OPERATIONS = "core_operations"
 PROMPT_INTEGRITY_ANALYSIS = "integrity_analysis"
-PROMPT_FURTHER_SLICING = "further_slicing"
+PROMPT_FURTHER_SLICING = "further_slicing-one"
 
 # requests
 REQUEST_URL = "https://api.openai.com/v1/chat/completions"

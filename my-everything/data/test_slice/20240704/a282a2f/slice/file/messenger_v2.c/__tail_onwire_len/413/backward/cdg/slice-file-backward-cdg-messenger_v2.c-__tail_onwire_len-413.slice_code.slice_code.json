@@ -1,0 +1,149 @@
+{
+  "code": {
+    "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_new/net/ceph/messenger_v2.c": {
+      "413": {
+        "code": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n",
+        "function": "static int __tail_onwire_len(int front_len, int middle_len, int data_len,"
+      }
+    }
+  },
+  "nodes": {
+    "1232": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.lessThan",
+      "NAME": "<operator>.lessThan",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1235": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "front_len > CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "26",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.greaterThan",
+      "NAME": "<operator>.greaterThan",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1236": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len",
+      "COLUMN_NUMBER": "26",
+      "LINE_NUMBER": "413",
+      "NAME": "front_len",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "int",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1237": {
+      "ARGUMENT_INDEX": "2",
+      "CODE": "CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "38",
+      "LINE_NUMBER": "413",
+      "NAME": "CEPH_MSG_MAX_FRONT_LEN",
+      "ORDER": "2",
+      "TYPE_FULL_NAME": "ANY",
+      "filename": "messenger_v2.c",
+      "label": "IDENTIFIER"
+    },
+    "1230": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1226": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "BUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN)",
+      "COLUMN_NUMBER": "2",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "BUG_ON",
+      "NAME": "BUG_ON",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1231": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1227": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1229": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    },
+    "1228": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n\t       data_len < 0",
+      "COLUMN_NUMBER": "9",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "413",
+      "METHOD_FULL_NAME": "<operator>.logicalOr",
+      "NAME": "<operator>.logicalOr",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    }
+  },
+  "edges": {
+    "1232->1235": {
+      "label": "CDG"
+    },
+    "1232->1236": {
+      "label": "CDG"
+    },
+    "1232->1237": {
+      "label": "CDG"
+    }
+  }
+}

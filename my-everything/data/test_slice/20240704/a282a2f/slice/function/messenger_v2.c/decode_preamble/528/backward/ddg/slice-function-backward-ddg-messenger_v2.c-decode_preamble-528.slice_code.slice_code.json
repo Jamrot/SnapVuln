@@ -1,0 +1,65 @@
+{
+  "code": {
+    "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_old/net/ceph/messenger_v2.c": {
+      "495": {
+        "code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      "528": {
+        "code": "\t\tpr_err(\"last segment empty\\n\");\n",
+        "function": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      }
+    }
+  },
+  "nodes": {
+    "1448": {
+      "AST_PARENT_FULL_NAME": "messenger_v2.c:<global>",
+      "AST_PARENT_TYPE": "TYPE_DECL",
+      "CODE": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n{\n\tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n\tu32 crc, expected_crc;\n\tint i;\n\n\tcrc = crc32c(0, p, crcp - p);\n\texpected_crc = get_unaligned_le32(crcp);\n\tif (crc != expected_crc) {\n\t\tpr_err(\"bad preamble crc, calculated %u, expected %u\\\\n\",\n\t\t       crc, expected_crc);\n\t\treturn -EBADMSG;\n\t}\n\n\tmemset(desc, 0, sizeof(*desc));\n\n\tdesc->fd_tag = ceph_decode_8(&p);\n\tdesc->fd_seg_cnt = ceph_decode_8(&p);\n\tif (desc->fd_seg_cnt < 1 ||\n\t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n\t\tpr_err(\"bad segment count %d\\\\n\", desc->fd_seg_cnt);\n\t\treturn -EINVAL;\n\t}\n\tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n\t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n\t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n\t}\n\n\t/*\n\t * This would fire for FRAME_TAG_WAIT (it has one empty\n\t * segment), but we should never get it as client.\n\t */\n\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n\t\tpr_err(\"last segment empty\\\\n\");\n\t\treturn -EINVAL;\n\t}\n\n\tif (desc->fd_l...",
+      "COLUMN_NUMBER": "1",
+      "COLUMN_NUMBER_END": "1",
+      "FILENAME": "messenger_v2.c",
+      "FULL_NAME": "decode_preamble",
+      "IS_EXTERNAL": "false",
+      "LINE_NUMBER": "495",
+      "LINE_NUMBER_END": "550",
+      "NAME": "decode_preamble",
+      "ORDER": "36",
+      "SIGNATURE": "int decode_preamble (void*,ceph_frame_desc*)",
+      "filename": "messenger_v2.c",
+      "label": "METHOD"
+    },
+    "1572": {
+      "ARGUMENT_INDEX": "1",
+      "CODE": "\"last segment empty\\\\n\"",
+      "COLUMN_NUMBER": "10",
+      "LINE_NUMBER": "528",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "char",
+      "filename": "messenger_v2.c",
+      "label": "LITERAL"
+    },
+    "1571": {
+      "ARGUMENT_INDEX": "-1",
+      "CODE": "pr_err(\"last segment empty\\\\n\")",
+      "COLUMN_NUMBER": "3",
+      "DISPATCH_TYPE": "STATIC_DISPATCH",
+      "LINE_NUMBER": "528",
+      "METHOD_FULL_NAME": "pr_err",
+      "NAME": "pr_err",
+      "ORDER": "1",
+      "TYPE_FULL_NAME": "<empty>",
+      "filename": "messenger_v2.c",
+      "label": "CALL"
+    }
+  },
+  "edges": {
+    "1448->1572": {
+      "label": "REACHING_DEF"
+    },
+    "1572->1571": {
+      "VARIABLE": "\"last segment empty\\\\n\"",
+      "label": "REACHING_DEF"
+    }
+  }
+}

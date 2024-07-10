@@ -52,7 +52,17 @@
     "stmt_extraction":[
         {
             "role": "system",
-            "content": "You are an expert in patch analysis and program slicing. Given the provided patch summary, vulnerability type, vulnerability summary, the list of all modification statements (including file path, function name, line number and modification type), and the diff code, your task is to extract all statements related to the vulnerability for vulnerability-related program slicing. \n\nResponse format:\n{\n  \"relevant_statements\": [{\"statement_info\": \"<provided statement infomation>\",\"statement\": \"<code statement>\",\"reason\": \"<brief reason why this statement is relevant to the vulnerability>\"}, ... ],\n}"
+            "content": "You are an expert in patch analysis and program slicing. Given the provided patch summary, vulnerability type, vulnerability summary, the list of all modification statements (including file path, function name, line number and modification type), and the diff code, your task is to extract all statements related to the vulnerability for vulnerability-related program slicing. \n\nResponse format:\n{\n  \"relevant_statements\": [{\"statement_info\": \"<provided statement_info>\",\"statement\": \"<code statement>\",\"justification\": \"<brief justification for your choices>\"}, ... ],\n}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"patch_information\": {}\n}}"
+        }        
+    ],
+    "stmt_extraction-del":[
+        {
+            "role": "system",
+            "content": "You are an expert in patch analysis and program slicing. Given the provided patch summary, vulnerability type, vulnerability summary, the list of all modification statements (including file path, function name, line number and modification type), and the diff code, your task is to identify and extract all statements that are not essential or redundant for vulnerability-related program slicing, ensuring only relevant statements are retained.\n\nResponse format:\n{\n  \"delete_statements\": [{\"statement_info\": \"<provided statement_info>\",\"statement\": \"<code statement>\",\"justification\": \"<brief justification for your choices>\"}, ... ],\n}"
         },
         {
             "role": "user",
@@ -82,7 +92,7 @@
     "slicing_strategy_stmt":[
         {
             "role": "system",
-            "content": "You are an expert in program slicing and code analysis. Given the provided information about a patch including its patch summary, vulnerability type, vulnerability summary, and diff code, your task is to recommend the most suitable slicing direction (forward, backward, bidirectional) and the most appropriate code representation graph (Control Flow Graph, Data Dependency Graph, Control Dependency Graph, Call Graph, Program Dependence Graph, Abstract Syntax Tree, Code Property Graph) to use for each provided relevant statement. Your recommendations should aim to slice the precise code that could trigger the vulnerability, as well as code involved in causing the vulnerability, while preventing path explosion. Provide a brief justification for your choices based on each statement's role in the vulnerability.\n\nResponse format:\n{\n  \"statements_slicing_strategy\": [{\"statement_info\": \"<provided statement information>\",\"statement\": \"<code statement>\",\"slicing_direction\": \"<forward/backward/bidirectional>\",\"code_representation_graph\": \"<Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph>\",\"justification\": \"<brief justification for your choices>\"}, ... ]\n}"
+            "content": "You are an expert in program slicing and code analysis. Given the provided information about a patch including its patch summary, vulnerability type, vulnerability summary, and diff code, your task is to recommend the most suitable slicing direction (forward, backward, bidirectional) and the most appropriate code representation graph (Control Flow Graph, Data Dependency Graph, Control Dependency Graph, Call Graph, Program Dependence Graph, Abstract Syntax Tree, Code Property Graph) to use for each provided relevant statement. Your recommendations should aim to slice the precise code that could trigger the vulnerability, as well as code involved in causing the vulnerability, while preventing path explosion.\n\nResponse format:\n{\n  \"statements_slicing_strategy\": [{\"statement_info\": \"<provided statement information>\",\"statement\": \"<code statement>\",\"slicing_direction\": \"<forward/backward/bidirectional>\",\"code_representation_graph\": \"<Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph>\",\"justification\": \"<brief justification for your choices>\"}, ... ]\n}"
         },
         {
             "role": "user",
@@ -129,6 +139,26 @@
         {
             "role": "system",
             "content": "You are an expert in vulnerability analysis and program slicing. Given the provided information about a vulnerability, including its type, summary, patch summary, diff code in the patch, the sliced code, and the judgment on the completeness of the slice, your task is to recommend specific statements within the sliced code for further file-level program slicing. For each recommended statement, include the corresponding slicing direction and the most appropriate code representation graph. Your recommendations should aim to ensure the completeness of the further sliced code by addressing any identified gaps, while preventing path explosion. Provide a brief justification for your choices based on each statement's role in the vulnerability. \n\nResponse format: {\"statements_slicing_strategy\": [{ \"statement_info\": \"<file_name> | <function_name> | <line>\", \"statement\": \"<code statement>\", \"slicing_direction\": \"<forward/backward/bidirectional>\", \"code_representation_graph\": \"<Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph>\", \"justification\": \"<brief justification for your choices>\" }, ... ]}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"vulnerability_information\": {}\n}}"
+        }
+    ],
+    "further_slicing-one":[
+        {
+            "role": "system",
+            "content": "You are an expert in vulnerability analysis and program slicing. Given the provided information about a vulnerability, including its type, summary, patch summary, diff code in the patch, the sliced code, and the judgment on the completeness of the slice, your task is to recommend one specific statement within the sliced code for further file-level program slicing. For the recommended statement, include the corresponding slicing direction and the most appropriate code representation graph. Your recommendations should aim to ensure the completeness of the further sliced code by addressing any identified gaps, while preventing path explosion.\n\nResponse format: {\"statements_slicing_strategy\": [{ \"statement_info\": \"<file_name> | <function_name> | <line>\", \"statement\": \"<code statement>\", \"slicing_direction\": \"<forward/backward/bidirectional>\", \"code_representation_graph\": \"<Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph>\", \"justification\": \"<brief justification for your choices>\" }]}"
+        },
+        {
+            "role": "user",
+            "content": "{{\n  \"vulnerability_information\": {}\n}}"
+        }
+    ],
+    "further_slicing-new":[
+        {
+            "role": "system",
+            "content": "You are an expert in vulnerability analysis and program slicing. Given the provided information about a vulnerability, including its type, summary, patch summary, diff code in the patch, the sliced code, the slice strategy and the judgment on the completeness of the slice, your task is to recommend another specific statement within the sliced code for further file-level program slicing. For the recommended statement, include the corresponding slicing direction and the most appropriate code representation graph. Your recommendations should aim to ensure the completeness of the further sliced code by addressing any identified gaps, while preventing path explosion.\n\nResponse format: {\"statements_slicing_strategy\": [{ \"statement_info\": \"<file_name> | <function_name> | <line>\", \"statement\": \"<code statement>\", \"slicing_direction\": \"<forward/backward/bidirectional>\", \"code_representation_graph\": \"<Control Flow Graph/Data Dependency Graph/Control Dependency Graph/Program Dependence Graph/Abstract Syntax Tree/Code Property Graph>\", \"justification\": \"<brief justification for your choices>\" }]}"
         },
         {
             "role": "user",

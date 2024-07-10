@@ -1,0 +1,39 @@
+{
+  "delete_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 394 | ADD",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 523 | DELETE",
+      "statement": "\t/*",
+      "justification": "This statement is a comment and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 524 | DELETE",
+      "statement": "\t * This would fire for FRAME_TAG_WAIT (it has one empty",
+      "justification": "This statement is a comment and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 525 | DELETE",
+      "statement": "\t * segment), but we should never get it as client.",
+      "justification": "This statement is a comment and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 526 | DELETE",
+      "statement": "\t */",
+      "justification": "This statement is a comment and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | DELETE",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 416 | ADD",
+      "statement": "",
+      "justification": "This statement is an empty line and does not contribute to the vulnerability fix."
+    }
+  ]
+}

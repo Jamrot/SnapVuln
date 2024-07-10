@@ -1,0 +1,189 @@
+{
+  "patch_summary": "The patch hardens the checks for segment lengths in the libceph library, preventing potential buffer overruns due to negative control lengths.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows for buffer overruns in the Linux kernel's libceph library due to insufficient checks on segment lengths, potentially leading to system instability or unauthorized access.",
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"last segment empty\\n\");"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "modification": "DELETE",
+      "statement": "\tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "modification": "DELETE",
+      "statement": "\t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 530 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad control segment length %d\\n\", desc->fd_lens[0]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[1] < 0 ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 535 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad front segment length %d\\n\", desc->fd_lens[1]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[2] < 0 ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad middle segment length %d\\n\", desc->fd_lens[2]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (desc->fd_lens[3] < 0 ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545 | ADD",
+      "modification": "ADD",
+      "statement": "\t    desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 546 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"bad data segment length %d\\n\", desc->fd_lens[3]);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 554 | ADD",
+      "modification": "ADD",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 555 | ADD",
+      "modification": "ADD",
+      "statement": "\t\tpr_err(\"last segment empty, segment count %d\\n\","
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 556 | ADD",
+      "modification": "ADD",
+      "statement": "\t\t       desc->fd_seg_cnt);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 414 | ADD",
+      "modification": "ADD",
+      "statement": "\t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 415 | ADD",
+      "modification": "ADD",
+      "statement": "\t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);"
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "modification": "ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);"
+    }
+  ],
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "\tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is checking the length of the last segment. A backward slice from this point will help identify the points where the length is set, which is crucial for understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "\tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is checking the length of the control segment. A backward slice from this point will help identify the points where the length is set, which is crucial for understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "\tif (desc->fd_lens[0] < 0 ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is checking the length of the control segment. A backward slice from this point will help identify the points where the length is set, which is crucial for understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "\tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is checking the length of the front segment. A backward slice from this point will help identify the points where the length is set, which is crucial for understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 393 | ADD",
+      "statement": "\tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is checking the length of the control segment. A backward slice from this point will help identify the points where the length is set, which is crucial for understanding the buffer overflow vulnerability."
+    }
+  ]
+}

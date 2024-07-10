@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L509: \tif (crc != expected_crc) {\n",
+            "L519: \tif (desc->fd_seg_cnt < 1 ||\n",
+            "L529: \tif (desc->fd_lens[0] < 0 ||\n",
+            "L534: \tif (desc->fd_lens[1] < 0 ||\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

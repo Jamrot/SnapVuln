@@ -1,0 +1,32 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L519",
+      "statement": "desc->fd_lens[i] = ceph_decode_32(&p);",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is responsible for decoding the segment lengths, which are later checked for validity. A forward slice from this statement will help identify how these lengths are used and potentially misused, leading to the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L520",
+      "statement": "desc->fd_aligns[i] = ceph_decode_16(&p);",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is responsible for decoding the segment alignments, which may be related to the buffer allocation and memory management operations that were identified as missing from the initial slice. A forward slice from this statement will help identify how these alignments are used and potentially misused."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int head_onwire_len(int ctrl_len, bool secure) | L393",
+      "statement": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is part of the patch that checks for invalid segment lengths. A backward slice from this statement will help identify the control flow leading to this check, which may reveal additional relevant code related to the buffer allocation and memory management operations."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int __tail_onwire_len(int front_len, int middle_len, int data_len, | L413",
+      "statement": "BUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN || middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN || data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is part of the patch that checks for invalid segment lengths. A backward slice from this statement will help identify the control flow leading to this check, which may reveal additional relevant code related to the buffer allocation and memory management operations."
+    }
+  ]
+}

@@ -20,7 +20,7 @@
     },
     "modification": "ADD",
     "direction": "backward",
-    "graph": "ddg",
+    "graph": "cfg",
     "save_root": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f",
     "save_file_code_filepath": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_new/net/ceph/messenger_v2.c",
     "save_module_dirpath": "/app/slicing-snapvuln/my-everything/data/test_slice/20240704/a282a2f/code/code_new/net/ceph",

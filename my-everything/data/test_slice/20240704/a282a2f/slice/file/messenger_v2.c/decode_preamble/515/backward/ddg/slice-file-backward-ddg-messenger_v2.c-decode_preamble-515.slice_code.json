@@ -1,0 +1,49 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int handle_preamble(struct ceph_connection *con)",
+          "lines": [
+            "L2738: static int handle_preamble(struct ceph_connection *con)\n",
+            "L2740: \tstruct ceph_frame_desc *desc = &con->v2.in_desc;\n",
+            "L2752: \tret = decode_preamble(con->v2.in_buf, desc);\n"
+          ]
+        },
+        {
+          "function_name": "static int populate_in_iter(struct ceph_connection *con)",
+          "lines": [
+            "L2865: static int populate_in_iter(struct ceph_connection *con)\n",
+            "L2869: \tdout(\"%s con %p state %d in_state %d\\n\", __func__, con, con->state,\n",
+            "L2870: \t     con->v2.in_state);\n",
+            "L2873: \tif (con->state == CEPH_CON_S_V2_BANNER_PREFIX) {\n",
+            "L2875: \t} else if (con->state == CEPH_CON_S_V2_BANNER_PAYLOAD) {\n",
+            "L2877: \t} else if ((con->state >= CEPH_CON_S_V2_HELLO &&\n",
+            "L2878: \t\t    con->state <= CEPH_CON_S_V2_SESSION_RECONNECT) ||\n",
+            "L2879: \t\t   con->state == CEPH_CON_S_OPEN) {\n",
+            "L2882: \t\t\tret = handle_preamble(con);\n"
+          ]
+        },
+        {
+          "function_name": "int ceph_con_v2_try_read(struct ceph_connection *con)",
+          "lines": [
+            "L2928: int ceph_con_v2_try_read(struct ceph_connection *con)\n",
+            "L2932: \tdout(\"%s con %p state %d need %zu\\n\", __func__, con, con->state,\n",
+            "L2933: \t     iov_iter_count(&con->v2.in_iter));\n",
+            "L2935: \tif (con->state == CEPH_CON_S_PREOPEN)\n",
+            "L2947: \t\tret = ceph_tcp_recv(con);\n",
+            "L2951: \t\tret = populate_in_iter(con);\n"
+          ]
+        },
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L501: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L515: \tmemset(desc, 0, sizeof(*desc));\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

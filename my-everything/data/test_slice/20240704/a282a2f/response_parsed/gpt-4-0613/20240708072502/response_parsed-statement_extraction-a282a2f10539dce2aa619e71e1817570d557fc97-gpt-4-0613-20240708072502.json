@@ -1,0 +1,64 @@
+{
+  "delete_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 523 | DELETE",
+      "statement": "\t/*",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 524 | DELETE",
+      "statement": "\t * This would fire for FRAME_TAG_WAIT (it has one empty",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 525 | DELETE",
+      "statement": "\t * segment), but we should never get it as client.",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 526 | DELETE",
+      "statement": "\t */",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | DELETE",
+      "statement": "",
+      "justification": "This is an empty line and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 549 | ADD",
+      "statement": "",
+      "justification": "This is an empty line and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 550 | ADD",
+      "statement": "\t/*",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 551 | ADD",
+      "statement": "\t * This would fire for FRAME_TAG_WAIT (it has one empty",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 552 | ADD",
+      "statement": "\t * segment), but we should never get it as client.",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 553 | ADD",
+      "statement": "\t */",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 416 | ADD",
+      "statement": "",
+      "justification": "This is an empty line and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 394 | ADD",
+      "statement": "",
+      "justification": "This is an empty line and does not affect the program execution."
+    }
+  ]
+}

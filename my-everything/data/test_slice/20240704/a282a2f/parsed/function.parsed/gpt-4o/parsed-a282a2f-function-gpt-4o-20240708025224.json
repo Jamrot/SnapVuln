@@ -1,0 +1,242 @@
+{
+  "patch_summary": "The patch strengthens length checks for frame segments in the Ceph messenger protocol to prevent buffer overruns.",
+  "vulnerability_type": "Buffer Overflow",
+  "vulnerability_summary": "The vulnerability allows a buffer overrun due to improper handling of negative segment lengths in the Ceph messenger protocol.",
+  "relevant_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | DELETE",
+      "statement": "if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement checks if the last segment length is zero, which is relevant to the vulnerability as it pertains to segment length validation."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528 | DELETE",
+      "statement": "pr_err(\"last segment empty\\n\");",
+      "reason": "This statement logs an error if the last segment length is zero, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532 | DELETE",
+      "statement": "if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement checks if the control segment length exceeds the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533 | DELETE",
+      "statement": "pr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length exceeds the maximum allowed length, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | DELETE",
+      "statement": "if (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement checks if the front segment length exceeds the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537 | DELETE",
+      "statement": "pr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length exceeds the maximum allowed length, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | DELETE",
+      "statement": "if (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement checks if the middle segment length exceeds the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541 | DELETE",
+      "statement": "pr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length exceeds the maximum allowed length, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | DELETE",
+      "statement": "if (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement checks if the data segment length exceeds the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545 | DELETE",
+      "statement": "pr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length exceeds the maximum allowed length, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 526 | DELETE",
+      "statement": "*/",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 525 | DELETE",
+      "statement": "* segment), but we should never get it as client.",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 524 | DELETE",
+      "statement": "* This would fire for FRAME_TAG_WAIT (it has one empty",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 523 | DELETE",
+      "statement": "/*",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 526 | ADD",
+      "statement": "if (desc->fd_lens[0] < 0 ||",
+      "reason": "This statement adds a check for negative control segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 527 | ADD",
+      "statement": "desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "reason": "This statement continues the check for control segment lengths exceeding the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 528 | ADD",
+      "statement": "pr_err(\"bad control segment length %d\\n\", desc->fd_lens[0]);",
+      "reason": "This statement logs an error if the control segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 529 | ADD",
+      "statement": "return -EINVAL;",
+      "reason": "This statement returns an error code if the control segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 530 | ADD",
+      "statement": "}",
+      "reason": "This statement closes the control segment length validation block."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | ADD",
+      "statement": "if (desc->fd_lens[1] < 0 ||",
+      "reason": "This statement adds a check for negative front segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 532 | ADD",
+      "statement": "desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "reason": "This statement continues the check for front segment lengths exceeding the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 533 | ADD",
+      "statement": "pr_err(\"bad front segment length %d\\n\", desc->fd_lens[1]);",
+      "reason": "This statement logs an error if the front segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 534 | ADD",
+      "statement": "return -EINVAL;",
+      "reason": "This statement returns an error code if the front segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 535 | ADD",
+      "statement": "}",
+      "reason": "This statement closes the front segment length validation block."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 536 | ADD",
+      "statement": "if (desc->fd_lens[2] < 0 ||",
+      "reason": "This statement adds a check for negative middle segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 537 | ADD",
+      "statement": "desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "reason": "This statement continues the check for middle segment lengths exceeding the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 538 | ADD",
+      "statement": "pr_err(\"bad middle segment length %d\\n\", desc->fd_lens[2]);",
+      "reason": "This statement logs an error if the middle segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 539 | ADD",
+      "statement": "return -EINVAL;",
+      "reason": "This statement returns an error code if the middle segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 540 | ADD",
+      "statement": "}",
+      "reason": "This statement closes the middle segment length validation block."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 541 | ADD",
+      "statement": "if (desc->fd_lens[3] < 0 ||",
+      "reason": "This statement adds a check for negative data segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 542 | ADD",
+      "statement": "desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "reason": "This statement continues the check for data segment lengths exceeding the maximum allowed length, which is relevant to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 543 | ADD",
+      "statement": "pr_err(\"bad data segment length %d\\n\", desc->fd_lens[3]);",
+      "reason": "This statement logs an error if the data segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 544 | ADD",
+      "statement": "return -EINVAL;",
+      "reason": "This statement returns an error code if the data segment length is invalid, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 545 | ADD",
+      "statement": "}",
+      "reason": "This statement closes the data segment length validation block."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 546 | ADD",
+      "statement": "/*",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 547 | ADD",
+      "statement": "* This would fire for FRAME_TAG_WAIT (it has one empty",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 548 | ADD",
+      "statement": "* segment), but we should never get it as client.",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 549 | ADD",
+      "statement": "*/",
+      "reason": "This comment block is related to the segment length validation logic, providing context for the checks."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 550 | ADD",
+      "statement": "if (!desc->fd_lens[desc->fd_seg_cnt - 1]) {",
+      "reason": "This statement checks if the last segment length is zero, which is relevant to the vulnerability as it pertains to segment length validation."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 551 | ADD",
+      "statement": "pr_err(\"last segment empty, segment count %d\\n\",",
+      "reason": "This statement logs an error if the last segment length is zero, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 552 | ADD",
+      "statement": "desc->fd_seg_cnt);",
+      "reason": "This statement logs the segment count if the last segment length is zero, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 553 | ADD",
+      "statement": "return -EINVAL;",
+      "reason": "This statement returns an error code if the last segment length is zero, which is part of the segment length validation process."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 554 | ADD",
+      "statement": "}",
+      "reason": "This statement closes the last segment length validation block."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 392 | ADD",
+      "statement": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "reason": "This statement adds a check for negative or excessively large control segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 412 | ADD",
+      "statement": "BUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "reason": "This statement adds a check for negative or excessively large front segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 413 | ADD",
+      "statement": "middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||",
+      "reason": "This statement adds a check for negative or excessively large middle segment lengths, which is directly related to preventing buffer overruns."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 414 | ADD",
+      "statement": "data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "reason": "This statement adds a check for negative or excessively large data segment lengths, which is directly related to preventing buffer overruns."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "delete_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 523 | DELETE",
+      "statement": "\t/*",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 524 | DELETE",
+      "statement": "\t * This would fire for FRAME_TAG_WAIT (it has one empty",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 525 | DELETE",
+      "statement": "\t * segment), but we should never get it as client.",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 526 | DELETE",
+      "statement": "\t */",
+      "justification": "This is a comment and does not affect the program execution."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | DELETE",
+      "statement": "",
+      "justification": "This is an empty line and does not affect the program execution."
+    }
+  ]
+}

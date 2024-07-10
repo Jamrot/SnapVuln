@@ -1,0 +1,44 @@
+{
+  "delete_statements": [
+    {
+      "statement_info": "net/ceph/messenger_v2.c | head_onwire_len | 394 | ADD",
+      "statement": "",
+      "justification": "This is an empty line added for formatting and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 531 | DELETE",
+      "statement": "",
+      "justification": "This is an empty line removed for formatting and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 549 | ADD",
+      "statement": "",
+      "justification": "This is an empty line added for formatting and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | __tail_onwire_len | 416 | ADD",
+      "statement": "",
+      "justification": "This is an empty line added for formatting and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 550 | ADD",
+      "statement": "\t/*",
+      "justification": "This is a comment added for documentation purposes and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 551 | ADD",
+      "statement": "\t * This would fire for FRAME_TAG_WAIT (it has one empty",
+      "justification": "This is a comment added for documentation purposes and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 552 | ADD",
+      "statement": "\t * segment), but we should never get it as client.",
+      "justification": "This is a comment added for documentation purposes and does not contribute to the vulnerability fix."
+    },
+    {
+      "statement_info": "net/ceph/messenger_v2.c | decode_preamble | 553 | ADD",
+      "statement": "\t */",
+      "justification": "This is a comment added for documentation purposes and does not contribute to the vulnerability fix."
+    }
+  ]
+}

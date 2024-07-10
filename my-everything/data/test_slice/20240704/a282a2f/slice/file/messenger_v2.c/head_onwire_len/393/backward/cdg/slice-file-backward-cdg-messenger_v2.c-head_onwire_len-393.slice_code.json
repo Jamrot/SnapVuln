@@ -1,0 +1,15 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int head_onwire_len(int ctrl_len, bool secure)",
+          "lines": [
+            "L393: \tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

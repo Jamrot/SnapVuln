@@ -1,0 +1,53 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int head_onwire_len(int ctrl_len, bool secure) | L393",
+      "statement": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help identify the source of 'ctrl_len' and ensure that all relevant input validation and boundary checking operations are included."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int __tail_onwire_len(int front_len, int middle_len, int data_len, | L413",
+      "statement": "BUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help trace the origin of 'front_len' and ensure that all relevant input validation and boundary checking operations are included."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int __tail_onwire_len(int front_len, int middle_len, int data_len, | L414",
+      "statement": "middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help trace the origin of 'middle_len' and ensure that all relevant input validation and boundary checking operations are included."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int __tail_onwire_len(int front_len, int middle_len, int data_len, | L415",
+      "statement": "data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help trace the origin of 'data_len' and ensure that all relevant input validation and boundary checking operations are included."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L513",
+      "statement": "if (desc->fd_seg_cnt < 1 || desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help identify the source of 'desc->fd_seg_cnt' and ensure that all relevant input validation and boundary checking operations are included."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L519",
+      "statement": "desc->fd_lens[i] = ceph_decode_32(&p);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help identify the source of 'p' and ensure that all relevant memory allocation and data copying operations are included."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L520",
+      "statement": "desc->fd_aligns[i] = ceph_decode_16(&p);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "Backward slicing from this statement will help identify the source of 'p' and ensure that all relevant memory allocation and data copying operations are included."
+    }
+  ]
+}

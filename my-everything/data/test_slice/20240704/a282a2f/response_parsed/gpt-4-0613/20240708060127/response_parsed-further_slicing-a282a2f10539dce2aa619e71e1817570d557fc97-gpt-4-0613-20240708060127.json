@@ -1,0 +1,25 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L519",
+      "statement": "desc->fd_lens[i] = ceph_decode_32(&p);",
+      "slicing_direction": "forward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement is responsible for decoding the segment lengths. A forward slice from this point will help us understand how these lengths are used in the subsequent code, which is crucial for understanding the buffer overflow vulnerability."
+    },
+    {
+      "statement_info": "code/code_old/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L532",
+      "statement": "if (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Flow Graph",
+      "justification": "This statement is part of the original checks for segment lengths. A backward slice from this point will help us understand the conditions and data that lead to this check, which is important for understanding the original vulnerability."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L529",
+      "statement": "if (desc->fd_lens[0] < 0 || desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "bidirectional",
+      "code_representation_graph": "Program Dependence Graph",
+      "justification": "This statement is part of the patched checks for segment lengths. A bidirectional slice from this point will help us understand both the conditions and data that lead to this check, and how the results of this check are used in the subsequent code. This is crucial for understanding the patch and how it addresses the vulnerability."
+    }
+  ]
+}

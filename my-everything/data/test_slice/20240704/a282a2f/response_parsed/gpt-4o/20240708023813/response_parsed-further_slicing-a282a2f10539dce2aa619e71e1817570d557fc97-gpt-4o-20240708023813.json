@@ -1,0 +1,60 @@
+{
+  "statements_slicing_strategy": [
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L515",
+      "statement": "memset(desc, 0, sizeof(*desc));",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement initializes the descriptor structure, which is crucial for understanding how the buffer is set up before any operations are performed on it. Backward slicing will help identify all the dependencies leading to this initialization."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L525",
+      "statement": "desc->fd_lens[i] = ceph_decode_32(&p);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Data Dependency Graph",
+      "justification": "This statement decodes the segment lengths, which are directly related to the buffer overflow vulnerability. Backward slicing will help trace the origin and validation of these lengths."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L529",
+      "statement": "if (desc->fd_lens[0] < 0 || desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This boundary check is critical for preventing buffer overflow. Backward slicing will help ensure that all conditions leading to this check are properly understood and validated."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L534",
+      "statement": "if (desc->fd_lens[1] < 0 || desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "Similar to the previous check, this statement ensures the front segment length is within valid bounds. Backward slicing will help verify the correctness of all preceding operations."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L539",
+      "statement": "if (desc->fd_lens[2] < 0 || desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This check is for the middle segment length. Backward slicing will help ensure that all operations leading to this check are correctly implemented and validated."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int decode_preamble(void *p, struct ceph_frame_desc *desc) | L544",
+      "statement": "if (desc->fd_lens[3] < 0 || desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This check is for the data segment length. Backward slicing will help ensure that all operations leading to this check are correctly implemented and validated."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int head_onwire_len(int ctrl_len, bool secure) | L393",
+      "statement": "BUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement ensures the control length is within valid bounds. Backward slicing will help verify the correctness of all preceding operations and inputs."
+    },
+    {
+      "statement_info": "code/code_new/net/ceph/messenger_v2.c | static int __tail_onwire_len(int front_len, int middle_len, int data_len, | L413",
+      "statement": "BUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN || middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN || data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);",
+      "slicing_direction": "backward",
+      "code_representation_graph": "Control Dependency Graph",
+      "justification": "This statement ensures the lengths of the front, middle, and data segments are within valid bounds. Backward slicing will help verify the correctness of all preceding operations and inputs."
+    }
+  ]
+}

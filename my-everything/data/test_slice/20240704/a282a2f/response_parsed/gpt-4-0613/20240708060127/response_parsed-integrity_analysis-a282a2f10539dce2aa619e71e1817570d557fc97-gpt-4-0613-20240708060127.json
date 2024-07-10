@@ -1,0 +1,28 @@
+{
+  "sliced_code_cause_vulnerability": {
+    "includes_all_codes": "YES",
+    "justification": "The sliced code includes all the code that causes the vulnerability. It contains the 'decode_preamble' function where the buffer overflow occurs due to negative control lengths. The patch also modifies this function to prevent the vulnerability."
+  },
+  "sliced_code_core_operations": {
+    "core_operation_codes": [
+      {
+        "core_operation": "Input Validation",
+        "sliced_code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      {
+        "core_operation": "Buffer Management",
+        "sliced_code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      {
+        "core_operation": "Error Handling",
+        "sliced_code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      }
+    ],
+    "includes_all_core_operations": "YES",
+    "justification": "The sliced code includes all the core operations that lead to the vulnerability. It includes the 'decode_preamble' function where the input validation, buffer management, and error handling occur."
+  },
+  "final_determination": {
+    "contains_all_relevant_code": "YES",
+    "justification": "The sliced code includes all the code that causes the vulnerability and all the specific core operations that lead to the vulnerability. Therefore, it contains all the relevant code."
+  }
+}

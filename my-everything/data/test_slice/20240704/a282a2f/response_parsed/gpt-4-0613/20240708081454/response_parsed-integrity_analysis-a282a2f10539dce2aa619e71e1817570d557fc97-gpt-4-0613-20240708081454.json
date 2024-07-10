@@ -1,0 +1,32 @@
+{
+  "sliced_code_cause_vulnerability": {
+    "includes_all_codes": "YES",
+    "justification": "The sliced code includes all the code that causes the vulnerability. It contains the 'decode_preamble' function where the buffer overflow occurs due to lack of proper checks on segment lengths."
+  },
+  "sliced_code_core_operations": {
+    "core_operation_codes": [
+      {
+        "core_operation": "Input Validation",
+        "sliced_code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      {
+        "core_operation": "Buffer Allocation",
+        "sliced_code": "NONE"
+      },
+      {
+        "core_operation": "Error Handling",
+        "sliced_code": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)"
+      },
+      {
+        "core_operation": "Memory Management",
+        "sliced_code": "NONE"
+      }
+    ],
+    "includes_all_core_operations": "NO",
+    "justification": "The sliced code does not include all core operations that lead to the vulnerability. It includes the code for 'Input Validation' and 'Error Handling' in the 'decode_preamble' function, but it does not include the code for 'Buffer Allocation' and 'Memory Management'."
+  },
+  "final_determination": {
+    "contains_all_relevant_code": "NO",
+    "justification": "While the sliced code includes all the code that causes the vulnerability and some of the core operations, it does not include all the core operations that lead to the vulnerability, specifically the 'Buffer Allocation' and 'Memory Management' operations."
+  }
+}
