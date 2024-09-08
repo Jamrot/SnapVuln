@@ -1,0 +1,55 @@
+{
+  "files": [
+    {
+      "file_name": "code/code_old/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int decode_preamble(void *p, struct ceph_frame_desc *desc)",
+          "lines": [
+            "L495: static int decode_preamble(void *p, struct ceph_frame_desc *desc)\n",
+            "L497: \tvoid *crcp = p + CEPH_PREAMBLE_LEN - CEPH_CRC_LEN;\n",
+            "L501: \tcrc = crc32c(0, p, crcp - p);\n",
+            "L509: \tmemset(desc, 0, sizeof(*desc));\n",
+            "L511: \tdesc->fd_tag = ceph_decode_8(&p);\n",
+            "L512: \tdesc->fd_seg_cnt = ceph_decode_8(&p);\n",
+            "L513: \tif (desc->fd_seg_cnt < 1 ||\n",
+            "L514: \t    desc->fd_seg_cnt > CEPH_FRAME_MAX_SEGMENT_COUNT) {\n",
+            "L518: \tfor (i = 0; i < desc->fd_seg_cnt; i++) {\n",
+            "L519: \t\tdesc->fd_lens[i] = ceph_decode_32(&p);\n",
+            "L520: \t\tdesc->fd_aligns[i] = ceph_decode_16(&p);\n",
+            "L527: \tif (!desc->fd_lens[desc->fd_seg_cnt - 1]) {\n",
+            "L532: \tif (desc->fd_lens[0] > CEPH_MSG_MAX_CONTROL_LEN) {\n",
+            "L533: \t\tpr_err(\"control segment too big %d\\n\", desc->fd_lens[0]);\n",
+            "L536: \tif (desc->fd_lens[1] > CEPH_MSG_MAX_FRONT_LEN) {\n",
+            "L537: \t\tpr_err(\"front segment too big %d\\n\", desc->fd_lens[1]);\n",
+            "L540: \tif (desc->fd_lens[2] > CEPH_MSG_MAX_MIDDLE_LEN) {\n",
+            "L541: \t\tpr_err(\"middle segment too big %d\\n\", desc->fd_lens[2]);\n",
+            "L544: \tif (desc->fd_lens[3] > CEPH_MSG_MAX_DATA_LEN) {\n",
+            "L545: \t\tpr_err(\"data segment too big %d\\n\", desc->fd_lens[3]);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "code/code_new/net/ceph/messenger_v2.c",
+      "functions": [
+        {
+          "function_name": "static int head_onwire_len(int ctrl_len, bool secure)",
+          "lines": [
+            "L388: static int head_onwire_len(int ctrl_len, bool secure)\n",
+            "L393: \tBUG_ON(ctrl_len < 0 || ctrl_len > CEPH_MSG_MAX_CONTROL_LEN);\n"
+          ]
+        },
+        {
+          "function_name": "static int __tail_onwire_len(int front_len, int middle_len, int data_len,",
+          "lines": [
+            "L410: static int __tail_onwire_len(int front_len, int middle_len, int data_len,\n",
+            "L413: \tBUG_ON(front_len < 0 || front_len > CEPH_MSG_MAX_FRONT_LEN ||\n",
+            "L414: \t       middle_len < 0 || middle_len > CEPH_MSG_MAX_MIDDLE_LEN ||\n",
+            "L415: \t       data_len < 0 || data_len > CEPH_MSG_MAX_DATA_LEN);\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
