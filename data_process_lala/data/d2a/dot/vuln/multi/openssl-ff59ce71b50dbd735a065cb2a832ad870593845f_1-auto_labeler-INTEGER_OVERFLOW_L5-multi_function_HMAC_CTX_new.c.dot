@@ -1,0 +1,419 @@
+digraph G {
+  487 [ label="type:Function
+name:HMAC_CTX_new
+nodeid:487
+" type="Function" name="HMAC_CTX_new" nodeid="487" ];
+  488 [ label="childNum:0
+code:HMAC_CTX_new ()
+type:FunctionDef
+functionId:487
+nodeid:488
+" childNum="0" code="HMAC_CTX_new ()" type="FunctionDef" functionId="487" nodeid="488" ];
+  489 [ label="childNum:2
+code:
+type:ParameterList
+functionId:487
+nodeid:489
+" childNum="2" code="" type="ParameterList" functionId="487" nodeid="489" ];
+  490 [ label="childNum:1
+code:HMAC_CTX *
+type:ReturnType
+functionId:487
+nodeid:490
+" childNum="1" code="HMAC_CTX *" type="ReturnType" functionId="487" nodeid="490" ];
+  491 [ label="code:
+nodeid:491
+childNum:0
+location:71:0:2614:2819
+type:CompoundStatement
+functionId:487
+" code="" nodeid="491" childNum="0" location="71:0:2614:2819" type="CompoundStatement" functionId="487" ];
+  492 [ label="code:return ctx ;
+nodeid:492
+isCFGNode:True
+childNum:2
+location:80:4:2807:2817
+type:ReturnStatement
+functionId:487
+" code="return ctx ;" nodeid="492" isCFGNode="True" childNum="2" location="80:4:2807:2817" type="ReturnStatement" functionId="487" ];
+  493 [ label="childNum:0
+code:ctx
+type:Identifier
+functionId:487
+nodeid:493
+" childNum="0" code="ctx" type="Identifier" functionId="487" nodeid="493" ];
+  494 [ label="childNum:1
+code:if ( ctx != NULL )
+type:IfStatement
+functionId:487
+nodeid:494
+" childNum="1" code="if ( ctx != NULL )" type="IfStatement" functionId="487" nodeid="494" ];
+  495 [ label="code:
+nodeid:495
+childNum:1
+location:4:21:77:77
+type:CompoundStatement
+functionId:487
+" code="" nodeid="495" childNum="1" location="4:21:77:77" type="CompoundStatement" functionId="487" ];
+  496 [ label="childNum:0
+code:if ( ! HMAC_CTX_reset ( ctx ) )
+type:IfStatement
+functionId:487
+nodeid:496
+" childNum="0" code="if ( ! HMAC_CTX_reset ( ctx ) )" type="IfStatement" functionId="487" nodeid="496" ];
+  497 [ label="code:
+nodeid:497
+childNum:1
+location:5:34:113:113
+type:CompoundStatement
+functionId:487
+" code="" nodeid="497" childNum="1" location="5:34:113:113" type="CompoundStatement" functionId="487" ];
+  498 [ label="code:return NULL ;
+nodeid:498
+isCFGNode:True
+childNum:1
+location:77:12:2774:2785
+type:ReturnStatement
+functionId:487
+" code="return NULL ;" nodeid="498" isCFGNode="True" childNum="1" location="77:12:2774:2785" type="ReturnStatement" functionId="487" ];
+  499 [ label="childNum:0
+code:NULL
+type:Identifier
+functionId:487
+nodeid:499
+" childNum="0" code="NULL" type="Identifier" functionId="487" nodeid="499" ];
+  500 [ label="code:HMAC_CTX_free ( ctx )
+nodeid:500
+isCFGNode:True
+childNum:0
+location:76:12:2742:2760
+type:ExpressionStatement
+functionId:487
+" code="HMAC_CTX_free ( ctx )" nodeid="500" isCFGNode="True" childNum="0" location="76:12:2742:2760" type="ExpressionStatement" functionId="487" ];
+  501 [ label="childNum:0
+code:HMAC_CTX_free ( ctx )
+type:CallExpression
+functionId:487
+nodeid:501
+" childNum="0" code="HMAC_CTX_free ( ctx )" type="CallExpression" functionId="487" nodeid="501" ];
+  502 [ label="childNum:1
+code:ctx
+type:ArgumentList
+functionId:487
+nodeid:502
+" childNum="1" code="ctx" type="ArgumentList" functionId="487" nodeid="502" ];
+  503 [ label="childNum:0
+code:ctx
+type:Argument
+functionId:487
+nodeid:503
+" childNum="0" code="ctx" type="Argument" functionId="487" nodeid="503" ];
+  504 [ label="childNum:0
+code:ctx
+type:Identifier
+functionId:487
+nodeid:504
+" childNum="0" code="ctx" type="Identifier" functionId="487" nodeid="504" ];
+  505 [ label="childNum:0
+code:HMAC_CTX_free
+type:Callee
+functionId:487
+nodeid:505
+" childNum="0" code="HMAC_CTX_free" type="Callee" functionId="487" nodeid="505" ];
+  506 [ label="childNum:0
+code:HMAC_CTX_free
+type:Identifier
+functionId:487
+nodeid:506
+" childNum="0" code="HMAC_CTX_free" type="Identifier" functionId="487" nodeid="506" ];
+  507 [ label="code:! HMAC_CTX_reset ( ctx )
+nodeid:507
+isCFGNode:True
+childNum:0
+location:75:12:2706:2725
+type:Condition
+functionId:487
+" code="! HMAC_CTX_reset ( ctx )" nodeid="507" isCFGNode="True" childNum="0" location="75:12:2706:2725" type="Condition" functionId="487" ];
+  508 [ label="childNum:0
+code:! HMAC_CTX_reset ( ctx )
+type:UnaryOp
+functionId:487
+nodeid:508
+" childNum="0" code="! HMAC_CTX_reset ( ctx )" type="UnaryOp" functionId="487" nodeid="508" ];
+  509 [ label="childNum:1
+code:HMAC_CTX_reset ( ctx )
+type:CallExpression
+functionId:487
+nodeid:509
+" childNum="1" code="HMAC_CTX_reset ( ctx )" type="CallExpression" functionId="487" nodeid="509" ];
+  510 [ label="childNum:1
+code:ctx
+type:ArgumentList
+functionId:487
+nodeid:510
+" childNum="1" code="ctx" type="ArgumentList" functionId="487" nodeid="510" ];
+  511 [ label="childNum:0
+code:ctx
+type:Argument
+functionId:487
+nodeid:511
+" childNum="0" code="ctx" type="Argument" functionId="487" nodeid="511" ];
+  512 [ label="childNum:0
+code:ctx
+type:Identifier
+functionId:487
+nodeid:512
+" childNum="0" code="ctx" type="Identifier" functionId="487" nodeid="512" ];
+  513 [ label="childNum:0
+code:HMAC_CTX_reset
+type:Callee
+functionId:487
+nodeid:513
+" childNum="0" code="HMAC_CTX_reset" type="Callee" functionId="487" nodeid="513" ];
+  514 [ label="childNum:0
+code:HMAC_CTX_reset
+type:Identifier
+functionId:487
+nodeid:514
+" childNum="0" code="HMAC_CTX_reset" type="Identifier" functionId="487" nodeid="514" ];
+  515 [ label="childNum:0
+code:!
+type:UnaryOperator
+functionId:487
+nodeid:515
+" childNum="0" code="!" type="UnaryOperator" functionId="487" nodeid="515" ];
+  516 [ label="code:ctx != NULL
+nodeid:516
+isCFGNode:True
+childNum:0
+location:74:8:2679:2689
+type:Condition
+functionId:487
+" code="ctx != NULL" nodeid="516" isCFGNode="True" childNum="0" location="74:8:2679:2689" type="Condition" functionId="487" ];
+  517 [ label="code:ctx != NULL
+nodeid:517
+childNum:0
+operator:!=
+type:EqualityExpression
+functionId:487
+" code="ctx != NULL" nodeid="517" childNum="0" operator="!=" type="EqualityExpression" functionId="487" ];
+  518 [ label="childNum:1
+code:NULL
+type:Identifier
+functionId:487
+nodeid:518
+" childNum="1" code="NULL" type="Identifier" functionId="487" nodeid="518" ];
+  519 [ label="childNum:0
+code:ctx
+type:Identifier
+functionId:487
+nodeid:519
+" childNum="0" code="ctx" type="Identifier" functionId="487" nodeid="519" ];
+  520 [ label="code:HMAC_CTX * ctx = OPENSSL_zalloc ( sizeof ( HMAC_CTX ) ) ;
+nodeid:520
+isCFGNode:True
+childNum:0
+location:72:4:2620:2668
+type:IdentifierDeclStatement
+functionId:487
+" code="HMAC_CTX * ctx = OPENSSL_zalloc ( sizeof ( HMAC_CTX ) ) ;" nodeid="520" isCFGNode="True" childNum="0" location="72:4:2620:2668" type="IdentifierDeclStatement" functionId="487" ];
+  521 [ label="childNum:0
+code:* ctx = OPENSSL_zalloc ( sizeof ( HMAC_CTX ) )
+type:IdentifierDecl
+functionId:487
+nodeid:521
+" childNum="0" code="* ctx = OPENSSL_zalloc ( sizeof ( HMAC_CTX ) )" type="IdentifierDecl" functionId="487" nodeid="521" ];
+  522 [ label="code:* ctx = OPENSSL_zalloc ( sizeof ( HMAC_CTX ) )
+nodeid:522
+childNum:2
+operator:=
+type:AssignmentExpr
+functionId:487
+" code="* ctx = OPENSSL_zalloc ( sizeof ( HMAC_CTX ) )" nodeid="522" childNum="2" operator="=" type="AssignmentExpr" functionId="487" ];
+  523 [ label="childNum:1
+code:OPENSSL_zalloc ( sizeof ( HMAC_CTX ) )
+type:CallExpression
+functionId:487
+nodeid:523
+" childNum="1" code="OPENSSL_zalloc ( sizeof ( HMAC_CTX ) )" type="CallExpression" functionId="487" nodeid="523" ];
+  524 [ label="childNum:1
+code:sizeof ( HMAC_CTX )
+type:ArgumentList
+functionId:487
+nodeid:524
+" childNum="1" code="sizeof ( HMAC_CTX )" type="ArgumentList" functionId="487" nodeid="524" ];
+  525 [ label="childNum:0
+code:sizeof ( HMAC_CTX )
+type:Argument
+functionId:487
+nodeid:525
+" childNum="0" code="sizeof ( HMAC_CTX )" type="Argument" functionId="487" nodeid="525" ];
+  526 [ label="childNum:0
+code:sizeof ( HMAC_CTX )
+type:SizeofExpr
+functionId:487
+nodeid:526
+" childNum="0" code="sizeof ( HMAC_CTX )" type="SizeofExpr" functionId="487" nodeid="526" ];
+  527 [ label="childNum:1
+code:HMAC_CTX
+type:SizeofOperand
+functionId:487
+nodeid:527
+" childNum="1" code="HMAC_CTX" type="SizeofOperand" functionId="487" nodeid="527" ];
+  528 [ label="childNum:0
+code:sizeof
+type:Sizeof
+functionId:487
+nodeid:528
+" childNum="0" code="sizeof" type="Sizeof" functionId="487" nodeid="528" ];
+  529 [ label="childNum:0
+code:OPENSSL_zalloc
+type:Callee
+functionId:487
+nodeid:529
+" childNum="0" code="OPENSSL_zalloc" type="Callee" functionId="487" nodeid="529" ];
+  530 [ label="childNum:0
+code:OPENSSL_zalloc
+type:Identifier
+functionId:487
+nodeid:530
+" childNum="0" code="OPENSSL_zalloc" type="Identifier" functionId="487" nodeid="530" ];
+  531 [ label="childNum:0
+code:ctx
+type:Identifier
+functionId:487
+nodeid:531
+" childNum="0" code="ctx" type="Identifier" functionId="487" nodeid="531" ];
+  532 [ label="childNum:0
+code:ctx
+type:Identifier
+functionId:487
+nodeid:532
+" childNum="0" code="ctx" type="Identifier" functionId="487" nodeid="532" ];
+  533 [ label="childNum:0
+code:HMAC_CTX *
+type:IdentifierDeclType
+functionId:487
+nodeid:533
+" childNum="0" code="HMAC_CTX *" type="IdentifierDeclType" functionId="487" nodeid="533" ];
+  534 [ label="isCFGNode:True
+code:ENTRY
+type:CFGEntryNode
+functionId:487
+nodeid:534
+" isCFGNode="True" code="ENTRY" type="CFGEntryNode" functionId="487" nodeid="534" ];
+  535 [ label="isCFGNode:True
+code:EXIT
+type:CFGExitNode
+functionId:487
+nodeid:535
+" isCFGNode="True" code="EXIT" type="CFGExitNode" functionId="487" nodeid="535" ];
+  536 [ label="code:NULL
+type:Symbol
+functionId:487
+nodeid:536
+" code="NULL" type="Symbol" functionId="487" nodeid="536" ];
+  537 [ label="code:ctx
+type:Symbol
+functionId:487
+nodeid:537
+" code="ctx" type="Symbol" functionId="487" nodeid="537" ];
+  538 [ label="code:HMAC_CTX_reset
+type:Symbol
+functionId:487
+nodeid:538
+" code="HMAC_CTX_reset" type="Symbol" functionId="487" nodeid="538" ];
+  539 [ label="code:OPENSSL_zalloc
+type:Symbol
+functionId:487
+nodeid:539
+" code="OPENSSL_zalloc" type="Symbol" functionId="487" nodeid="539" ];
+  488 -> 491 [ label="IS_AST_PARENT" name="((488) : (491) : IS_AST_PARENT)" ];
+  488 -> 490 [ label="IS_AST_PARENT" name="((488) : (490) : IS_AST_PARENT)" ];
+  488 -> 489 [ label="IS_AST_PARENT" name="((488) : (489) : IS_AST_PARENT)" ];
+  491 -> 520 [ label="IS_AST_PARENT" name="((491) : (520) : IS_AST_PARENT)" ];
+  491 -> 494 [ label="IS_AST_PARENT" name="((491) : (494) : IS_AST_PARENT)" ];
+  491 -> 492 [ label="IS_AST_PARENT" name="((491) : (492) : IS_AST_PARENT)" ];
+  492 -> 493 [ label="IS_AST_PARENT" name="((492) : (493) : IS_AST_PARENT)" ];
+  494 -> 516 [ label="IS_AST_PARENT" name="((494) : (516) : IS_AST_PARENT)" ];
+  494 -> 495 [ label="IS_AST_PARENT" name="((494) : (495) : IS_AST_PARENT)" ];
+  495 -> 496 [ label="IS_AST_PARENT" name="((495) : (496) : IS_AST_PARENT)" ];
+  496 -> 507 [ label="IS_AST_PARENT" name="((496) : (507) : IS_AST_PARENT)" ];
+  496 -> 497 [ label="IS_AST_PARENT" name="((496) : (497) : IS_AST_PARENT)" ];
+  497 -> 500 [ label="IS_AST_PARENT" name="((497) : (500) : IS_AST_PARENT)" ];
+  497 -> 498 [ label="IS_AST_PARENT" name="((497) : (498) : IS_AST_PARENT)" ];
+  498 -> 499 [ label="IS_AST_PARENT" name="((498) : (499) : IS_AST_PARENT)" ];
+  500 -> 501 [ label="IS_AST_PARENT" name="((500) : (501) : IS_AST_PARENT)" ];
+  501 -> 505 [ label="IS_AST_PARENT" name="((501) : (505) : IS_AST_PARENT)" ];
+  501 -> 502 [ label="IS_AST_PARENT" name="((501) : (502) : IS_AST_PARENT)" ];
+  502 -> 503 [ label="IS_AST_PARENT" name="((502) : (503) : IS_AST_PARENT)" ];
+  503 -> 504 [ label="IS_AST_PARENT" name="((503) : (504) : IS_AST_PARENT)" ];
+  505 -> 506 [ label="IS_AST_PARENT" name="((505) : (506) : IS_AST_PARENT)" ];
+  507 -> 508 [ label="IS_AST_PARENT" name="((507) : (508) : IS_AST_PARENT)" ];
+  508 -> 515 [ label="IS_AST_PARENT" name="((508) : (515) : IS_AST_PARENT)" ];
+  508 -> 509 [ label="IS_AST_PARENT" name="((508) : (509) : IS_AST_PARENT)" ];
+  509 -> 513 [ label="IS_AST_PARENT" name="((509) : (513) : IS_AST_PARENT)" ];
+  509 -> 510 [ label="IS_AST_PARENT" name="((509) : (510) : IS_AST_PARENT)" ];
+  510 -> 511 [ label="IS_AST_PARENT" name="((510) : (511) : IS_AST_PARENT)" ];
+  511 -> 512 [ label="IS_AST_PARENT" name="((511) : (512) : IS_AST_PARENT)" ];
+  513 -> 514 [ label="IS_AST_PARENT" name="((513) : (514) : IS_AST_PARENT)" ];
+  516 -> 517 [ label="IS_AST_PARENT" name="((516) : (517) : IS_AST_PARENT)" ];
+  517 -> 519 [ label="IS_AST_PARENT" name="((517) : (519) : IS_AST_PARENT)" ];
+  517 -> 518 [ label="IS_AST_PARENT" name="((517) : (518) : IS_AST_PARENT)" ];
+  520 -> 521 [ label="IS_AST_PARENT" name="((520) : (521) : IS_AST_PARENT)" ];
+  521 -> 533 [ label="IS_AST_PARENT" name="((521) : (533) : IS_AST_PARENT)" ];
+  521 -> 532 [ label="IS_AST_PARENT" name="((521) : (532) : IS_AST_PARENT)" ];
+  521 -> 522 [ label="IS_AST_PARENT" name="((521) : (522) : IS_AST_PARENT)" ];
+  522 -> 531 [ label="IS_AST_PARENT" name="((522) : (531) : IS_AST_PARENT)" ];
+  522 -> 523 [ label="IS_AST_PARENT" name="((522) : (523) : IS_AST_PARENT)" ];
+  523 -> 529 [ label="IS_AST_PARENT" name="((523) : (529) : IS_AST_PARENT)" ];
+  523 -> 524 [ label="IS_AST_PARENT" name="((523) : (524) : IS_AST_PARENT)" ];
+  524 -> 525 [ label="IS_AST_PARENT" name="((524) : (525) : IS_AST_PARENT)" ];
+  525 -> 526 [ label="IS_AST_PARENT" name="((525) : (526) : IS_AST_PARENT)" ];
+  526 -> 528 [ label="IS_AST_PARENT" name="((526) : (528) : IS_AST_PARENT)" ];
+  526 -> 527 [ label="IS_AST_PARENT" name="((526) : (527) : IS_AST_PARENT)" ];
+  529 -> 530 [ label="IS_AST_PARENT" name="((529) : (530) : IS_AST_PARENT)" ];
+  492 -> 535 [ label="FLOWS_TO" name="((492) : (535) : FLOWS_TO)" ];
+  498 -> 535 [ label="FLOWS_TO" name="((498) : (535) : FLOWS_TO)" ];
+  500 -> 498 [ label="FLOWS_TO" name="((500) : (498) : FLOWS_TO)" ];
+  507 -> 492 [ label="FLOWS_TO" name="((507) : (492) : FLOWS_TO)" ];
+  507 -> 500 [ label="FLOWS_TO" name="((507) : (500) : FLOWS_TO)" ];
+  516 -> 492 [ label="FLOWS_TO" name="((516) : (492) : FLOWS_TO)" ];
+  516 -> 507 [ label="FLOWS_TO" name="((516) : (507) : FLOWS_TO)" ];
+  520 -> 516 [ label="FLOWS_TO" name="((520) : (516) : FLOWS_TO)" ];
+  534 -> 520 [ label="FLOWS_TO" name="((534) : (520) : FLOWS_TO)" ];
+  492 -> 537 [ label="USE" name="((492) : (537) : USE)" ];
+  498 -> 536 [ label="USE" name="((498) : (536) : USE)" ];
+  500 -> 537 [ label="USE" name="((500) : (537) : USE)" ];
+  503 -> 537 [ label="USE" name="((503) : (537) : USE)" ];
+  507 -> 538 [ label="USE" name="((507) : (538) : USE)" ];
+  507 -> 537 [ label="USE" name="((507) : (537) : USE)" ];
+  511 -> 537 [ label="USE" name="((511) : (537) : USE)" ];
+  516 -> 537 [ label="USE" name="((516) : (537) : USE)" ];
+  516 -> 536 [ label="USE" name="((516) : (536) : USE)" ];
+  520 -> 537 [ label="DEF" name="((520) : (537) : DEF)" ];
+  520 -> 539 [ label="USE" name="((520) : (539) : USE)" ];
+  522 -> 537 [ label="DEF" name="((522) : (537) : DEF)" ];
+  522 -> 539 [ label="USE" name="((522) : (539) : USE)" ];
+  520 -> 492 [ label="REACHES" name="((520) : (492) : REACHES)" ];
+  520 -> 500 [ label="REACHES" name="((520) : (500) : REACHES)" ];
+  520 -> 507 [ label="REACHES" name="((520) : (507) : REACHES)" ];
+  520 -> 516 [ label="REACHES" name="((520) : (516) : REACHES)" ];
+  498 -> 500 [ label="POST_DOM" name="((498) : (500) : POST_DOM)" ];
+  516 -> 520 [ label="POST_DOM" name="((516) : (520) : POST_DOM)" ];
+  535 -> 492 [ label="POST_DOM" name="((535) : (492) : POST_DOM)" ];
+  535 -> 534 [ label="POST_DOM" name="((535) : (534) : POST_DOM)" ];
+  535 -> 516 [ label="POST_DOM" name="((535) : (516) : POST_DOM)" ];
+  535 -> 507 [ label="POST_DOM" name="((535) : (507) : POST_DOM)" ];
+  535 -> 498 [ label="POST_DOM" name="((535) : (498) : POST_DOM)" ];
+  535 -> 535 [ label="POST_DOM" name="((535) : (535) : POST_DOM)" ];
+  507 -> 492 [ label="CONTROLS" name="((507) : (492) : CONTROLS)" ];
+  507 -> 500 [ label="CONTROLS" name="((507) : (500) : CONTROLS)" ];
+  507 -> 498 [ label="CONTROLS" name="((507) : (498) : CONTROLS)" ];
+  516 -> 492 [ label="CONTROLS" name="((516) : (492) : CONTROLS)" ];
+  516 -> 507 [ label="CONTROLS" name="((516) : (507) : CONTROLS)" ];
+  534 -> 516 [ label="CONTROLS" name="((534) : (516) : CONTROLS)" ];
+  534 -> 520 [ label="CONTROLS" name="((534) : (520) : CONTROLS)" ];
+  487 -> 488 [ label="IS_FUNCTION_OF_AST" name="((487) : (488) : IS_FUNCTION_OF_AST)" ];
+  487 -> 534 [ label="IS_FUNCTION_OF_CFG" name="((487) : (534) : IS_FUNCTION_OF_CFG)" ];
+}

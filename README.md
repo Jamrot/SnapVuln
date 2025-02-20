@@ -12,6 +12,10 @@ mode==1: test for D2A
 1. data_utils.read_all_Datasets
 
 ---
+```conda activate ModelTrain```
+
+```python ~/snapvuln/main.py -config /home/junming/snapvuln/config/train_graph_hybrid.yml```
+
 D2A-test (mode==1)
 
 1. 设置 config['max_slices_num'] = 16
